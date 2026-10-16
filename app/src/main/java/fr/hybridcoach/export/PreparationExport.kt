@@ -15,6 +15,7 @@ data class ExportWorkout(
     val session: PlannedWorkout,
     val planned: WorkoutPlan,
     val result: WorkoutResult?,
+    val subGoalIds: List<String> = emptyList(),
 )
 
 @Serializable
@@ -29,12 +30,13 @@ data class ExportWeek(
 @Serializable
 data class PreparationDocument(
     val format: String = "fr.hybridcoach.preparation",
-    val version: Int = 1,
+    val version: Int = 2,
     val exportedAt: String,
     val options: ExportOptions,
     val goal: TrainingGoal,
     val preparation: TrainingPreparation,
     val weeks: List<ExportWeek>,
+    val subGoals: List<PreparationSubGoal> = emptyList(),
 )
 
 object PreparationExport {
@@ -65,6 +67,7 @@ object PreparationExport {
             options = options,
             goal = if (options.personalNotes) goal else goal.copy(notes = ""),
             preparation = prep,
+            subGoals = state.subGoals.filter { it.preparationId == id },
             weeks =
                 volumes.map { volume ->
                     ExportWeek(
@@ -96,7 +99,14 @@ object PreparationExport {
                                             if (options.personalNotes) it
                                             else it.copy(notes = "", feeling = "")
                                         }
-                                ExportWorkout(safeW, plan, r)
+                                ExportWorkout(
+                                    safeW,
+                                    plan,
+                                    r,
+                                    state.workoutSubGoals
+                                        .filter { it.workoutId == w.id }
+                                        .map { it.subGoalId },
+                                )
                             },
                     )
                 },
@@ -104,7 +114,13 @@ object PreparationExport {
     }
 
     private fun stripSteps(steps: List<RunningStep>): List<RunningStep> =
-        steps.map { it.copy(notes = "", children = stripSteps(it.children)) }
+        steps.map {
+            it.copy(
+                notes = "",
+                children = stripSteps(it.children),
+                recovery = it.recovery?.let { r -> stripSteps(listOf(r)).single() },
+            )
+        }
 
     fun json(document: PreparationDocument): String = codec.encodeToString(document)
 
@@ -125,6 +141,9 @@ object PreparationExport {
         )
         add("Priorité : ${d.goal.priority.ifBlank { "—" }}")
         if (d.options.personalNotes && d.goal.notes.isNotBlank()) add("Notes : ${d.goal.notes}")
+        add("")
+        add("SOUS-OBJECTIFS · PÉRIODES DE TRAVAIL")
+        d.subGoals.forEach { add("${it.name} : ${it.start} → ${it.end}") }
         add("")
         add("VUE GLOBALE")
         val all = d.weeks.flatMap { it.sessions }
@@ -152,11 +171,21 @@ object PreparationExport {
                 add("${w.date} · ${w.name}")
                 add("${w.sport.label} · ${w.status.label} · Priorité ${w.priority.ifBlank { "—" }}")
                 if (w.description.isNotBlank()) add(w.description)
+                d.subGoals
+                    .filter { it.id in e.subGoalIds }
+                    .forEach { add("Sous-objectif : ${it.name}") }
                 fun steps(nodes: List<RunningStep>, level: Int) {
                     nodes.forEach { s ->
                         add("  ".repeat(level) + stepLabel(s))
                         if (s.notes.isNotBlank()) add(s.notes)
                         steps(s.children, level + 1)
+                        s.recovery?.let {
+                            add(
+                                "  ".repeat(level + 1) +
+                                    "Entre les répétitions uniquement : " +
+                                    stepLabel(it)
+                            )
+                        }
                     }
                 }
                 steps(e.planned.running, 0)
@@ -179,7 +208,7 @@ object PreparationExport {
                         }
                 }
                 e.result?.let { r ->
-                    if (w.sport in listOf(Sport.RUN, Sport.RACE)) {
+                    if (w.sport in listOf(Sport.RUN, Sport.RACE, Sport.OTHER)) {
                         add(
                             "Réalisé : ${r.distanceKm.ifBlank { "—" }} km · ${r.durationSeconds.decimal()?.let { SportMath.durationLabel(it.toLong()) } ?: "—"}"
                         )

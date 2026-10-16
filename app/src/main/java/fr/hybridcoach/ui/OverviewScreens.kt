@@ -102,6 +102,7 @@ fun CalendarScreen(
     state: CoachState,
     open: (String) -> Unit,
     create: (String) -> Unit,
+    planning: () -> Unit,
 ) {
     var selected by rememberSaveable { mutableStateOf(LocalDate.now().toString()) }
     val week = selected.asDate().monday()
@@ -112,6 +113,12 @@ fun CalendarScreen(
         contentPadding = PaddingValues(16.dp, 8.dp, 16.dp, 100.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
+        item {
+            FilledTonalButton(onClick = planning, modifier = Modifier.fillMaxWidth()) {
+                Icon(Icons.Default.EditCalendar, null)
+                Text("Mode Planification")
+            }
+        }
         item { PageTitle("Votre semaine", "Course, force et récupération, au même endroit.") }
         item {
             Row(verticalAlignment = Alignment.CenterVertically) {

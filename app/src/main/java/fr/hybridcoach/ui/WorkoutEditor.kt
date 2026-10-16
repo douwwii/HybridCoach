@@ -41,7 +41,10 @@ fun WorkoutEditor(
     val template = state.templates.find { it.id == if (templateMode) id else templateParam }
     val profile by vm.profile.collectAsStateWithLifecycle()
     val planInitial =
-        original?.planJson ?: template?.planJson ?: codec.encodeToString(WorkoutPlan())
+        original?.planJson
+            ?: codec.encodeToString(
+                template?.let { parsePlan(it.planJson).freshCopy() } ?: WorkoutPlan()
+            )
     var planRaw by rememberSaveable(id, templateParam) { mutableStateOf(planInitial) }
     val plan = parsePlan(planRaw)
     fun change(p: WorkoutPlan) {
@@ -68,6 +71,15 @@ fun WorkoutEditor(
         rememberSaveable(id, templateParam) {
             mutableStateOf(original?.preparationId ?: prepParam ?: "")
         }
+    var selectedGoals by
+        rememberSaveable(id, templateParam) {
+            mutableStateOf(
+                state.workoutSubGoals
+                    .filter { it.workoutId == id }
+                    .joinToString(",") { it.subGoalId }
+            )
+        }
+    var quickBlock by remember { mutableStateOf(false) }
     var recurrence by rememberSaveable { mutableStateOf(false) }
     var end by rememberSaveable { mutableStateOf(date.asDate().plusWeeks(8).toString()) }
     var daysRaw by rememberSaveable { mutableStateOf(date.asDate().dayOfWeek.name) }
@@ -89,7 +101,7 @@ fun WorkoutEditor(
                 WorkoutPlan(
                     strength = if (sport == Sport.STRENGTH) plan.strength else emptyList(),
                     running =
-                        if (sport in listOf(Sport.RUN, Sport.RACE))
+                        if (sport in listOf(Sport.RUN, Sport.RACE, Sport.OTHER, Sport.STRENGTH))
                             plan.running.map { SportMath.snapshot(it, profile) }
                         else emptyList(),
                 )
@@ -129,6 +141,7 @@ fun WorkoutEditor(
                             end.asDate().takeIf { recurrence },
                             days,
                             future,
+                            selectedGoals.split(',').filter { it.isNotBlank() }.toSet(),
                         )
                     withContext(Dispatchers.Main) { back() }
                 } finally {
@@ -170,9 +183,34 @@ fun WorkoutEditor(
                     prep,
                     listOf("") + state.preparations.map { it.id },
                     text = { key -> state.preparations.find { it.id == key }?.name ?: "Aucune" },
-                    change = { prep = it },
+                    change = {
+                        prep = it
+                        selectedGoals = ""
+                    },
                 )
             }
+            if (prep.isNotBlank())
+                item {
+                    Text(
+                        "Sous-objectifs · sélection multiple",
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                    state.subGoals
+                        .filter { it.preparationId == prep }
+                        .forEach { goal ->
+                            CheckLine(
+                                "${goal.name} · ${dateLabel(goal.start)} → ${dateLabel(goal.end)}",
+                                goal.id in selectedGoals.split(','),
+                            ) { checked ->
+                                val ids =
+                                    selectedGoals.split(',').filter { it.isNotBlank() }.toSet()
+                                selectedGoals =
+                                    (if (checked) ids + goal.id else ids - goal.id).joinToString(
+                                        ","
+                                    )
+                            }
+                        }
+                }
             item {
                 Choice(
                     "Priorité",
@@ -269,9 +307,9 @@ fun WorkoutEditor(
                 )
             }
         }
-        if (sport in listOf(Sport.RUN, Sport.RACE)) {
+        if (sport in listOf(Sport.RUN, Sport.RACE, Sport.OTHER, Sport.STRENGTH)) {
             item {
-                SectionTitle("Étapes de course") {
+                SectionTitle("Étapes & répétitions") {
                     TextButton(
                         onClick = {
                             stepNew = true
@@ -282,6 +320,12 @@ fun WorkoutEditor(
                         Icon(Icons.Default.Add, null)
                         Text("Étape")
                     }
+                }
+            }
+            item {
+                FilledTonalButton(onClick = { quickBlock = true }) {
+                    Icon(Icons.Default.Repeat, null)
+                    Text("Composer un fractionné")
                 }
             }
             if (plan.running.isEmpty())
@@ -316,6 +360,9 @@ fun WorkoutEditor(
                     },
                     onDelete = { key ->
                         change(plan.copy(running = removeStep(plan.running, key)))
+                    },
+                    onDuplicate = { key ->
+                        change(plan.copy(running = duplicateStep(plan.running, key)))
                     },
                     onMove = { key, delta ->
                         change(plan.copy(running = moveStep(plan.running, key, delta)))
@@ -378,6 +425,11 @@ fun WorkoutEditor(
             Spacer(Modifier.height(24.dp))
         }
     }
+    if (quickBlock)
+        IntervalBlockDialog(profile, { quickBlock = false }) { steps ->
+            change(plan.copy(running = plan.running + steps))
+            quickBlock = false
+        }
     if (picker)
         ExercisePicker(state.exercises, { picker = false }) { e ->
             picker = false
@@ -547,6 +599,7 @@ fun RunningTree(
     onAdd: (String) -> Unit,
     onDelete: (String) -> Unit,
     onMove: (String, Int) -> Unit,
+    onDuplicate: (String) -> Unit,
     level: Int = 0,
 ) {
     nodes.forEachIndexed { index, s ->
@@ -559,7 +612,7 @@ fun RunningTree(
                         if (s.kind == StepKind.REPEAT) MaterialTheme.colorScheme.secondary
                         else MaterialTheme.colorScheme.onSurface,
                 )
-                Row {
+                FlowRow {
                     IconButton(onClick = { onMove(s.id, -1) }, enabled = index > 0) {
                         Icon(Icons.Default.KeyboardArrowUp, "Monter l’étape")
                     }
@@ -567,13 +620,21 @@ fun RunningTree(
                         Icon(Icons.Default.KeyboardArrowDown, "Descendre l’étape")
                     }
                     TextButton(onClick = { onEdit(s) }) { Text("Modifier") }
-                    Spacer(Modifier.weight(1f))
+                    IconButton(onClick = { onDuplicate(s.id) }) {
+                        Icon(Icons.Default.ContentCopy, "Dupliquer le bloc")
+                    }
                     IconButton(onClick = { onDelete(s.id) }) {
                         Icon(Icons.Default.Close, "Retirer l’étape")
                     }
                 }
                 if (s.kind == StepKind.REPEAT) {
-                    RunningTree(s.children, onEdit, onAdd, onDelete, onMove, level + 1)
+                    RunningTree(s.children, onEdit, onAdd, onDelete, onMove, onDuplicate, level + 1)
+                    s.recovery?.let {
+                        Text(
+                            "Entre les répétitions : ${stepLabel(it)}",
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
                     TextButton(onClick = { onAdd(s.id) }, enabled = level < 5) {
                         Text("+ Étape dans ce bloc")
                     }
@@ -600,6 +661,16 @@ fun RunningStepDialog(
     var active by rememberSaveable { mutableStateOf(original.activeRecovery) }
     var repetitions by rememberSaveable { mutableStateOf(original.repetitions.toString()) }
     var notes by rememberSaveable { mutableStateOf(original.notes) }
+    var recoveryEnabled by rememberSaveable { mutableStateOf(original.recovery != null) }
+    var recoveryAmount by rememberSaveable {
+        mutableStateOf(original.recovery?.amount?.toString() ?: "120")
+    }
+    var recoveryKind by rememberSaveable {
+        mutableStateOf((original.recovery?.durationKind ?: DurationKind.TIME).name)
+    }
+    var recoveryActive by rememberSaveable {
+        mutableStateOf(original.recovery?.activeRecovery ?: true)
+    }
     var error by remember { mutableStateOf<String?>(null) }
     val k = StepKind.valueOf(kind)
     val tk = TargetKind.valueOf(targetKind)
@@ -625,11 +696,21 @@ fun RunningStepDialog(
                 repetitions = repetitions.toIntOrNull() ?: 1,
                 notes = notes,
                 children = if (k == StepKind.REPEAT) original.children else emptyList(),
+                recovery =
+                    if (k == StepKind.REPEAT && recoveryEnabled)
+                        RunningStep(
+                            id = original.recovery?.id ?: newId(),
+                            kind = StepKind.RECOVERY,
+                            durationKind = DurationKind.valueOf(recoveryKind),
+                            amount = optionalNumber(recoveryAmount),
+                            activeRecovery = recoveryActive,
+                        )
+                    else null,
             ),
             profile,
         )
     FormDialog(
-        "Étape de course",
+        "Étape structurée",
         dismiss,
         {
             try {
@@ -639,6 +720,7 @@ fun RunningStepDialog(
                     require(repetitions.toIntOrNull()?.let { it in 1..100 } == true) {
                         "1 à 100 répétitions."
                     }
+                s.recovery?.let { validatePlan(WorkoutPlan(running = listOf(it))) }
                 save(s)
             } catch (e: Exception) {
                 error = e.localizedMessage
@@ -649,6 +731,27 @@ fun RunningStepDialog(
         if (k == StepKind.REPEAT) {
             Field("Nombre de répétitions", repetitions, { repetitions = it }, true)
             Text("Ajoutez ensuite les étapes à l’intérieur du bloc.")
+            CheckLine("Récupération entre les répétitions", recoveryEnabled) {
+                recoveryEnabled = it
+            }
+            if (recoveryEnabled) {
+                Choice(
+                    "Récupération",
+                    DurationKind.valueOf(recoveryKind),
+                    listOf(DurationKind.TIME, DurationKind.DISTANCE),
+                    text = { it.label },
+                    change = { recoveryKind = it.name },
+                )
+                Field(
+                    if (recoveryKind == DurationKind.TIME.name) "Récupération (secondes)"
+                    else "Récupération (mètres)",
+                    recoveryAmount,
+                    { recoveryAmount = it },
+                    true,
+                )
+                CheckLine("Récupération active", recoveryActive) { recoveryActive = it }
+                Text("Aucune récupération ajoutée après la dernière répétition.")
+            }
         } else {
             Choice(
                 "Durée",

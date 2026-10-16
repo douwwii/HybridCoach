@@ -136,7 +136,10 @@ class RepositoryLocalAndroidTest {
             .forEach {
                 assertEquals(Status.PLANNED, it.status)
                 assertNull(repo.dao.result(it.id))
-                assertEquals(repo.dao.workout("w")!!.planJson, it.planJson)
+                val source = parsePlan(repo.dao.workout("w")!!.planJson).strength.single()
+                val copied = parsePlan(it.planJson).strength.single()
+                assertNotEquals(source.id, copied.id)
+                assertEquals(source.copy(id = copied.id), copied)
             }
     }
 

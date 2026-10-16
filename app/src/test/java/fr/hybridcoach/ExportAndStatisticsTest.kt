@@ -108,7 +108,7 @@ class ExportAndStatisticsTest {
     fun versionedJsonRoundTrips() {
         val doc = PreparationExport.document(state, "p", ExportOptions(), "test")
         val decoded = codec.decodeFromString<PreparationDocument>(PreparationExport.json(doc))
-        assertEquals(1, decoded.version)
+        assertEquals(2, decoded.version)
         assertEquals(doc, decoded)
         assertEquals(2, decoded.weeks.size)
     }

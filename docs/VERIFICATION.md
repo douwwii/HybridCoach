@@ -1,8 +1,8 @@
 # Vérification de Hybrid Coach
 
-## Résultat final du 16/10/2026 à 11:04 (Europe/Paris)
+## Résultat final du 16/10/2026 à 17:11 (Europe/Paris) — version 1.1.0
 
-**45 tests sur 45 réussis**, aucun échec, aucune erreur, aucun test ignoré.
+**60 tests sur 60 réussis**, aucun échec, aucune erreur, aucun test ignoré.
 
 | Suite | Réussites |
 |---|---:|
@@ -10,20 +10,25 @@
 | Récurrences | 7 |
 | JSON, statistiques et confidentialité des exports | 10 |
 | Room, réouverture et PDF avec Android local | 8 |
-| Parcours Compose complets | 2 |
-| Total | **45** |
+| Parcours Compose existants | 2 |
+| Répétitions, récupérations, copies et export v2 | 6 |
+| Planification : migration réelle v1 → v2, liens, périodes, copies, PDF | 7 |
+| Parcours Compose de planification et fractionné imbriqué | 2 |
+| Total | **60** |
 
-La compilation de l’application et de l’APK de tests instrumentés a réussi. Android Lint termine avec **0 erreur, 20 avertissements et 3 informations** ; le rapport brut est conservé. Les avertissements concernent des versions plus récentes disponibles, des conventions d’API et des dépendances tierces. Ils n’ont pas été masqués.
+Contrôles exécutés depuis le dossier `Obsidian Vault/My life/Pro/Projets/HybridCoach`.
 
-Le test d’interface vérifie notamment une série **22 kg × 8**, la fin partielle puis sa présence dans le PDF réellement généré à partir du bouton de partage. Le sélecteur de partage et son autorisation de lecture sont vérifiés dans Android local ; l’envoi effectif par une application tierce sur un téléphone reste à contrôler.
+Commande exécutée : `./gradlew :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest :app:lintDebug` avec JBR 21. Compilation et contrôles terminés avec `BUILD SUCCESSFUL`. Android Lint : **0 erreur, 24 avertissements et 3 informations**. Les avertissements concernent les versions de dépendances, une convention de paramètre Compose, la configuration de sauvegarde Android et du code de certificats tiers dans PDFBox/Bouncy Castle ; les informations suggèrent des helpers KTX ou des états entiers spécialisés. Aucun avertissement n’est masqué.
 
-Signature de l’APK vérifiée avec `apksigner` (schéma v2), paquet `fr.hybridcoach`, version `1.0.0`, Android 8.0 / API 26 minimum. Aucun accès Internet n’est déclaré dans l’APK.
+Les nouveaux tests d’interface exécutent la création d’un fractionné de 3 × (4 × 400 m) dans **Autre sport**, le passage entre les quatre vues, la création d’un sous-objectif et un véritable geste de glisser-déposer vers le lendemain. Le calendrier classique retrouve la séance à sa nouvelle date. Les tests existants couvrent toujours la reprise, la saisie de force, la fin partielle et le partage PDF.
 
-Les contrôles PDF portent sur **24 pages** de notes longues et **2 pages** d’un parcours complet ; aucun mot hors des marges dans les deux fichiers. Captures du rendu local et des pages PDF dans `docs/screenshots/`.
+La migration est vérifiée depuis un fichier SQLite créé à partir du schéma Room v1 : objectif, préparation, séance terminée, résultat, modèle et exercice restent présents après l’ouverture en v2. Les périodes superposées, les associations multiples, leur nettoyage et la conservation des liens lors des copies sont testés avec fermeture/réouverture de la base.
 
-Les rapports détaillés sont dans `livrables/rapports/`. Les essais sur téléphone physique, la vibration réelle et Android Studio Windows ne sont pas déclarés validés.
+Signature de l’APK vérifiée avec `apksigner` (schéma v2), paquet `fr.hybridcoach`, version **1.1.0 / code 2**, Android 8.0 / API 26 minimum, cible 35. Aucun accès Internet n’est déclaré dans l’APK.
 
-Ce document distingue le code livré, les tests effectivement exécutés et les vérifications qui nécessitent un téléphone. Le bilan final et les rapports sont fournis dans `livrables/`.
+Les PDF générés par le moteur applicatif sont lus par Apache PDFBox JVM. Le nouveau PDF de planification de **3 pages** affiche les sous-objectifs, leurs périodes et les récupérations entre répétitions. Ses pages ont été rendues avec Poppler et inspectées. Les contrôles des coordonnées des mots sur ce fichier, le test de résistance de **24 pages** et le parcours de **2 pages** ne trouvent aucun débordement. Captures dans `docs/screenshots/` ; données exclusivement synthétiques de test.
+
+Les rapports détaillés sont dans `livrables/rapports/`. Les tests instrumentés ont été compilés ; ils n’ont pas été exécutés sur téléphone ou émulateur complet pendant cette validation. La vibration réelle, le comportement de l’alarme en arrière-plan et Android Studio Windows restent à contrôler sur leurs environnements respectifs.
 
 ## Tests automatisés
 
@@ -34,7 +39,7 @@ Les tests JVM des calculs, récurrences, statistiques et exports couvrent notamm
 - Références VMA et allures, zones personnalisées et instantanés indépendants du profil.
 - 1RM Epley, bornes de validation et virgule décimale.
 - Récurrences inclusives, jours multiples, changement d’année, année bissextile et fréquence de deux semaines.
-- Format JSON v1, aller-retour de sérialisation, Unicode et séances associées hors période.
+- Formats JSON v1/v2, aller-retour de sérialisation, Unicode et séances associées hors période.
 - Exclusion récursive des notes personnelles et exclusion des performances.
 - Statistiques fondées sur les statuts terminée/partielle et les séries cochées.
 

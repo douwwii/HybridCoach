@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="fr.hybridcoach.AdvancedPlanningTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-16T15:10:20" hostname="fedoraleo" time="0.277">
+  <properties/>
+  <testcase name="invalidRecoveryAndExcessiveExpansionAreRejected" classname="fr.hybridcoach.AdvancedPlanningTest" time="0.073"/>
+  <testcase name="nestedRecoveriesOnlyOccurBetweenRepetitions" classname="fr.hybridcoach.AdvancedPlanningTest" time="0.007"/>
+  <testcase name="duplicatingInnerBlockPreservesOrderAndIndependentIds" classname="fr.hybridcoach.AdvancedPlanningTest" time="0.001"/>
+  <testcase name="distanceRecoveryAndSnapshotSurviveJsonAndCopy" classname="fr.hybridcoach.AdvancedPlanningTest" time="0.091"/>
+  <testcase name="exportIncludesOverlappingPhasesLinksAndRecoveryWithoutPrivateNotes" classname="fr.hybridcoach.AdvancedPlanningTest" time="0.101"/>
+  <testcase name="legacyPlansAndVersionOneDocumentsRemainReadable" classname="fr.hybridcoach.AdvancedPlanningTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

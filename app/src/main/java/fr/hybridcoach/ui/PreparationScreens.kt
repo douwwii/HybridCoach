@@ -185,6 +185,7 @@ fun PreparationScreen(
     id: String,
     open: (String) -> Unit,
     create: (String, String) -> Unit,
+    planning: (String) -> Unit,
 ) {
     val p = state.preparations.find { it.id == id } ?: return
     val goal = state.goals.find { it.id == p.goalId } ?: return
@@ -214,6 +215,12 @@ fun PreparationScreen(
         contentPadding = PaddingValues(20.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        item {
+            FilledTonalButton(onClick = { planning(id) }, modifier = Modifier.fillMaxWidth()) {
+                Icon(Icons.Default.EditCalendar, null)
+                Text("Ouvrir la planification avancée")
+            }
+        }
         item {
             PageTitle(p.name, goal.name)
             Card(Modifier.fillMaxWidth()) {
@@ -431,7 +438,7 @@ fun ExportDialog(vm: CoachViewModel, state: CoachState, id: String, dismiss: () 
             "Format",
             pdf,
             listOf(true, false),
-            text = { if (it) "PDF lisible" else "JSON structuré v1" },
+            text = { if (it) "PDF lisible" else "JSON structuré v2" },
             change = { pdf = it },
         )
         CheckLine("Inclure les performances", performances) { performances = it }

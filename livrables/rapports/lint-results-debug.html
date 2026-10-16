@@ -177,16 +177,16 @@ document.getElementById(id).style.display = 'none';
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
   <header class="mdl-layout__header">
     <div class="mdl-layout__header-row">
-      <span class="mdl-layout-title">Lint Report: 20 warnings</span>
+      <span class="mdl-layout-title">Lint Report: 24 warnings</span>
       <div class="mdl-layout-spacer"></div>
-      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Fri Oct 16 11:02:43 CEST 2026 by AGP (8.9.2)</nav>
+      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Fri Oct 16 17:11:17 CEST 2026 by AGP (8.9.2)</nav>
     </div>
   </header>
   <div class="mdl-layout__drawer">
     <span class="mdl-layout-title">Issue Types</span>
     <nav class="mdl-navigation">
       <a class="mdl-navigation__link" href="#overview"><i class="material-icons">dashboard</i>Overview</a>
-      <a class="mdl-navigation__link" href="#GradleDependency"><i class="material-icons warning-icon">warning</i>Obsolete Gradle Dependency (12)</a>
+      <a class="mdl-navigation__link" href="#GradleDependency"><i class="material-icons warning-icon">warning</i>Obsolete Gradle Dependency (16)</a>
       <a class="mdl-navigation__link" href="#ModifierParameter"><i class="material-icons warning-icon">warning</i>Guidelines for Modifier parameters in a Composable function (1)</a>
       <a class="mdl-navigation__link" href="#TrustAllX509TrustManager"><i class="material-icons warning-icon">warning</i>Insecure TLS/SSL trust manager (3)</a>
       <a class="mdl-navigation__link" href="#DataExtractionRules"><i class="material-icons warning-icon">warning</i>Missing data extraction rules (1)</a>
@@ -207,7 +207,7 @@ document.getElementById(id).style.display = 'none';
 <tr><td class="countColumn"></td><td class="categoryColumn"><a href="#Correctness">Correctness</a>
 </td></tr>
 <tr>
-<td class="countColumn">12</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
+<td class="countColumn">16</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
 <a href="#GradleDependency">GradleDependency</a>: Obsolete Gradle Dependency</td></tr>
 <tr>
 <td class="countColumn">1</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
@@ -301,7 +301,7 @@ Dismiss</button>            </div>
 <span class="lineno"> 46 </span>    implementation("androidx.room:room-ktx:2.7.2")
 </pre>
 
-<button class="mdl-button mdl-js-button mdl-button--primary" id="GradleDependencyDivLink" onclick="reveal('GradleDependencyDiv');" />+ 7 More Occurrences...</button>
+<button class="mdl-button mdl-js-button mdl-button--primary" id="GradleDependencyDivLink" onclick="reveal('GradleDependencyDiv');" />+ 11 More Occurrences...</button>
 <div id="GradleDependencyDiv" style="display: none">
 <span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:44</span>: <span class="message">A newer version of androidx.navigation:navigation-compose than 2.9.0 is available: 2.10.2</span><br /><pre class="errorlines">
 <span class="lineno"> 41 </span>    debugImplementation("androidx.compose.ui:ui-tooling")
@@ -353,7 +353,17 @@ Dismiss</button>            </div>
 <span class="lineno"> 51 </span>    testImplementation("junit:junit:4.13.2")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:55</span>: <span class="message">A newer version of androidx.test.espresso:espresso-core than 3.5.0 is available: 3.5.1</span><br /><pre class="errorlines">
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:54</span>: <span class="message">A newer version of androidx.test:core-ktx than 1.6.1 is available: 1.7.0</span><br /><pre class="errorlines">
+<span class="lineno"> 51 </span>    testImplementation("junit:junit:4.13.2")
+<span class="lineno"> 52 </span>    testImplementation("org.robolectric:robolectric:4.16.1")
+<span class="lineno"> 53 </span>    testImplementation("org.apache.pdfbox:pdfbox:2.0.32")
+<span class="caretline"><span class="lineno"> 54 </span>    testImplementation(<span class="warning">"androidx.test:core-ktx:1.6.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 55 </span>    testImplementation("androidx.test.espresso:espresso-core:3.5.0")
+<span class="lineno"> 56 </span>    testImplementation("androidx.compose.ui:ui-test-junit4")
+<span class="lineno"> 57 </span>    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+</pre>
+
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:55</span>: <span class="message">A newer version of androidx.test.espresso:espresso-core than 3.5.0 is available: 3.7.0</span><br /><pre class="errorlines">
 <span class="lineno"> 52 </span>    testImplementation("org.robolectric:robolectric:4.16.1")
 <span class="lineno"> 53 </span>    testImplementation("org.apache.pdfbox:pdfbox:2.0.32")
 <span class="lineno"> 54 </span>    testImplementation("androidx.test:core-ktx:1.6.1")
@@ -361,6 +371,36 @@ Dismiss</button>            </div>
 <span class="lineno"> 56 </span>    testImplementation("androidx.compose.ui:ui-test-junit4")
 <span class="lineno"> 57 </span>    androidTestImplementation("androidx.test.ext:junit:1.2.1")
 <span class="lineno"> 58 </span>    androidTestImplementation("androidx.test:runner:1.6.2")
+</pre>
+
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:57</span>: <span class="message">A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0</span><br /><pre class="errorlines">
+<span class="lineno"> 54 </span>    testImplementation("androidx.test:core-ktx:1.6.1")
+<span class="lineno"> 55 </span>    testImplementation("androidx.test.espresso:espresso-core:3.5.0")
+<span class="lineno"> 56 </span>    testImplementation("androidx.compose.ui:ui-test-junit4")
+<span class="caretline"><span class="lineno"> 57 </span>    androidTestImplementation(<span class="warning">"androidx.test.ext:junit:1.2.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 58 </span>    androidTestImplementation("androidx.test:runner:1.6.2")
+<span class="lineno"> 59 </span>    androidTestImplementation("androidx.test:core-ktx:1.6.1")
+<span class="lineno"> 60 </span>    androidTestImplementation(platform("androidx.compose:compose-bom:2025.04.01"))
+</pre>
+
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:58</span>: <span class="message">A newer version of androidx.test:runner than 1.6.2 is available: 1.7.0</span><br /><pre class="errorlines">
+<span class="lineno"> 55 </span>    testImplementation("androidx.test.espresso:espresso-core:3.5.0")
+<span class="lineno"> 56 </span>    testImplementation("androidx.compose.ui:ui-test-junit4")
+<span class="lineno"> 57 </span>    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+<span class="caretline"><span class="lineno"> 58 </span>    androidTestImplementation(<span class="warning">"androidx.test:runner:1.6.2"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 59 </span>    androidTestImplementation("androidx.test:core-ktx:1.6.1")
+<span class="lineno"> 60 </span>    androidTestImplementation(platform("androidx.compose:compose-bom:2025.04.01"))
+<span class="lineno"> 61 </span>    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+</pre>
+
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:59</span>: <span class="message">A newer version of androidx.test:core-ktx than 1.6.1 is available: 1.7.0</span><br /><pre class="errorlines">
+<span class="lineno"> 56 </span>    testImplementation("androidx.compose.ui:ui-test-junit4")
+<span class="lineno"> 57 </span>    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+<span class="lineno"> 58 </span>    androidTestImplementation("androidx.test:runner:1.6.2")
+<span class="caretline"><span class="lineno"> 59 </span>    androidTestImplementation(<span class="warning">"androidx.test:core-ktx:1.6.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 60 </span>    androidTestImplementation(platform("androidx.compose:compose-bom:2025.04.01"))
+<span class="lineno"> 61 </span>    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+<span class="lineno"> 62 </span>    debugImplementation("androidx.compose.ui:ui-test-manifest")
 </pre>
 
 <span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:60</span>: <span class="message">A newer version of androidx.compose:compose-bom than 2025.04.01 is available: 2026.09.00</span><br /><pre class="errorlines">
@@ -410,14 +450,14 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../src/main/java/fr/hybridcoach/ui/Components.kt">../../src/main/java/fr/hybridcoach/ui/Components.kt</a>:151</span>: <span class="message">Modifier parameter should be the first optional parameter</span><br /><pre class="errorlines">
-<span class="lineno"> 148 </span>    value: String,
-<span class="lineno"> 149 </span>    change: (String) -> Unit,
-<span class="lineno"> 150 </span>    numeric: Boolean = <span class="keyword">false</span>,
-<span class="caretline"><span class="lineno"> 151 </span>    <span class="warning">modifier</span>: Modifier = Modifier,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 152 </span>    lines: Int = <span class="number">1</span>,
-<span class="lineno"> 153 </span>) {
-<span class="lineno"> 154 </span>    OutlinedTextField(
+<span class="location"><a href="../../src/main/java/fr/hybridcoach/ui/Components.kt">../../src/main/java/fr/hybridcoach/ui/Components.kt</a>:159</span>: <span class="message">Modifier parameter should be the first optional parameter</span><br /><pre class="errorlines">
+<span class="lineno"> 156 </span>    value: String,
+<span class="lineno"> 157 </span>    change: (String) -> Unit,
+<span class="lineno"> 158 </span>    numeric: Boolean = <span class="keyword">false</span>,
+<span class="caretline"><span class="lineno"> 159 </span>    <span class="warning">modifier</span>: Modifier = Modifier,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 160 </span>    lines: Int = <span class="number">1</span>,
+<span class="lineno"> 161 </span>) {
+<span class="lineno"> 162 </span>    OutlinedTextField(
 </pre>
 
 </div>
@@ -466,9 +506,9 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../../../../../../../../../../tmp/hybrid-tools/gradle-home/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar">../../../../../../../../../../../tmp/hybrid-tools/gradle-home/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar</a></span>: <span class="message"><code>checkClientTrusted</code> is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers</span><br />
-<span class="location"><a href="../../../../../../../../../../../tmp/hybrid-tools/gradle-home/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar">../../../../../../../../../../../tmp/hybrid-tools/gradle-home/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar</a></span>: <span class="message"><code>checkClientTrusted</code> is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers</span><br />
-<span class="location"><a href="../../../../../../../../../../../tmp/hybrid-tools/gradle-home/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar">../../../../../../../../../../../tmp/hybrid-tools/gradle-home/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar</a></span>: <span class="message"><code>checkServerTrusted</code> is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers</span><br />
+<span class="location"><a href="../../../../../../../../../.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar">../../../../../../../../../.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar</a></span>: <span class="message"><code>checkClientTrusted</code> is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers</span><br />
+<span class="location"><a href="../../../../../../../../../.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar">../../../../../../../../../.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar</a></span>: <span class="message"><code>checkClientTrusted</code> is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers</span><br />
+<span class="location"><a href="../../../../../../../../../.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar">../../../../../../../../../.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar</a></span>: <span class="message"><code>checkServerTrusted</code> is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers</span><br />
 </div>
 <div class="metadata"><div class="explanation" id="explanationTrustAllX509TrustManager" style="display: none;">
 This check looks for X509TrustManager implementations whose <code>checkServerTrusted</code> or <code>checkClientTrusted</code> methods do nothing (thus trusting any certificate chain) which could result in insecure network traffic caused by trusting arbitrary TLS/SSL certificates presented by peers.<br/><div class="moreinfo">More info: <a href="https://goo.gle/TrustAllX509TrustManager">https://goo.gle/TrustAllX509TrustManager</a>
@@ -556,24 +596,24 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../src/main/java/fr/hybridcoach/ui/OverviewScreens.kt">../../src/main/java/fr/hybridcoach/ui/OverviewScreens.kt</a>:250</span>: <span class="message">Prefer <code>mutableIntStateOf</code> instead of <code>mutableStateOf</code></span><br /><pre class="errorlines">
-<span class="lineno"> 247 </span><span class="keyword">fun</span> HistoryScreen(state: CoachState, open: (String) -> Unit) {
-<span class="lineno"> 248 </span>    <span class="keyword">var</span> sport by rememberSaveable { mutableStateOf(<span class="string">"Tous"</span>) }
-<span class="lineno"> 249 </span>    <span class="keyword">var</span> prep by rememberSaveable { mutableStateOf(<span class="string">""</span>) }
-<span class="caretline"><span class="lineno"> 250 </span>    <span class="keyword">var</span> period by rememberSaveable { <span class="warning">mutableStateOf</span>(<span class="number">90</span>) }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 251 </span>    <span class="keyword">val</span> today = LocalDate.now()
-<span class="lineno"> 252 </span>    <span class="keyword">val</span> list =
-<span class="lineno"> 253 </span>        state.workouts
+<span class="location"><a href="../../src/main/java/fr/hybridcoach/ui/OverviewScreens.kt">../../src/main/java/fr/hybridcoach/ui/OverviewScreens.kt</a>:257</span>: <span class="message">Prefer <code>mutableIntStateOf</code> instead of <code>mutableStateOf</code></span><br /><pre class="errorlines">
+<span class="lineno"> 254 </span><span class="keyword">fun</span> HistoryScreen(state: CoachState, open: (String) -> Unit) {
+<span class="lineno"> 255 </span>    <span class="keyword">var</span> sport by rememberSaveable { mutableStateOf(<span class="string">"Tous"</span>) }
+<span class="lineno"> 256 </span>    <span class="keyword">var</span> prep by rememberSaveable { mutableStateOf(<span class="string">""</span>) }
+<span class="caretline"><span class="lineno"> 257 </span>    <span class="keyword">var</span> period by rememberSaveable { <span class="warning">mutableStateOf</span>(<span class="number">90</span>) }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 258 </span>    <span class="keyword">val</span> today = LocalDate.now()
+<span class="lineno"> 259 </span>    <span class="keyword">val</span> list =
+<span class="lineno"> 260 </span>        state.workouts
 </pre>
 
-<span class="location"><a href="../../src/main/java/fr/hybridcoach/ui/PreparationScreens.kt">../../src/main/java/fr/hybridcoach/ui/PreparationScreens.kt</a>:197</span>: <span class="message">Prefer <code>mutableIntStateOf</code> instead of <code>mutableStateOf</code></span><br /><pre class="errorlines">
-<span class="lineno"> 194 </span>      (ChronoUnit.WEEKS.between(start, p.end.asDate().monday()).toInt() + <span class="number">1</span>).coerceAtLeast(<span class="number">1</span>)
-<span class="lineno"> 195 </span>  <span class="keyword">val</span> today = LocalDate.now()
-<span class="lineno"> 196 </span>  <span class="keyword">val</span> current = ChronoUnit.WEEKS.between(start, today.monday()).toInt().coerceIn(<span class="number">0</span>, count - <span class="number">1</span>)
-<span class="caretline"><span class="lineno"> 197 </span>  <span class="keyword">var</span> week by rememberSaveable(id) { <span class="warning">mutableStateOf</span>(current) }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 198 </span>  week = week.coerceIn(<span class="number">0</span>, count - <span class="number">1</span>)
-<span class="lineno"> 199 </span>  <span class="keyword">var</span> edit by remember { mutableStateOf(<span class="keyword">false</span>) }
-<span class="lineno"> 200 </span>  <span class="keyword">var</span> share by remember { mutableStateOf(<span class="keyword">false</span>) }
+<span class="location"><a href="../../src/main/java/fr/hybridcoach/ui/PreparationScreens.kt">../../src/main/java/fr/hybridcoach/ui/PreparationScreens.kt</a>:198</span>: <span class="message">Prefer <code>mutableIntStateOf</code> instead of <code>mutableStateOf</code></span><br /><pre class="errorlines">
+<span class="lineno"> 195 </span>      (ChronoUnit.WEEKS.between(start, p.end.asDate().monday()).toInt() + <span class="number">1</span>).coerceAtLeast(<span class="number">1</span>)
+<span class="lineno"> 196 </span>  <span class="keyword">val</span> today = LocalDate.now()
+<span class="lineno"> 197 </span>  <span class="keyword">val</span> current = ChronoUnit.WEEKS.between(start, today.monday()).toInt().coerceIn(<span class="number">0</span>, count - <span class="number">1</span>)
+<span class="caretline"><span class="lineno"> 198 </span>  <span class="keyword">var</span> week by rememberSaveable(id) { <span class="warning">mutableStateOf</span>(current) }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 199 </span>  week = week.coerceIn(<span class="number">0</span>, count - <span class="number">1</span>)
+<span class="lineno"> 200 </span>  <span class="keyword">var</span> edit by remember { mutableStateOf(<span class="keyword">false</span>) }
+<span class="lineno"> 201 </span>  <span class="keyword">var</span> share by remember { mutableStateOf(<span class="keyword">false</span>) }
 </pre>
 
 <span class="location"><a href="../../src/main/java/fr/hybridcoach/ui/ProgressScreen.kt">../../src/main/java/fr/hybridcoach/ui/ProgressScreen.kt</a>:19</span>: <span class="message">Prefer <code>mutableIntStateOf</code> instead of <code>mutableStateOf</code></span><br /><pre class="errorlines">

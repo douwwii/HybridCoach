@@ -104,6 +104,7 @@ data class RunningStep(
     val activeRecovery: Boolean = true,
     val repetitions: Int = 1,
     val children: List<RunningStep> = emptyList(),
+    val recovery: RunningStep? = null, // Between repetitions only; never after the last one.
     val notes: String = "",
 )
 
@@ -249,11 +250,14 @@ object SportMath {
                     parseZones(profile.paceZones)[step.target?.toInt()]?.second
                 else null,
             children = step.children.map { snapshot(it, profile) },
+            recovery = step.recovery?.let { snapshot(it, profile) },
         )
 
     fun plannedMeters(steps: List<RunningStep>): Double =
         steps.sumOf { s ->
-            if (s.kind == StepKind.REPEAT) s.repetitions * plannedMeters(s.children)
+            if (s.kind == StepKind.REPEAT)
+                s.repetitions * plannedMeters(s.children) +
+                    (s.repetitions - 1) * plannedMeters(listOfNotNull(s.recovery))
             else
                 when (s.durationKind) {
                     DurationKind.DISTANCE -> s.amount ?: 0.0
@@ -266,7 +270,9 @@ object SportMath {
 
     fun plannedSeconds(steps: List<RunningStep>): Double =
         steps.sumOf { s ->
-            if (s.kind == StepKind.REPEAT) s.repetitions * plannedSeconds(s.children)
+            if (s.kind == StepKind.REPEAT)
+                s.repetitions * plannedSeconds(s.children) +
+                    (s.repetitions - 1) * plannedSeconds(listOfNotNull(s.recovery))
             else
                 when (s.durationKind) {
                     DurationKind.TIME -> s.amount ?: 0.0
@@ -279,7 +285,11 @@ object SportMath {
     fun flatten(steps: List<RunningStep>): List<RunningStep> = buildList {
         fun visit(nodes: List<RunningStep>) {
             nodes.forEach {
-                if (it.kind == StepKind.REPEAT) repeat(it.repetitions) { _ -> visit(it.children) }
+                if (it.kind == StepKind.REPEAT)
+                    repeat(it.repetitions) { index ->
+                        visit(it.children)
+                        if (index < it.repetitions - 1) visit(listOfNotNull(it.recovery))
+                    }
                 else add(it)
             }
         }
@@ -334,7 +344,16 @@ fun validatePlan(plan: WorkoutPlan) {
                     "Un bloc doit contenir des étapes et 1 à 100 répétitions."
                 }
                 visit(s.children, depth + 1)
+                s.recovery?.let {
+                    require(
+                        it.kind == StepKind.RECOVERY && it.children.isEmpty() && it.recovery == null
+                    )
+                    visit(listOf(it), depth + 1)
+                }
             } else {
+                require(s.children.isEmpty() && s.recovery == null) {
+                    "Seul un bloc contient des étapes."
+                }
                 require(
                     s.durationKind == DurationKind.MANUAL ||
                         (s.amount?.let { it.isFinite() && it > 0 } == true)
@@ -369,7 +388,9 @@ fun validatePlan(plan: WorkoutPlan) {
         nodes
             .sumOf {
                 if (it.kind == StepKind.REPEAT)
-                    (it.repetitions * count(it.children)).coerceAtMost(10001)
+                    (it.repetitions * count(it.children) +
+                            (it.repetitions - 1) * count(listOfNotNull(it.recovery)))
+                        .coerceAtMost(10001)
                 else 1L
             }
             .coerceAtMost(10001)
@@ -422,3 +443,26 @@ fun parseZones(raw: String): Map<Int, Pair<Double, Double>> {
         }
     return zones
 }
+
+/** Preserve immutable templates while giving every new occurrence its own step identities. */
+fun RunningStep.freshCopy(): RunningStep =
+    copy(id = newId(), children = children.map { it.freshCopy() }, recovery = recovery?.freshCopy())
+
+fun WorkoutPlan.freshCopy(): WorkoutPlan =
+    copy(
+        strength = strength.map { it.copy(id = newId()) },
+        running = running.map { it.freshCopy() },
+    )
+
+fun duplicateStep(nodes: List<RunningStep>, id: String): List<RunningStep> =
+    nodes.flatMap {
+        if (it.id == id) listOf(it, it.freshCopy())
+        else listOf(it.copy(children = duplicateStep(it.children, id)))
+    }
+
+/** A compact recursive summary also used by the classic calendar. */
+fun blockSummary(step: RunningStep): String =
+    if (step.kind == StepKind.REPEAT)
+        "${step.repetitions} × (${step.children.joinToString(" + ") { blockSummary(it) }})" +
+            (step.recovery?.let { " · entre : ${stepLabel(it)}" } ?: "")
+    else stepLabel(step)

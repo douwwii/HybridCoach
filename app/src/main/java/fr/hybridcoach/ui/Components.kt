@@ -131,6 +131,14 @@ fun WorkoutCard(w: PlannedWorkout, click: () -> Unit) {
                     color = MaterialTheme.colorScheme.primary,
                 )
                 Text(w.name, style = MaterialTheme.typography.titleMedium)
+                val steps = remember(w.planJson) { parsePlan(w.planJson).running }
+                if (steps.isNotEmpty())
+                    Text(
+                        steps.joinToString(" · ") { blockSummary(it) },
+                        maxLines = 3,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
                 Text(
                     w.status.label,
                     style = MaterialTheme.typography.bodySmall,

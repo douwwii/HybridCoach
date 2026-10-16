@@ -10,6 +10,8 @@ Room constitue la source de vérité. Les identifiants UUID restent stables. Les
 - `templates` : modèles réutilisables contenant un plan sérialisé.
 - `goals` et `preparations` : objectifs et périodes, avec clé étrangère restrictive.
 - `workouts` : occurrences planifiées, avec association facultative à une préparation et identifiant de série récurrente.
+- `subGoals` : périodes personnalisées d’une préparation, pouvant se chevaucher.
+- `workoutSubGoals` : liaison plusieurs-à-plusieurs, indexée avec suppression en cascade. Le dépôt impose la cohérence avec la préparation de la séance.
 - `results` : résultat propre à une occurrence, avec séries, intervalles, ressenti et horodatages. Suppression en cascade seulement après suppression explicite de la séance.
 
 Les plans de musculation et les arbres d’étapes sont des agrégats JSON versionnés par le schéma applicatif, dans des colonnes Room. Ce choix réduit les jointures et rend les instantanés indépendants. Les relations entre agrégats restent des clés étrangères SQL. Il n’y a pas de table séparée par série ou étape ; les statistiques parcourent les agrégats locaux.
@@ -26,7 +28,7 @@ DataStore conserve le profil sportif et le thème. Les zones sont définies par 
 
 ## Répétitions et récurrences
 
-L’arbre de course supporte cinq niveaux de répétition, avec une limite de 10 000 étapes développées par séance. Cette borne empêche les expansions accidentelles démesurées. Les flèches réordonnent les éléments à l’intérieur d’un même niveau ; pour changer de bloc, recréer l’étape dans le bloc voulu.
+L’arbre d’étapes, disponible dans tous les sports sauf le repos, supporte cinq niveaux de répétition, avec une limite de 10 000 étapes développées par séance. Cette borne empêche les expansions accidentelles démesurées. Les flèches réordonnent les éléments à l’intérieur d’un même niveau ; pour changer de bloc, recréer l’étape dans le bloc voulu.
 
 Les récurrences hebdomadaires sont matérialisées entre deux dates inclusives. Une opération couvre au maximum dix ans, sans horizon global du calendrier. Modifier les occurrences futures n’affecte que les statuts prévue/reportée et applique le décalage de date à partir de l’occurrence sélectionnée. Une copie de semaine conserve le plan et l’association à la préparation, sans performances ni notes de résultat. Les doublons de planification volontaires sont autorisés.
 
@@ -44,12 +46,16 @@ Les récurrences hebdomadaires sont matérialisées entre deux dates inclusives.
 
 ## Exports
 
-Le document intermédiaire `PreparationDocument` est partagé par les sorties JSON et PDF. Le JSON porte un identifiant de format et une version `1`. Les notes privées sont retirées récursivement des plans, objectifs et résultats si elles sont décochées. La description publique de séance reste incluse. Les séances associées hors période sont également exportées.
+Le document intermédiaire `PreparationDocument` est partagé par les sorties JSON et PDF. Le JSON porte un identifiant de format et une version `2`. Les notes privées sont retirées récursivement des plans, objectifs et résultats si elles sont décochées. La description publique de séance reste incluse. Les séances associées hors période sont également exportées.
 
 Le PDF est généré par PDFBox-Android, avec pagination, police Liberation Sans intégrée et découpage du texte selon les métriques de la police. Les caractères sans glyphe sont remplacés par `?` dans le PDF ; le JSON conserve l’Unicode original. Les fichiers restent dans le cache privé ; le partage utilise `FileProvider`, une URI `content://` et une autorisation de lecture temporaire. Aucun accès général au stockage n’est demandé.
 
 ## Évolutions et migrations
 
-La base est à la version initiale **1**. Son schéma est conservé dans `app/schemas`. Aucun effacement destructif automatique n’est configuré. Une prochaine modification du schéma devra augmenter `version`, déclarer une `Migration` explicite dans `Room.databaseBuilder(...).addMigrations(...)` et tester l’ouverture depuis le schéma précédent. Les nouveaux champs des agrégats sérialisés doivent avoir des valeurs par défaut ; un changement incompatible demandera une migration du contenu JSON.
+La base est à la version **2**. `MIGRATION_1_2` ajoute les tables des sous-objectifs et des associations sans altérer les tables existantes. Elle est enregistrée dans `CoachApplication` et vérifiée avec un fichier SQLite réellement créé selon le schéma 1. Les deux schémas sont conservés dans `app/schemas`. Aucun effacement destructif automatique n’est configuré.
+
+Les nouveaux champs sérialisés possèdent des valeurs par défaut. `RunningStep.recovery`, facultatif, représente une récupération entre les répétitions uniquement ; les anciens enfants de type récupération conservent leur sémantique. Les calculs, le développement des intervalles, l’affichage et les exports parcourent cette structure. Une copie renouvelle tous les identifiants d’instance, y compris ceux des enfants et récupérations.
+
+`PlanningScreen` et le calendrier classique observent le même `CoachState` issu de Room. Les opérations de déplacement, copie et association passent par les transactions du dépôt. Les sous-objectifs sont indépendants des dates de séance : déplacer une séance ne modifie pas automatiquement ses liens. Les dates de début/fin d’un sous-objectif sont inclusives ; elles peuvent dépasser la préparation et la frise étend son axe en conséquence. Voir [le guide de planification](PLANIFICATION.md).
 
 Un futur import Garmin/Strava peut passer par un adaptateur transformant l’activité distante en `WorkoutResult` et `IntervalLog`, puis utiliser les transactions du dépôt. Aucun SDK de fournisseur n’est couplé à l’interface actuelle.

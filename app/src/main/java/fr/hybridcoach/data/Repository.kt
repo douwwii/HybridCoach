@@ -17,11 +17,13 @@ data class CoachState(
     val preparations: List<TrainingPreparation> = emptyList(),
     val results: Map<String, WorkoutResult> = emptyMap(),
     val loaded: Boolean = false,
+    val subGoals: List<PreparationSubGoal> = emptyList(),
+    val workoutSubGoals: List<WorkoutSubGoal> = emptyList(),
 )
 
 class CoachRepository(val db: CoachDatabase) {
     val dao = db.dao()
-    val state =
+    private val baseState =
         combine(
             combine(dao.exercises(), dao.workouts(), dao.templates()) { e, w, t ->
                 Triple(e, w, t)
@@ -39,6 +41,46 @@ class CoachRepository(val db: CoachDatabase) {
             )
         }
 
+    val state =
+        combine(baseState, dao.subGoals(), dao.workoutSubGoals()) { base, goals, links ->
+            base.copy(subGoals = goals, workoutSubGoals = links)
+        }
+
+    suspend fun saveSubGoal(value: PreparationSubGoal) =
+        db.withTransaction {
+            require(value.name.isNotBlank()) { "Donnez un nom au sous-objectif." }
+            require(value.start.asDate() <= value.end.asDate()) { "La fin précède le début." }
+            require(dao.preparation(value.preparationId) != null) { "Préparation introuvable." }
+            val old = dao.subGoal(value.id)
+            require(old == null || old.preparationId == value.preparationId)
+            dao.putSubGoal(value.copy(name = value.name.trim()))
+        }
+
+    private suspend fun setLinks(
+        workout: PlannedWorkout,
+        ids: Set<String>?,
+        sourceId: String = workout.id,
+    ) {
+        val selected =
+            ids
+                ?: dao.subGoalIds(sourceId)
+                    .filter { dao.subGoal(it)?.preparationId == workout.preparationId }
+                    .toSet()
+        selected.forEach {
+            require(
+                dao.subGoal(it)?.preparationId == workout.preparationId &&
+                    workout.preparationId != null
+            ) {
+                "Les sous-objectifs doivent appartenir à la préparation de la séance."
+            }
+        }
+        dao.clearLinks(workout.id)
+        dao.putLinks(selected.map { WorkoutSubGoal(workout.id, it) })
+    }
+
+    suspend fun assignSubGoals(id: String, ids: Set<String>) =
+        db.withTransaction { setLinks(requireNotNull(dao.workout(id)), ids) }
+
     suspend fun seed() = dao.seedExercises(exerciseLibrary())
 
     suspend fun saveWorkout(
@@ -46,11 +88,16 @@ class CoachRepository(val db: CoachDatabase) {
         end: LocalDate?,
         days: Set<DayOfWeek>,
         future: Boolean,
+        subGoalIds: Set<String>? = null,
     ) =
         db.withTransaction {
             require(workout.name.isNotBlank()) { "Donnez un nom à la séance." }
             val date = workout.date.asDate()
             validatePlan(parsePlan(workout.planJson))
+            suspend fun put(value: PlannedWorkout) {
+                dao.putWorkout(value)
+                setLinks(value, subGoalIds)
+            }
             val existing = dao.workout(workout.id)
             if (existing != null) {
                 require(existing.status !in listOf(Status.DONE, Status.PARTIAL, Status.ACTIVE)) {
@@ -59,7 +106,7 @@ class CoachRepository(val db: CoachDatabase) {
                 if (future && existing.seriesId != null) {
                     val shift = ChronoUnit.DAYS.between(existing.date.asDate(), date)
                     dao.future(existing.seriesId, existing.date).forEach { old ->
-                        dao.putWorkout(
+                        put(
                             workout.copy(
                                 id = old.id,
                                 date = old.date.asDate().plusDays(shift).toString(),
@@ -68,17 +115,22 @@ class CoachRepository(val db: CoachDatabase) {
                             )
                         )
                     }
-                } else dao.putWorkout(workout.copy(seriesId = existing.seriesId))
+                } else put(workout.copy(seriesId = existing.seriesId))
             } else if (end != null) {
                 val occurrences = Recurrence.weekly(date, end, days)
                 require(occurrences.isNotEmpty()) { "Aucune occurrence dans cette période." }
                 val series = newId()
-                dao.putWorkouts(
-                    occurrences.map {
-                        workout.copy(id = newId(), date = it.toString(), seriesId = series)
-                    }
-                )
-            } else dao.putWorkout(workout)
+                occurrences.forEach {
+                    put(
+                        workout.copy(
+                            id = newId(),
+                            date = it.toString(),
+                            seriesId = series,
+                            planJson = codec.encodeToString(parsePlan(workout.planJson).freshCopy()),
+                        )
+                    )
+                }
+            } else put(workout)
         }
 
     suspend fun savePreparation(p: TrainingPreparation, g: TrainingGoal) =
@@ -141,15 +193,17 @@ class CoachRepository(val db: CoachDatabase) {
     suspend fun duplicate(id: String, date: LocalDate) =
         db.withTransaction {
             val w = requireNotNull(dao.workout(id))
-            dao.putWorkout(
+            val copy =
                 w.copy(
                     id = newId(),
                     date = date.toString(),
                     status = Status.PLANNED,
                     seriesId = null,
                     notes = "",
+                    planJson = codec.encodeToString(parsePlan(w.planJson).freshCopy()),
                 )
-            )
+            dao.putWorkout(copy)
+            setLinks(copy, null, id)
         }
 
     suspend fun move(id: String, date: LocalDate) =
@@ -159,32 +213,46 @@ class CoachRepository(val db: CoachDatabase) {
             dao.putWorkout(w.copy(date = date.toString(), status = Status.PLANNED))
         }
 
-    suspend fun copyWeek(source: LocalDate, target: LocalDate, repeats: Int) =
+    suspend fun copyWeek(
+        source: LocalDate,
+        target: LocalDate,
+        repeats: Int,
+        preparationId: String? = null,
+    ) =
         db.withTransaction {
             require(repeats in 1..104)
             require(target.monday() != source.monday()) { "Choisissez une autre semaine." }
             val start = source.monday()
-            val list = dao.week(start.toString(), start.plusDays(6).toString())
+            val list =
+                dao.week(start.toString(), start.plusDays(6).toString()).filter {
+                    preparationId == null || it.preparationId == preparationId
+                }
             require(list.isNotEmpty()) { "Cette semaine ne contient aucune séance." }
             val shift = ChronoUnit.DAYS.between(start, target.monday())
             repeat(repeats) { i ->
-                dao.putWorkouts(
-                    list.map {
-                        it.copy(
+                list.forEach { old ->
+                    val copy =
+                        old.copy(
                             id = newId(),
-                            date = it.date.asDate().plusDays(shift + 7L * i).toString(),
+                            date = old.date.asDate().plusDays(shift + 7L * i).toString(),
                             seriesId = null,
                             status = Status.PLANNED,
                             notes = "",
+                            planJson = codec.encodeToString(parsePlan(old.planJson).freshCopy()),
                         )
-                    }
-                )
+                    dao.putWorkout(copy)
+                    setLinks(copy, null, old.id)
+                }
             }
         }
 
     suspend fun associate(id: String, preparationId: String?) =
         db.withTransaction {
-            dao.workout(id)?.let { dao.putWorkout(it.copy(preparationId = preparationId)) }
+            dao.workout(id)?.let {
+                val updated = it.copy(preparationId = preparationId)
+                dao.putWorkout(updated)
+                setLinks(updated, null)
+            }
         }
 
     suspend fun delete(id: String) = dao.deleteWorkout(id)

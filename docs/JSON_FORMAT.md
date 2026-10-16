@@ -1,15 +1,16 @@
-# Export de préparation, version 1
+# Export de préparation, version 2
 
 Le type Kotlin de référence est `PreparationDocument` dans `export/PreparationExport.kt`.
 
 ```json
 {
   "format": "fr.hybridcoach.preparation",
-  "version": 1,
+  "version": 2,
   "exportedAt": "2026-10-16T08:00:00Z",
   "options": { "personalNotes": false, "performances": true },
   "goal": {},
   "preparation": {},
+  "subGoals": [{ "id": "phase-id", "preparationId": "prep-id", "name": "Seuil", "start": "2026-10-12", "end": "2026-11-01", "color": 1 }],
   "weeks": [
     {
       "start": "2026-10-12",
@@ -17,7 +18,7 @@ Le type Kotlin de référence est `PreparationDocument` dans `export/Preparation
       "plannedKm": 0.0,
       "actualKm": 0.0,
       "sessions": [
-        { "session": {}, "planned": { "strength": [], "running": [] }, "result": null }
+        { "session": {}, "planned": { "strength": [], "running": [] }, "result": null, "subGoalIds": ["phase-id"] }
       ]
     }
   ]
@@ -31,3 +32,9 @@ Les UUID permettent de relier les séances aux préparations, les résultats aux
 Les dates sont `YYYY-MM-DD`. Les allures sont en secondes/km, les distances d’étapes en mètres, les résultats de course en kilomètres, les durées en secondes, les charges en kilogrammes. Les valeurs de résultat saisies sont des chaînes pour conserver la saisie progressive et les champs absents. Les enums utilisent leurs identifiants Kotlin (`RUN`, `STRENGTH`, `DONE`, etc.).
 
 `result` est null si aucun résultat n’existe ou si l’export des performances est désactivé. `actualKm` est null lorsque les performances sont exclues. Une chaîne vide signifie « non renseigné », pas une performance nulle. Le champ `options` décrit les exclusions appliquées. L’import de ces fichiers n’est pas encore fourni dans l’interface.
+
+## Blocs de répétitions
+
+Le champ historique `planned.running` contient les étapes structurées de tous les sports. Un bloc possède `kind: "REPEAT"`, `repetitions`, une liste `children`, et une étape `recovery` facultative. Celle-ci est de type `RECOVERY`, ne contient aucun enfant et est exécutée entre deux passages uniquement. Les durées/distances de récupération utilisent les mêmes unités et types que l’effort. `activeRecovery` distingue la récupération active de la passive. Les blocs peuvent être imbriqués ; chaque niveau conserve sa propre récupération. La liste n’est pas développée dans l’export, afin de conserver la structure pour un futur adaptateur de montre.
+
+Les anciens plans sans `recovery` sont lus avec `null`. Les documents v1 restent décodables : `subGoals` et `subGoalIds` prennent une liste vide par défaut. Les notes de récupération sont retirées récursivement lorsque `personalNotes` est faux. Les sous-objectifs sont exportés avec leurs dates même lorsqu’ils n’ont aucune séance associée.

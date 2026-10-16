@@ -28,9 +28,21 @@
 /home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/build.gradle.kts:48: Warning: A newer version of androidx.datastore:datastore-preferences than 1.1.7 is available: 1.2.1 [GradleDependency]
     implementation("androidx.datastore:datastore-preferences:1.1.7")
                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/build.gradle.kts:55: Warning: A newer version of androidx.test.espresso:espresso-core than 3.5.0 is available: 3.5.1 [GradleDependency]
+/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/build.gradle.kts:54: Warning: A newer version of androidx.test:core-ktx than 1.6.1 is available: 1.7.0 [GradleDependency]
+    testImplementation("androidx.test:core-ktx:1.6.1")
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/build.gradle.kts:55: Warning: A newer version of androidx.test.espresso:espresso-core than 3.5.0 is available: 3.7.0 [GradleDependency]
     testImplementation("androidx.test.espresso:espresso-core:3.5.0")
                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/build.gradle.kts:57: Warning: A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0 [GradleDependency]
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/build.gradle.kts:58: Warning: A newer version of androidx.test:runner than 1.6.2 is available: 1.7.0 [GradleDependency]
+    androidTestImplementation("androidx.test:runner:1.6.2")
+                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/build.gradle.kts:59: Warning: A newer version of androidx.test:core-ktx than 1.6.1 is available: 1.7.0 [GradleDependency]
+    androidTestImplementation("androidx.test:core-ktx:1.6.1")
+                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/build.gradle.kts:60: Warning: A newer version of androidx.compose:compose-bom than 2025.04.01 is available: 2026.09.00 [GradleDependency]
     androidTestImplementation(platform("androidx.compose:compose-bom:2025.04.01"))
                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,7 +54,7 @@
    However, you may simply not be aware that a more recent version is
    available, and that is what this lint check helps find.
 
-/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/ui/Components.kt:151: Warning: Modifier parameter should be the first optional parameter [ModifierParameter from androidx.compose.ui]
+/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/ui/Components.kt:159: Warning: Modifier parameter should be the first optional parameter [ModifierParameter from androidx.compose.ui]
     modifier: Modifier = Modifier,
     ~~~~~~~~
 
@@ -58,9 +70,9 @@
    Identifier: androidx.compose.ui
    Feedback: https://issuetracker.google.com/issues/new?component=612128
 
-/tmp/hybrid-tools/gradle-home/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar: Warning: checkClientTrusted is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers [TrustAllX509TrustManager]
-/tmp/hybrid-tools/gradle-home/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar: Warning: checkClientTrusted is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers [TrustAllX509TrustManager]
-/tmp/hybrid-tools/gradle-home/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar: Warning: checkServerTrusted is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers [TrustAllX509TrustManager]
+/home/douwwii/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar: Warning: checkClientTrusted is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers [TrustAllX509TrustManager]
+/home/douwwii/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar: Warning: checkClientTrusted is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers [TrustAllX509TrustManager]
+/home/douwwii/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar: Warning: checkServerTrusted is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers [TrustAllX509TrustManager]
 
    Explanation for issues of type "TrustAllX509TrustManager":
    This check looks for X509TrustManager implementations whose
@@ -90,10 +102,10 @@
    https://developer.android.com/about/versions/12/backup-restore#xml-changes
    https://goo.gle/DataExtractionRules
 
-/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/ui/OverviewScreens.kt:250: Information: Prefer mutableIntStateOf instead of mutableStateOf [AutoboxingStateCreation from androidx.compose.runtime]
+/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/ui/OverviewScreens.kt:257: Information: Prefer mutableIntStateOf instead of mutableStateOf [AutoboxingStateCreation from androidx.compose.runtime]
     var period by rememberSaveable { mutableStateOf(90) }
                                      ~~~~~~~~~~~~~~
-/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/ui/PreparationScreens.kt:197: Information: Prefer mutableIntStateOf instead of mutableStateOf [AutoboxingStateCreation from androidx.compose.runtime]
+/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/ui/PreparationScreens.kt:198: Information: Prefer mutableIntStateOf instead of mutableStateOf [AutoboxingStateCreation from androidx.compose.runtime]
     var week by rememberSaveable(id) { mutableStateOf(current) }
                                        ~~~~~~~~~~~~~~
 /home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/ui/ProgressScreen.kt:19: Information: Prefer mutableIntStateOf instead of mutableStateOf [AutoboxingStateCreation from androidx.compose.runtime]
@@ -178,4 +190,4 @@
    </lint>
    ```
 
-0 errors, 20 warnings
+0 errors, 24 warnings

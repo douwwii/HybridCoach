@@ -2,6 +2,14 @@
 
 Application Android native de planification et de suivi de course à pied et de musculation, entièrement locale et utilisable hors ligne. Interface française, thème sombre par défaut, thèmes clair et système disponibles.
 
+## Nouveauté 1.1 — Planification avancée
+
+**Calendrier → Mode Planification**, ou ouvrir une préparation puis **Ouvrir la planification avancée**. Quatre vues : jour, semaine, mois et préparation complète, avec ajout depuis une date, modèles, duplication/déplacement de séances, copie de semaines et glisser-déposer hebdomadaire.
+
+Les préparations possèdent des sous-objectifs datés, superposables, affichés sur une frise. Une séance peut en travailler plusieurs. Les répétitions sont des arbres structurés disponibles aussi dans les autres sports : efforts, cibles, récupération active/passive, répétitions imbriquées, duplication et réorganisation. Les deux calendriers utilisent les mêmes données. Les exports PDF/JSON v2 incluent les périodes, les associations et les blocs.
+
+La base Room est migrée de 1 à 2 sans effacer les séances ni les résultats. [Guide détaillé et migration](docs/PLANIFICATION.md).
+
 ## Ouvrir sous Windows 11
 
 1. Installer Android Studio et le SDK Android 35 via **SDK Manager** (Android SDK Platform 35 et Build Tools 35.0.0).
@@ -50,7 +58,7 @@ Ils utilisent une base de test distincte pour les vérifications Room. Le test d
 1. Dans l’icône de réglages, renseigner la VMA, les références d’allure et éventuellement les zones. Les allures se saisissent en **secondes par kilomètre** : 3:30/km = 210. Les zones utilisent une ligne par zone, par exemple `1:120-140` en bpm ou `1:300-360` en secondes/km.
 2. Dans **Prépas**, créer une préparation, une compétition et sa date. Le chrono cible se saisit en secondes : 34:48 = 2088. L’allure cible est calculée.
 3. Planifier depuis la préparation, le calendrier ou le bouton **+**. Choisir le sport, les étapes de course ou les exercices. Les champs secondaires sont facultatifs.
-4. Pour du fractionné, ajouter une étape **Répétitions**, puis ajouter ses enfants. Les blocs peuvent contenir d’autres blocs. Les flèches changent l’ordre à l’intérieur du même niveau.
+4. Pour du fractionné, utiliser **Composer un fractionné** : effort, récupération, répétitions, blocs imbriqués, échauffement et retour au calme. Les étapes se modifient, se dupliquent et se réordonnent ensuite. Les récupérations sont placées uniquement entre les répétitions.
 5. Pour un superset, attribuer le même nom de bloc aux exercices concernés. Ils sont regroupés pendant l’exécution.
 6. Activer la récurrence hebdomadaire, choisir les jours et la date de fin. Une occurrence peut être modifiée seule ou avec les occurrences futures non commencées.
 7. Ouvrir une séance et la démarrer. En musculation, saisir charges et répétitions puis cocher les séries ; le repos démarre automatiquement. En course, renseigner le résultat global et, au besoin, les intervalles.
@@ -82,7 +90,7 @@ Cette liste décrit les parcours codés. La couverture de vérification et les l
 
 - La course est planifiée puis consignée manuellement : pas de GPS, guidage vocal, import Garmin/Strava, capteurs, synchronisation ni compte. Ces intégrations n’étaient pas nécessaires à cette version.
 - Les durées/chronos/allures se saisissent en secondes, les distances de résultat en km et les étapes en mètres. Les répétitions chronométrées (gainage, par exemple) peuvent être décrites dans les répétitions/notes, mais la validation des séries de force enregistre un nombre entier de répétitions.
-- Réorganisation par flèches, sans glisser-déposer. Un changement de parent d’une étape nécessite de la recréer dans l’autre bloc.
+- Réorganisation des étapes par flèches et duplication des blocs. Le glisser-déposer est disponible pour déplacer les séances entre les jours visibles de la vue hebdomadaire. Un changement de parent d’une étape nécessite de la recréer dans l’autre bloc.
 - Cinq niveaux de répétition, 10 000 étapes développées par séance, 50 séries par exercice ; une création récurrente couvre dix ans au maximum et une répétition de semaine 104 semaines au maximum. On peut planifier au-delà par opérations supplémentaires.
 - Le repos reste précis dans l’écran actif. En arrière-plan, Android peut retarder l’alarme pour économiser la batterie ; après un redémarrage du téléphone, le compte à rebours est récupéré à la réouverture de la séance, sans alarme de démarrage système.
 - Les zones sont définies manuellement. Les volumes prévus utilisent uniquement les distances calculables ; les plages d’allure utilisent leur milieu. La répartition RPE décrit l’effort déclaré, sans analyse physiologique automatique.
@@ -91,7 +99,7 @@ Cette liste décrit les parcours codés. La couverture de vérification et les l
 - Les brouillons d’éditeur ne sont pas conservés après suppression du processus avant enregistrement. Les résultats saisis, eux, sont envoyés progressivement à Room ; attendre la fin de l’indicateur de sauvegarde avant un arrêt forcé.
 - Le PDF intègre Liberation Sans ; les caractères non couverts (certains emoji ou alphabets) sont remplacés par `?`. Le JSON conserve l’Unicode original.
 - Export de préparation, sans import ni restauration globale de la base dans l’interface. Le PDF présente les dates et semaines sous forme de liste, sans grille mensuelle ni graphiques vectoriels élaborés.
-- Base initiale v1 : schéma conservé et aucun effacement destructif automatique. Toute future évolution SQL devra fournir et tester une migration explicite.
+- Base v2 : migration additive testée depuis la v1, schémas conservés et aucun effacement destructif automatique. Toute future évolution SQL devra fournir et tester une migration explicite.
 
 ## Organisation
 
@@ -105,3 +113,23 @@ Cette liste décrit les parcours codés. La couverture de vérification et les l
 - [Format JSON](docs/JSON_FORMAT.md).
 
 Aucun serveur n’est nécessaire. Les fichiers du SDK, de Gradle, les caches, `local.properties` et les appareils de test ne font pas partie des sources à partager.
+
+## Prochains ajouts
+
+Overall:
+-possibilité de création de lien calendar avec mise à jour en direct 
+
+Course à pied:
+-ajout session répétition en course 
+-mode plannification avec une visu calendrier global : but : plannification de toute une prépa en course à pied ou autre sport
+-ajout d'un agent IA intégré qui avec un contexte est capable de t'accompagner dans la plannification d'une séance. (possibilité de lui faire ajouter directement des séances dans ton calendrier)
+-possibilité de push directement des séances dans garmin connect (plus tard autres marques)
+-récupération des séances réalisées dans strava et déduction de quel séance a été réalisée pour contabilisation dans kilométrage et statut "réalisée" d'une séance 
+
+Musculation:
+-suivi progression progressive overload
+
+Projet intra-application
+-Projet NN : déduction de la fc à un instant t à partir de toutes les données que l'on a en amont : prendre en compte l'évolution de la forme, le dénivelé ?, se base principalement sur l'allure.
+
+

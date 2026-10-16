@@ -45,6 +45,7 @@ fun HybridApp(vm: CoachViewModel) {
                             if (main) "HYBRID COACH"
                             else
                                 when {
+                                    route.startsWith("planning") -> "Planification"
                                     route.startsWith("editor") -> "Créer & planifier"
                                     route.startsWith("session") -> "Votre séance"
                                     route.startsWith("preparation/") -> "Préparation"
@@ -138,6 +139,25 @@ fun HybridApp(vm: CoachViewModel) {
                                 state,
                                 { nav.navigate("session/$it") },
                                 { nav.navigate("editor/new?date=$it&template=&prep=") },
+                                { nav.navigate("planning?prep=") },
+                            )
+                        }
+                        composable("planning?prep={prep}") { e ->
+                            PlanningScreen(
+                                vm,
+                                state,
+                                e.arguments?.getString("prep") ?: "",
+                                { nav.navigate("session/$it") },
+                                {
+                                    nav.navigate(
+                                        "editor/$it?date=${LocalDate.now()}&template=&prep="
+                                    )
+                                },
+                                { date, prep, template ->
+                                    nav.navigate(
+                                        "editor/new?date=$date&template=$template&prep=$prep"
+                                    )
+                                },
                             )
                         }
                         composable("preparations") {
@@ -152,6 +172,7 @@ fun HybridApp(vm: CoachViewModel) {
                                 { date, id ->
                                     nav.navigate("editor/new?date=$date&template=&prep=$id")
                                 },
+                                { nav.navigate("planning?prep=$it") },
                             )
                         }
                         composable("history") {

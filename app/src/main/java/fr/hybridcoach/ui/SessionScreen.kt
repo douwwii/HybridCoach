@@ -69,6 +69,10 @@ fun SessionScreen(
             if (w.priority.isNotBlank())
                 Text("Priorité : ${w.priority}", style = MaterialTheme.typography.bodySmall)
             if (w.description.isNotBlank()) Text(w.description)
+            val ids = state.workoutSubGoals.filter { it.workoutId == id }.map { it.subGoalId }
+            state.subGoals
+                .filter { it.id in ids }
+                .forEach { Text("• ${it.name}", color = MaterialTheme.colorScheme.secondary) }
         }
         item {
             FlowRow {
@@ -288,13 +292,16 @@ else->"Circuit"}}",
         }
         if (plan.running.isNotEmpty()) {
             item {
-                SectionTitle("Le programme de course")
+                SectionTitle("Le programme structuré")
                 RunPlanSummary(plan.running)
             }
         }
-        if (w.sport in listOf(Sport.RUN, Sport.RACE)) {
+        if (w.sport in listOf(Sport.RUN, Sport.RACE, Sport.OTHER) || plan.running.isNotEmpty()) {
             item {
-                SectionTitle("Résultats de course")
+                SectionTitle(
+                    if (w.sport in listOf(Sport.RUN, Sport.RACE)) "Résultats de course"
+                    else "Résultats sportifs"
+                )
                 Text(
                     "Tous les champs sont facultatifs. Durée en secondes.",
                     style = MaterialTheme.typography.bodySmall,
@@ -652,6 +659,12 @@ private fun RunPlanSummary(steps: List<RunningStep>, depth: Int = 0) {
             )
             if (s.notes.isNotBlank()) Text(s.notes, style = MaterialTheme.typography.bodySmall)
             RunPlanSummary(s.children, depth + 1)
+            s.recovery?.let {
+                Text(
+                    "Entre les répétitions : ${stepLabel(it)}",
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
         }
     }
 }
