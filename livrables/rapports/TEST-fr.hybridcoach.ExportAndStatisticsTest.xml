@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="fr.hybridcoach.ExportAndStatisticsTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-10-16T09:02:37" hostname="fedoraleo" time="0.097">
+  <properties/>
+  <testcase name="notesAreRecursivelyRedacted" classname="fr.hybridcoach.ExportAndStatisticsTest" time="0.077"/>
+  <testcase name="outsideDatesAreNotSilentlyDropped" classname="fr.hybridcoach.ExportAndStatisticsTest" time="0.003"/>
+  <testcase name="emptyHistoryHasNoArtificialData" classname="fr.hybridcoach.ExportAndStatisticsTest" time="0.0"/>
+  <testcase name="onlyCheckedSetsCount" classname="fr.hybridcoach.ExportAndStatisticsTest" time="0.004"/>
+  <testcase name="longNotesAndUnicodePreserved" classname="fr.hybridcoach.ExportAndStatisticsTest" time="0.005"/>
+  <testcase name="resultsCanBeExcluded" classname="fr.hybridcoach.ExportAndStatisticsTest" time="0.001"/>
+  <testcase name="actualStatsExcludePlannedAndCancelled" classname="fr.hybridcoach.ExportAndStatisticsTest" time="0.001"/>
+  <testcase name="previousSessionUsesLatestCompleted" classname="fr.hybridcoach.ExportAndStatisticsTest" time="0.001"/>
+  <testcase name="versionedJsonRoundTrips" classname="fr.hybridcoach.ExportAndStatisticsTest" time="0.001"/>
+  <testcase name="explicitNotesIncluded" classname="fr.hybridcoach.ExportAndStatisticsTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

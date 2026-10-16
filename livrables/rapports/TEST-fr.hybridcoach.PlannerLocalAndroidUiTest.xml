@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="fr.hybridcoach.PlannerLocalAndroidUiTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-16T09:02:37" hostname="fedoraleo" time="5.593">
+  <properties/>
+  <testcase name="preparationStrengthAndSharingWorkflow" classname="fr.hybridcoach.PlannerLocalAndroidUiTest" time="5.049"/>
+  <testcase name="createStartLogAndResumeRun" classname="fr.hybridcoach.PlannerLocalAndroidUiTest" time="0.544"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[Invalid ID 0x00000000.
+Invalid ID 0x00000000.
+Invalid ID 0x00000000.
+]]></system-err>
+</testsuite>

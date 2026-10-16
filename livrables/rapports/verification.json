@@ -1,0 +1,64 @@
+{
+  "verified_at": "16/10/2026 à 11:04 (Europe/Paris)",
+  "tests": [
+    {
+      "name": "fr.hybridcoach.ExportAndStatisticsTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "fr.hybridcoach.PlannerLocalAndroidUiTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "fr.hybridcoach.RecurrenceTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "fr.hybridcoach.RepositoryLocalAndroidTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "fr.hybridcoach.SportMathTest",
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "total_tests": 45,
+  "lint": {
+    "Warning": 20,
+    "Information": 3
+  },
+  "pdf_layout": [
+    {
+      "file": "export-test.pdf",
+      "pages": 24,
+      "words_outside_margins": 0
+    },
+    {
+      "file": "preparation-workflow.pdf",
+      "pages": 2,
+      "words_outside_margins": 0
+    }
+  ],
+  "apk_sha256": "ff3bda435c31cdbc2a8c3b76485508e8f3ebb7e85e1f693e9f0e016590d0f4cd",
+  "apk_package": "fr.hybridcoach",
+  "version": "1.0.0",
+  "min_sdk": 26,
+  "target_sdk": 35,
+  "physical_device_tested": false,
+  "instrumented_tests_executed": false
+}

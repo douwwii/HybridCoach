@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="fr.hybridcoach.RepositoryLocalAndroidTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-10-16T09:02:31" hostname="fedoraleo" time="5.404">
+  <properties/>
+  <testcase name="completedPlanCannotBeRewritten" classname="fr.hybridcoach.RepositoryLocalAndroidTest" time="4.323"/>
+  <testcase name="invalidPreparationReferenceRollsBack" classname="fr.hybridcoach.RepositoryLocalAndroidTest" time="0.087"/>
+  <testcase name="pdfExportPaginatesAndFileProviderCanReadIt" classname="fr.hybridcoach.RepositoryLocalAndroidTest" time="0.694"/>
+  <testcase name="templateEditNeverChangesPlannedSnapshot" classname="fr.hybridcoach.RepositoryLocalAndroidTest" time="0.055"/>
+  <testcase name="deletingWorkoutCascadesItsResults" classname="fr.hybridcoach.RepositoryLocalAndroidTest" time="0.038"/>
+  <testcase name="interruptedSessionAndLogsSurviveDatabaseReopen" classname="fr.hybridcoach.RepositoryLocalAndroidTest" time="0.071"/>
+  <testcase name="futureRecurrenceEditPreservesCompletedAndActive" classname="fr.hybridcoach.RepositoryLocalAndroidTest" time="0.075"/>
+  <testcase name="weekCopiesAreIndependentAndHaveNoResults" classname="fr.hybridcoach.RepositoryLocalAndroidTest" time="0.061"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[[Robolectric] WARN: Android SDK 36 requires Java 21 (have Java 17). Tests won't be run on SDK 36 unless explicitly requested.
+]]></system-err>
+</testsuite>

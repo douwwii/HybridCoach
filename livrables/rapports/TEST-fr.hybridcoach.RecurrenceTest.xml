@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="fr.hybridcoach.RecurrenceTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-16T09:02:42" hostname="fedoraleo" time="0.006">
+  <properties/>
+  <testcase name="inclusiveTuesdaySchedule" classname="fr.hybridcoach.RecurrenceTest" time="0.002"/>
+  <testcase name="emptyDaysRejected" classname="fr.hybridcoach.RecurrenceTest" time="0.002"/>
+  <testcase name="multipleDaysAcrossYear" classname="fr.hybridcoach.RecurrenceTest" time="0.0"/>
+  <testcase name="noMatchingDay" classname="fr.hybridcoach.RecurrenceTest" time="0.0"/>
+  <testcase name="reversedDatesRejected" classname="fr.hybridcoach.RecurrenceTest" time="0.0"/>
+  <testcase name="leapDay" classname="fr.hybridcoach.RecurrenceTest" time="0.0"/>
+  <testcase name="biweeklyAnchoredToMonday" classname="fr.hybridcoach.RecurrenceTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
