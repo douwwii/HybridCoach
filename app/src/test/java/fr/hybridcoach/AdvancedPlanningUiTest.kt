@@ -151,7 +151,7 @@ class AdvancedPlanningUiTest {
             )
         }
         compose.waitUntil(15000) {
-            compose.onAllNodesWithText("Calendrier").fetchSemanticsNodes().isNotEmpty()
+            compose.onAllNodesWithText("Un jour, un progrès.").fetchSemanticsNodes().isNotEmpty()
         }
         compose.onNodeWithText("Calendrier").performClick()
         compose.onNodeWithText("Mode Planification").performClick()

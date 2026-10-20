@@ -1,0 +1,26 @@
+services:
+  bridge:
+    build: .
+    restart: unless-stopped
+    env_file: secrets.env
+    volumes:
+      - garmin-data:/data
+    expose:
+      - "8000"
+  caddy:
+    image: docker.io/library/caddy:2.10.2
+    restart: unless-stopped
+    env_file: secrets.env
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - bridge
+volumes:
+  garmin-data:
+  caddy-data:
+  caddy-config:

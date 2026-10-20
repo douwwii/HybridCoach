@@ -177,9 +177,9 @@ document.getElementById(id).style.display = 'none';
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
   <header class="mdl-layout__header">
     <div class="mdl-layout__header-row">
-      <span class="mdl-layout-title">Lint Report: 24 warnings</span>
+      <span class="mdl-layout-title">Lint Report: 25 warnings</span>
       <div class="mdl-layout-spacer"></div>
-      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Fri Oct 16 17:11:17 CEST 2026 by AGP (8.9.2)</nav>
+      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Mon Oct 19 17:32:17 CEST 2026 by AGP (8.9.2)</nav>
     </div>
   </header>
   <div class="mdl-layout__drawer">
@@ -191,7 +191,7 @@ document.getElementById(id).style.display = 'none';
       <a class="mdl-navigation__link" href="#TrustAllX509TrustManager"><i class="material-icons warning-icon">warning</i>Insecure TLS/SSL trust manager (3)</a>
       <a class="mdl-navigation__link" href="#DataExtractionRules"><i class="material-icons warning-icon">warning</i>Missing data extraction rules (1)</a>
       <a class="mdl-navigation__link" href="#AutoboxingStateCreation"><i class="material-icons warning-icon">warning</i><code>State&lt;T></code> will autobox values assigned to this state. Use a specialized state type instead. (3)</a>
-      <a class="mdl-navigation__link" href="#UseKtx"><i class="material-icons warning-icon">warning</i>Use KTX extension function (3)</a>
+      <a class="mdl-navigation__link" href="#UseKtx"><i class="material-icons warning-icon">warning</i>Use KTX extension function (4)</a>
     </nav>
   </div>
   <main class="mdl-layout__content">
@@ -228,7 +228,7 @@ document.getElementById(id).style.display = 'none';
 <tr><td class="countColumn"></td><td class="categoryColumn"><a href="#Productivity">Productivity</a>
 </td></tr>
 <tr>
-<td class="countColumn">3</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
+<td class="countColumn">4</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
 <a href="#UseKtx">UseKtx</a>: Use KTX extension function</td></tr>
 <tr><td></td><td class="categoryColumn"><a href="#ExtraIssues">Included Additional Checks (76)</a>
 </td></tr>
@@ -450,14 +450,14 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../src/main/java/fr/hybridcoach/ui/Components.kt">../../src/main/java/fr/hybridcoach/ui/Components.kt</a>:159</span>: <span class="message">Modifier parameter should be the first optional parameter</span><br /><pre class="errorlines">
-<span class="lineno"> 156 </span>    value: String,
-<span class="lineno"> 157 </span>    change: (String) -> Unit,
-<span class="lineno"> 158 </span>    numeric: Boolean = <span class="keyword">false</span>,
-<span class="caretline"><span class="lineno"> 159 </span>    <span class="warning">modifier</span>: Modifier = Modifier,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 160 </span>    lines: Int = <span class="number">1</span>,
-<span class="lineno"> 161 </span>) {
-<span class="lineno"> 162 </span>    OutlinedTextField(
+<span class="location"><a href="../../src/main/java/fr/hybridcoach/ui/Components.kt">../../src/main/java/fr/hybridcoach/ui/Components.kt</a>:165</span>: <span class="message">Modifier parameter should be the first optional parameter</span><br /><pre class="errorlines">
+<span class="lineno"> 162 </span>    value: String,
+<span class="lineno"> 163 </span>    change: (String) -> Unit,
+<span class="lineno"> 164 </span>    numeric: Boolean = <span class="keyword">false</span>,
+<span class="caretline"><span class="lineno"> 165 </span>    <span class="warning">modifier</span>: Modifier = Modifier,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 166 </span>    lines: Int = <span class="number">1</span>,
+<span class="lineno"> 167 </span>) {
+<span class="lineno"> 168 </span>    OutlinedTextField(
 </pre>
 
 </div>
@@ -545,14 +545,14 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../src/main/AndroidManifest.xml">../../src/main/AndroidManifest.xml</a>:4</span>: <span class="message">The attribute <code>android:allowBackup</code> is deprecated from Android 12 and higher and may be removed in future versions. Consider adding the attribute <code>android:dataExtractionRules</code> specifying an <code>@xml</code> resource which configures cloud backups and device transfers on Android 12 and higher.</span><br /><pre class="errorlines">
-<span class="lineno">  1 </span><span class="prologue">&lt;?xml version="1.0" encoding="utf-8"?></span>
+<span class="location"><a href="../../src/main/AndroidManifest.xml">../../src/main/AndroidManifest.xml</a>:5</span>: <span class="message">The attribute <code>android:allowBackup</code> is deprecated from Android 12 and higher and may be removed in future versions. Consider adding the attribute <code>android:dataExtractionRules</code> specifying an <code>@xml</code> resource which configures cloud backups and device transfers on Android 12 and higher.</span><br /><pre class="errorlines">
 <span class="lineno">  2 </span><span class="tag">&lt;manifest</span><span class="attribute"> </span><span class="prefix">xmlns:</span><span class="attribute">android</span>=<span class="value">"http://schemas.android.com/apk/res/android"</span>>
 <span class="lineno">  3 </span>    <span class="tag">&lt;uses-permission</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.permission.VIBRATE"</span> />
-<span class="caretline"><span class="lineno">  4 </span>    <span class="tag">&lt;application</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">".CoachApplication"</span> <span class="prefix">android:</span><span class="attribute">allowBackup</span>=<span class="value">"</span><span class="warning"><span class="value">false</span></span><span class="value">"</span> <span class="prefix">android:</span><span class="attribute">label</span>=<span class="value">"Hybrid Coach"</span> <span class="prefix">android:</span><span class="attribute">icon</span>=<span class="value">"@drawable/ic_launcher"</span> <span class="prefix">android:</span><span class="attribute">supportsRtl</span>=<span class="value">"true"</span> <span class="prefix">android:</span><span class="attribute">theme</span>=<span class="value">"@style/Theme.HybridCoach"</span>></span>
-<span class="lineno">  5 </span>        <span class="tag">&lt;activity</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">".MainActivity"</span> <span class="prefix">android:</span><span class="attribute">exported</span>=<span class="value">"true"</span> <span class="prefix">android:</span><span class="attribute">windowSoftInputMode</span>=<span class="value">"adjustResize"</span>>
-<span class="lineno">  6 </span>            <span class="tag">&lt;intent-filter>&lt;action</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.intent.action.MAIN"</span>/><span class="tag">&lt;category</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.intent.category.LAUNCHER"</span>/><span class="tag">&lt;/intent-filter></span>
-<span class="lineno">  7 </span>        <span class="tag">&lt;/activity></span></pre>
+<span class="lineno">  4 </span>    <span class="tag">&lt;uses-permission</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.permission.INTERNET"</span> />
+<span class="caretline"><span class="lineno">  5 </span>    <span class="tag">&lt;application</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">".CoachApplication"</span> <span class="prefix">android:</span><span class="attribute">allowBackup</span>=<span class="value">"</span><span class="warning"><span class="value">false</span></span><span class="value">"</span> <span class="prefix">android:</span><span class="attribute">label</span>=<span class="value">"Hybrid Coach"</span> <span class="prefix">android:</span><span class="attribute">icon</span>=<span class="value">"@drawable/ic_launcher"</span> <span class="prefix">android:</span><span class="attribute">supportsRtl</span>=<span class="value">"true"</span> <span class="prefix">android:</span><span class="attribute">theme</span>=<span class="value">"@style/Theme.HybridCoach"</span>></span>
+<span class="lineno">  6 </span>        <span class="tag">&lt;activity</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">".MainActivity"</span> <span class="prefix">android:</span><span class="attribute">exported</span>=<span class="value">"true"</span> <span class="prefix">android:</span><span class="attribute">windowSoftInputMode</span>=<span class="value">"adjustResize"</span>>
+<span class="lineno">  7 </span>            <span class="tag">&lt;intent-filter>&lt;action</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.intent.action.MAIN"</span>/><span class="tag">&lt;category</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.intent.category.LAUNCHER"</span>/><span class="tag">&lt;/intent-filter></span>
+<span class="lineno">  8 </span>        <span class="tag">&lt;/activity></span></pre>
 
 </div>
 <div class="metadata"><div class="explanation" id="explanationDataExtractionRules" style="display: none;">
@@ -668,6 +668,16 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
+<span class="location"><a href="../../src/main/java/fr/hybridcoach/garmin/GarminBridgeClient.kt">../../src/main/java/fr/hybridcoach/garmin/GarminBridgeClient.kt</a>:76</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
+<span class="lineno">  73 </span>                    cipher.doFinal(codec.encodeToString(value).toByteArray(Charsets.UTF_8)),
+<span class="lineno">  74 </span>                    Base64.NO_WRAP,
+<span class="lineno">  75 </span>                )
+<span class="caretline"><span class="lineno">  76 </span>        check(<span class="warning">preferences.edit()</span>.putString(<span class="string">"encrypted"</span>, encrypted).commit()) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  77 </span>            <span class="string">"Configuration non enregistrée."</span>
+<span class="lineno">  78 </span>        }
+<span class="lineno">  79 </span>    }
+</pre>
+
 <span class="location"><a href="../../src/main/java/fr/hybridcoach/RestReceiver.kt">../../src/main/java/fr/hybridcoach/RestReceiver.kt</a>:21</span>: <span class="message">Use the KTX extension function <code>String.toUri</code> instead?</span><br /><pre class="errorlines">
 <span class="lineno"> 18 </span>            context,
 <span class="lineno"> 19 </span>            <span class="number">0</span>,

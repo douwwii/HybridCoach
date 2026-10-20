@@ -120,8 +120,6 @@ Overall:
 -possibilité de création de lien calendar avec mise à jour en direct 
 
 Course à pied:
--ajout session répétition en course 
--mode plannification avec une visu calendrier global : but : plannification de toute une prépa en course à pied ou autre sport
 -ajout d'un agent IA intégré qui avec un contexte est capable de t'accompagner dans la plannification d'une séance. (possibilité de lui faire ajouter directement des séances dans ton calendrier)
 -possibilité de push directement des séances dans garmin connect (plus tard autres marques)
 -récupération des séances réalisées dans strava et déduction de quel séance a été réalisée pour contabilisation dans kilométrage et statut "réalisée" d'une séance 

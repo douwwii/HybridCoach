@@ -1,0 +1,1 @@
+Image Python 3.13 construite et démarrée avec Podman. GET /health : 200. GET /v1/status authentifié : 200 et compte non connecté. Sans clé : 401. Conteneur de test supprimé après vérification. Aucune connexion Garmin réelle effectuée.

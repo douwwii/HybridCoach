@@ -269,7 +269,7 @@
         errorLine2="    ~~~~~~~~">
         <location
             file="/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/ui/Components.kt"
-            line="159"
+            line="165"
             column="5"/>
     </issue>
 
@@ -329,7 +329,7 @@
         errorLine2="                                                                       ~~~~~">
         <location
             file="/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/AndroidManifest.xml"
-            line="4"
+            line="5"
             column="72"/>
     </issue>
 
@@ -379,6 +379,22 @@
             file="/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/ui/ProgressScreen.kt"
             line="19"
             column="38"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        severity="Warning"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        category="Productivity"
+        priority="6"
+        summary="Use KTX extension function"
+        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
+        errorLine1="        check(preferences.edit().putString(&quot;encrypted&quot;, encrypted).commit()) {"
+        errorLine2="              ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/garmin/GarminBridgeClient.kt"
+            line="76"
+            column="15"/>
     </issue>
 
     <issue

@@ -170,6 +170,10 @@ object PreparationExport {
                 add("")
                 add("${w.date} · ${w.name}")
                 add("${w.sport.label} · ${w.status.label} · Priorité ${w.priority.ifBlank { "—" }}")
+                if (w.source == "GARMIN") add("Source : Garmin Connect · Date réelle : ${w.date}")
+                w.plannedDate?.let {
+                    add("Initialement prévue : $it${w.plannedTime?.let { t -> " à $t" } ?: ""}")
+                }
                 if (w.description.isNotBlank()) add(w.description)
                 d.subGoals
                     .filter { it.id in e.subGoalIds }

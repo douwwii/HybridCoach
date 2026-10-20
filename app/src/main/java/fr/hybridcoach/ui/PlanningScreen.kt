@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.*
 import fr.hybridcoach.data.*
 import fr.hybridcoach.domain.*
+import fr.hybridcoach.garmin.*
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -260,7 +261,7 @@ fun PlanningScreen(
                 item {
                     WeekVolume(
                         sessions.filter {
-                            it.date.asDate() in date.monday()..date.monday().plusDays(6)
+                            it.planningDate in date.monday()..date.monday().plusDays(6)
                         }
                     )
                     Text(
@@ -432,7 +433,9 @@ fun PlanningScreen(
                                     Text("Ouvrir")
                                 }
                             }
-                            WeekVolume(list)
+                            WeekVolume(
+                                sessions.filter { it.planningDate in monday..monday.plusDays(6) }
+                            )
                             phases
                                 .filter {
                                     it.start.asDate() <= monday.plusDays(6) &&
@@ -478,7 +481,7 @@ fun PlanningScreen(
                     .forEach {
                         Text("• ${it.name}", color = phaseColors[it.color.mod(phaseColors.size)])
                     }
-                WeekVolume(sessions.filter { it.date == dateRaw })
+                WeekVolume(sessions.filter { it.planningDate.toString() == dateRaw })
             }
             val daySessions = sessions.filter { it.date == dateRaw }
             if (daySessions.isEmpty())
@@ -524,7 +527,7 @@ fun PlanningScreen(
 
 @Composable
 private fun WeekVolume(workouts: List<PlannedWorkout>) {
-    val planned = workouts.filter { it.status != Status.CANCELLED }
+    val planned = workouts.filter { it.hasPlannedContent && it.status != Status.CANCELLED }
     val km =
         planned
             .filter { it.sport in listOf(Sport.RUN, Sport.RACE) }

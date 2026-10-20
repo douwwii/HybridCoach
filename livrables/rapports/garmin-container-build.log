@@ -1,0 +1,21 @@
+STEP 1/8: FROM docker.io/library/python:3.13-slim
+STEP 2/8: WORKDIR /app
+--> Using cache 47e72fcb0de16da4e9fec3b841ef857d3a60ea4e8137a7d3df0f30c60e9eb696
+--> 47e72fcb0de1
+STEP 3/8: COPY requirements.txt .
+--> Using cache 7f5c67633f44c362f48724d1d10ce6977907dd1bc4bd294277188dd48af6e7c4
+--> 7f5c67633f44
+STEP 4/8: RUN pip install --no-cache-dir -r requirements.txt && useradd --uid 10001 --create-home bridge && mkdir /data && chown bridge:bridge /data
+--> Using cache 03fc385a8e705aa0a5bdd50790fa93d4d564f39ed6f92034127e80a1570eaa81
+--> 03fc385a8e70
+STEP 5/8: COPY bridge ./bridge
+--> baffe4a8ef2c
+STEP 6/8: USER bridge
+--> 00dcdf8b813b
+STEP 7/8: EXPOSE 8000
+--> 3c607cf14b16
+STEP 8/8: CMD ["uvicorn", "bridge.app:configured_app", "--factory", "--host", "0.0.0.0", "--port", "8000", "--workers", "1", "--no-access-log"]
+COMMIT localhost/hybridcoach-garmin:1.2.0
+--> 17a7dddc42da
+Successfully tagged localhost/hybridcoach-garmin:1.2.0
+17a7dddc42da1b934866f0e1681f3d280c974b98dd0e3e7e81dedd5e23c2ad99

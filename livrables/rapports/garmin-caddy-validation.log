@@ -1,0 +1,18 @@
+Trying to pull docker.io/library/caddy:2.10.2...
+Getting image source signatures
+Copying blob sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1
+Copying blob sha256:d49a2dee86fb12766dd648402d010ca105846a41bd58738454e53780d4bb8e97
+Copying blob sha256:c108b7dc59eb05d618e1ee8803e793ce44eed9e2967c6cef39210d81d8a4b4fc
+Copying blob sha256:15dab9c579893913f1dde3163b96d3e03f06a907b3ddfe78f71ca73f5f5eceb4
+Copying blob sha256:0f5b2460369730f1bee18fea5bf1b63d3d5f17fda1aabbdbbd86cf5ae49ab9f7
+Copying config sha256:aac61abc4024c323602ccb9ee38bd68b147601f518626b2a055e06944e01c510
+Writing manifest to image destination
+{"level":"info","ts":1792424268.1274948,"msg":"using config from file","file":"/etc/caddy/Caddyfile"}
+{"level":"info","ts":1792424268.1281476,"msg":"adapted config to JSON","adapter":"caddyfile"}
+{"level":"warn","ts":1792424268.1281538,"msg":"Caddyfile input is not formatted; run 'caddy fmt --overwrite' to fix inconsistencies","adapter":"caddyfile","file":"/etc/caddy/Caddyfile","line":2}
+{"level":"info","ts":1792424268.1283758,"logger":"http.auto_https","msg":"server is listening only on the HTTPS port but has no TLS connection policies; adding one to enable TLS","server_name":"srv0","https_port":443}
+{"level":"info","ts":1792424268.1283834,"logger":"http.auto_https","msg":"enabling automatic HTTP->HTTPS redirects","server_name":"srv0"}
+{"level":"info","ts":1792424268.128478,"logger":"tls.cache.maintenance","msg":"started background certificate maintenance","cache":"0xc0005a4280"}
+{"level":"info","ts":1792424268.1284952,"logger":"http","msg":"servers shutting down with eternal grace period"}
+Valid configuration
+{"level":"info","ts":1792424268.1285155,"logger":"tls.cache.maintenance","msg":"stopped background certificate maintenance","cache":"0xc0005a4280"}

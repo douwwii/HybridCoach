@@ -1,15 +1,15 @@
-# Hybrid Coach 1.1.0 — Planification avancée
+# Hybrid Coach 1.2.0 — Import Garmin Connect
 
-- Vues jour, semaine, mois et préparation complète.
-- Sous-objectifs datés, superposables, frise et associations multiples.
-- Ajout depuis le calendrier, modèles, déplacement, duplication et copie de semaines.
-- Glisser-déposer entre jours en vue semaine ; source Room commune au calendrier classique.
-- Répétitions structurées, récupérations entre efforts et entre blocs, arbre imbriqué, duplication et réorganisation.
-- Export PDF / JSON v2 avec périodes, sous-objectifs et blocs, lecture des anciens plans conservée.
-- Migration additive Room 1 → 2 testée sans perte des données existantes.
-- 60 tests réussis ; APK application et tests instrumentés compilés ; lint sans erreur.
+L’étape 1 est implémentée dans le projet Obsidian Vault : connexion/MFA, import manuel, normalisation, rapprochement automatique ou validation, calendrier et statistiques communs, gestion des doublons, modifications et suppressions. La migration Room 2 → 3 conserve les données ; le plan et la date initiale d’une séance associée restent disponibles. Les jetons Garmin restent chiffrés sur le service ; la clé du service est chiffrée sur Android.
 
-APK signé debug : `HybridCoach-debug.apk`. Sources complètes : `HybridCoach-sources.zip`.
-Guide : `docs/PLANIFICATION.md`. Détail des contrôles : `docs/VERIFICATION.md`.
+Validation : **81 tests Android/JVM et 11 tests Python réussis**, APK et tests instrumentés compilés, lint sans erreur. Image de service Python 3.13 construite et démarrée avec Podman ; API authentifiée et configuration Caddy validées.
 
-Validation sur téléphone physique encore à effectuer. Aucun transfert vers une montre n’est implémenté ; la structure de données permet un futur adaptateur.
+**Configuration nécessaire :** déployer le service personnel HTTPS fourni, configurer son URL/clé dans Profil sportif → Garmin Connect, puis connecter le compte Garmin. Aucun serveur ni compte n’est préconfiguré. Le certificat public, la connexion Garmin réelle et le téléphone restent à valider sur les équipements configurés.
+
+L’étape 2 n’envoie aucun entraînement : seul son contrat d’interface est prévu.
+
+- APK : `HybridCoach-debug.apk`.
+- Sources complètes : `HybridCoach-sources.zip`.
+- Service : `HybridCoach-garmin-bridge.zip`.
+- Guide : `docs/GARMIN.md`.
+- Contrôles détaillés : `docs/VERIFICATION.md` et `livrables/rapports/`.

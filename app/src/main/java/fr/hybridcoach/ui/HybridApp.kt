@@ -49,6 +49,7 @@ fun HybridApp(vm: CoachViewModel) {
                                     route.startsWith("editor") -> "Créer & planifier"
                                     route.startsWith("session") -> "Votre séance"
                                     route.startsWith("preparation/") -> "Préparation"
+                                    route == "garmin" -> "Garmin Connect"
                                     route == "profile" -> "Profil sportif"
                                     route == "exercises" -> "Exercices"
                                     else -> "Modèles de séances"
@@ -64,13 +65,22 @@ fun HybridApp(vm: CoachViewModel) {
                     },
                     actions = {
                         if (main) {
-                            IconButton(onClick = { nav.navigate("templates") }) {
+                            IconButton(
+                                onClick = { nav.navigate("templates") },
+                                enabled = state.loaded,
+                            ) {
                                 Icon(Icons.Default.CollectionsBookmark, "Modèles")
                             }
-                            IconButton(onClick = { nav.navigate("exercises") }) {
+                            IconButton(
+                                onClick = { nav.navigate("exercises") },
+                                enabled = state.loaded,
+                            ) {
                                 Icon(Icons.Default.FitnessCenter, "Exercices")
                             }
-                            IconButton(onClick = { nav.navigate("profile") }) {
+                            IconButton(
+                                onClick = { nav.navigate("profile") },
+                                enabled = state.loaded,
+                            ) {
                                 Icon(Icons.Default.Tune, "Profil sportif")
                             }
                         }
@@ -82,6 +92,7 @@ fun HybridApp(vm: CoachViewModel) {
                     NavigationBar {
                         tabs.forEach { (path, label, icon) ->
                             NavigationBarItem(
+                                enabled = state.loaded,
                                 selected = route == path,
                                 onClick = {
                                     nav.navigate(path) {
@@ -103,7 +114,7 @@ fun HybridApp(vm: CoachViewModel) {
                     }
             },
             floatingActionButton = {
-                if (main)
+                if (main && state.loaded)
                     FloatingActionButton(
                         onClick = {
                             nav.navigate("editor/new?date=${LocalDate.now()}&template=&prep=")
@@ -179,7 +190,12 @@ fun HybridApp(vm: CoachViewModel) {
                             HistoryScreen(state) { nav.navigate("session/$it") }
                         }
                         composable("progress") { ProgressScreen(state) }
-                        composable("profile") { ProfileScreen(vm) { nav.popBackStack() } }
+                        composable("profile") {
+                            ProfileScreen(vm, { nav.popBackStack() }, { nav.navigate("garmin") })
+                        }
+                        composable("garmin") {
+                            GarminScreen(vm, state) { nav.navigate("session/$it") }
+                        }
                         composable("exercises") { ExerciseLibraryScreen(vm, state) }
                         composable("templates") {
                             TemplatesScreen(

@@ -267,6 +267,9 @@ fun PreparationScreen(
         }
         item {
             SectionTitle("Volumes hebdomadaires")
+            Text(
+                "${volumes.sumOf { it.sessions }} séances réalisées · ${SportMath.durationLabel(volumes.sumOf { it.trainingSeconds }.toLong())} d’entraînement"
+            )
             VolumeChart(volumes.map { it.plannedKm }, volumes.map { it.actualKm })
             Text(
                 "Prévu connu (gris) · Réalisé saisi (vert)",

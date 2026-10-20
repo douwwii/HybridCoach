@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import fr.hybridcoach.RestAlarm
 import fr.hybridcoach.data.*
 import fr.hybridcoach.domain.*
+import fr.hybridcoach.garmin.*
 import kotlinx.coroutines.delay
 
 @Composable
@@ -35,6 +36,8 @@ fun SessionScreen(
     val plan = parsePlan(w.planJson)
     val result = state.results[id] ?: WorkoutResult()
     val active = w.status == Status.ACTIVE
+    var garminAssociation by remember { mutableStateOf(false) }
+    val garmin = state.garminActivities.find { it.workoutId == id }
     var correcting by rememberSaveable(id) { mutableStateOf(false) }
     val editable = active || correcting
     var move by remember { mutableStateOf(false) }
@@ -66,6 +69,32 @@ fun SessionScreen(
     ) {
         item {
             PageTitle(w.name, "${w.sport.label} · ${dateLabel(w.date)} · ${w.status.label}")
+            if (garmin != null) {
+                val activity = codec.decodeFromString<GarminActivity>(garmin.payload)
+                Text(
+                    "GARMIN CONNECT · ${activity.localDateTime.replace('T', ' ')} · ${activity.sportKey}",
+                    color = MaterialTheme.colorScheme.secondary,
+                )
+                w.plannedDate?.let {
+                    Text(
+                        "Initialement prévue : ${dateLabel(it)}${w.plannedTime?.let { t -> " à $t" } ?: ""}"
+                    )
+                }
+                Text(
+                    "${activity.distanceMeters?.div(1000)?.pretty() ?: "—"} km · ${SportMath.durationLabel(activity.durationSeconds.toLong())} · ${SportMath.paceLabel(activity.averagePace)}"
+                )
+                activity.averageHr?.let { Text("FC moyenne Garmin : ${it.toInt()} bpm") }
+                activity.elevationGain?.let { Text("Dénivelé positif Garmin : ${it.pretty()} m") }
+                activity.movingSeconds?.let {
+                    Text("Temps en mouvement : ${SportMath.durationLabel(it.toLong())}")
+                }
+                activity.elapsedSeconds?.let {
+                    Text("Temps écoulé : ${SportMath.durationLabel(it.toLong())}")
+                }
+                TextButton(onClick = { garminAssociation = true }) {
+                    Text("Gérer l’association Garmin")
+                }
+            }
             if (w.priority.isNotBlank())
                 Text("Priorité : ${w.priority}", style = MaterialTheme.typography.bodySmall)
             if (w.description.isNotBlank()) Text(w.description)
@@ -445,6 +474,8 @@ else->"Circuit"}}",
             }
         item { Spacer(Modifier.height(32.dp)) }
     }
+    if (garminAssociation && garmin != null)
+        GarminAssociationDialog(vm, state, garmin.key) { garminAssociation = false }
     if (move || duplicate) {
         var date by rememberSaveable {
             mutableStateOf(w.date.asDate().plusDays(if (duplicate) 7 else 1).toString())

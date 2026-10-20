@@ -93,7 +93,7 @@ class PlannerLocalAndroidUiTest {
         val prepName = "Préparation test UI"
         val workoutName = "Force test UI"
         compose.waitUntil(15000) {
-            compose.onAllNodesWithText("Prépas").fetchSemanticsNodes().isNotEmpty()
+            compose.onAllNodesWithText("Un jour, un progrès.").fetchSemanticsNodes().isNotEmpty()
         }
         compose.onNodeWithText("Prépas").performClick()
         compose.onNodeWithText("Créer une préparation").performClick()

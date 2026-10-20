@@ -80,6 +80,8 @@ fun WorkoutEditor(
             )
         }
     var quickBlock by remember { mutableStateOf(false) }
+    var plannedTime by
+        rememberSaveable(id, templateParam) { mutableStateOf(original?.plannedTime ?: "") }
     var recurrence by rememberSaveable { mutableStateOf(false) }
     var end by rememberSaveable { mutableStateOf(date.asDate().plusWeeks(8).toString()) }
     var daysRaw by rememberSaveable { mutableStateOf(date.asDate().dayOfWeek.name) }
@@ -96,6 +98,7 @@ fun WorkoutEditor(
     fun save() {
         if (busy) return
         try {
+            if (plannedTime.isNotBlank()) LocalTime.parse(plannedTime)
             require(name.isNotBlank()) { "Donnez un nom à la séance." }
             val snapshot =
                 WorkoutPlan(
@@ -137,6 +140,7 @@ fun WorkoutEditor(
                                 status = original?.status ?: Status.PLANNED,
                                 planJson = codec.encodeToString(snapshot),
                                 seriesId = original?.seriesId,
+                                plannedTime = plannedTime.takeIf { it.isNotBlank() },
                             ),
                             end.asDate().takeIf { recurrence },
                             days,
@@ -178,6 +182,7 @@ fun WorkoutEditor(
         if (!templateMode) {
             item {
                 DateField("Date", date) { date = it }
+                Field("Heure prévue (HH:mm, facultatif)", plannedTime, { plannedTime = it })
                 Choice(
                     "Préparation",
                     prep,

@@ -1,34 +1,33 @@
 # Vérification de Hybrid Coach
 
-## Résultat final du 16/10/2026 à 17:11 (Europe/Paris) — version 1.1.0
+## Résultat final du 19/10/2026 à 17:55 (Europe/Paris) — version 1.2.0
 
-**60 tests sur 60 réussis**, aucun échec, aucune erreur, aucun test ignoré.
+**81 tests Android/JVM sur 81 réussis**, aucun échec, aucune erreur, aucun test ignoré. **11 tests Python sur 11 réussis**.
 
-| Suite | Réussites |
+| Couverture | Réussites |
 |---|---:|
-| Calculs sportifs et références | 18 |
-| Récurrences | 7 |
-| JSON, statistiques et confidentialité des exports | 10 |
-| Room, réouverture et PDF avec Android local | 8 |
-| Parcours Compose existants | 2 |
-| Répétitions, récupérations, copies et export v2 | 6 |
-| Planification : migration réelle v1 → v2, liens, périodes, copies, PDF | 7 |
-| Parcours Compose de planification et fractionné imbriqué | 2 |
-| Total | **60** |
+| Calculs sportifs, récurrences, statistiques, répétitions, exports | 41 |
+| Room, persistance, préparation et PDF locaux existants | 15 |
+| Parcours Compose existants | 4 |
+| Classement et validation des paramètres Garmin | 7 |
+| Import Garmin, doublons, suppressions, modifications, migrations | 13 |
+| Parcours Compose de confirmation et provenance Garmin | 1 |
+| Total Android/JVM | **81** |
+| Service Python : authentification, MFA, cache, pagination, erreurs, adaptateur | **11** |
 
-Contrôles exécutés depuis le dossier `Obsidian Vault/My life/Pro/Projets/HybridCoach`.
+Contrôles exécutés depuis `Obsidian Vault/My life/Pro/Projets/HybridCoach` : `./gradlew :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest :app:lintDebug` avec JBR 21. Résultat : `BUILD SUCCESSFUL`. Lint : **0 erreur, 25 avertissements et 3 informations**. Les avertissements ne sont pas masqués ; ils concernent notamment les versions de dépendances, des conventions Compose, la configuration de sauvegarde et du code tiers PDFBox/Bouncy Castle.
 
-Commande exécutée : `./gradlew :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest :app:lintDebug` avec JBR 21. Compilation et contrôles terminés avec `BUILD SUCCESSFUL`. Android Lint : **0 erreur, 24 avertissements et 3 informations**. Les avertissements concernent les versions de dépendances, une convention de paramètre Compose, la configuration de sauvegarde Android et du code de certificats tiers dans PDFBox/Bouncy Castle ; les informations suggèrent des helpers KTX ou des états entiers spécialisés. Aucun avertissement n’est masqué.
+La migration réelle **2 → 3** conserve les séances, les plans, les périodes et les associations aux sous-objectifs dans un fichier SQLite créé à partir du schéma v2. La migration **1 → 2 → 3** reste couverte par le test existant. Le rapprochement teste notamment 11 km réalisés pour 12 km prévus, les cas ambigus, deux activités réclamant une seule séance, les séances terminées manuellement et les sessions déjà liées.
 
-Les nouveaux tests d’interface exécutent la création d’un fractionné de 3 × (4 × 400 m) dans **Autre sport**, le passage entre les quatre vues, la création d’un sous-objectif et un véritable geste de glisser-déposer vers le lendemain. Le calendrier classique retrouve la séance à sa nouvelle date. Les tests existants couvrent toujours la reprise, la saisie de force, la fin partielle et le partage PDF.
+Les tests d’import vérifient l’absence de doublons, les modifications distantes, les ignorés, les changements de sport, la suppression distante, la dissociation et la restauration des mesures locales, ainsi que le kilométrage prévu dans sa semaine d’origine et le réel à sa date effective. Le parcours Compose confirme une activité ambiguë, ouvre sa séance et vérifie la provenance Garmin. Les contrôles de navigation sont désactivés tant que le graphe et les données ne sont pas chargés, pour éviter les clics prématurés au démarrage. Capture : `docs/screenshots/garmin-session.png`.
 
-La migration est vérifiée depuis un fichier SQLite créé à partir du schéma Room v1 : objectif, préparation, séance terminée, résultat, modèle et exercice restent présents après l’ouverture en v2. Les périodes superposées, les associations multiples, leur nettoyage et la conservation des liens lors des copies sont testés avec fermeture/réouverture de la base.
+Le service a été installé/testé localement avec Python 3.14 ; son image **Python 3.13** a été construite avec Podman, puis démarrée sous l’utilisateur non root configuré. Les routes HTTP de santé et d’état ont été vérifiées, avec refus d’un accès non authentifié. La configuration du proxy Caddy 2.10.2 est validée. Les tests Python utilisent le SDK réel pour vérifier le contrat de l’adaptateur, et des réponses simulées pour les échanges Garmin. Un avertissement de dépréciation `TestClient/httpx` est conservé dans le rapport Python ; il n’empêche pas les tests.
 
-Signature de l’APK vérifiée avec `apksigner` (schéma v2), paquet `fr.hybridcoach`, version **1.1.0 / code 2**, Android 8.0 / API 26 minimum, cible 35. Aucun accès Internet n’est déclaré dans l’APK.
+**À configurer et valider sur les équipements réels :** service HTTPS déployé avec votre domaine et votre certificat, connexion à votre compte Garmin (dont MFA), import depuis Garmin réel et usage sur téléphone. Aucun compte ou hébergement n’a été fourni et aucun entraînement n’a été envoyé vers Garmin. Le code de l’étape 2 se limite au contrat abstrait `GarminWorkoutExporter`.
 
-Les PDF générés par le moteur applicatif sont lus par Apache PDFBox JVM. Le nouveau PDF de planification de **3 pages** affiche les sous-objectifs, leurs périodes et les récupérations entre répétitions. Ses pages ont été rendues avec Poppler et inspectées. Les contrôles des coordonnées des mots sur ce fichier, le test de résistance de **24 pages** et le parcours de **2 pages** ne trouvent aucun débordement. Captures dans `docs/screenshots/` ; données exclusivement synthétiques de test.
+L’APK est en version **1.2.0 / code 3**, Android 8.0 / API 26 minimum, cible 35. Il déclare désormais `INTERNET` pour la synchronisation explicitement demandée. Les fonctions locales restent disponibles hors ligne. Les tests instrumentés ont été compilés, sans exécution sur téléphone ou émulateur complet.
 
-Les rapports détaillés sont dans `livrables/rapports/`. Les tests instrumentés ont été compilés ; ils n’ont pas été exécutés sur téléphone ou émulateur complet pendant cette validation. La vibration réelle, le comportement de l’alarme en arrière-plan et Android Studio Windows restent à contrôler sur leurs environnements respectifs.
+Les contrôles PDF existants restent validés : documents de résistance et de parcours lus par un lecteur indépendant. Les fichiers de contrôle et captures utilisent exclusivement des données synthétiques. Les rapports sont conservés dans `livrables/rapports/`.
 
 ## Tests automatisés
 

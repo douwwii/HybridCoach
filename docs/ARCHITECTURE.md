@@ -1,6 +1,6 @@
 # Architecture de Hybrid Coach
 
-Application Android native, Kotlin, Compose Material 3, MVVM et Navigation Compose. L’injection est explicite via `CoachApplication` ; aucun service distant ni compte.
+Application Android native, Kotlin, Compose Material 3, MVVM et Navigation Compose. L’injection est explicite via `CoachApplication` ; fonctions locales sans compte ; import Garmin facultatif via un service personnel HTTPS.
 
 ## Données
 
@@ -52,10 +52,17 @@ Le PDF est généré par PDFBox-Android, avec pagination, police Liberation Sans
 
 ## Évolutions et migrations
 
-La base est à la version **2**. `MIGRATION_1_2` ajoute les tables des sous-objectifs et des associations sans altérer les tables existantes. Elle est enregistrée dans `CoachApplication` et vérifiée avec un fichier SQLite réellement créé selon le schéma 1. Les deux schémas sont conservés dans `app/schemas`. Aucun effacement destructif automatique n’est configuré.
+La base est à la version **3**. `MIGRATION_2_3` ajoute la provenance et l’historique de date des séances ainsi que les tables Garmin, sans altérer les valeurs existantes. Les liens sur un identifiant Garmin et sur une séance sont uniques. `MIGRATION_1_2` ajoute les tables des sous-objectifs et des associations sans altérer les tables existantes. Elle est enregistrée dans `CoachApplication` et vérifiée avec un fichier SQLite réellement créé selon le schéma 1. Les trois schémas sont conservés dans `app/schemas`. Aucun effacement destructif automatique n’est configuré.
 
 Les nouveaux champs sérialisés possèdent des valeurs par défaut. `RunningStep.recovery`, facultatif, représente une récupération entre les répétitions uniquement ; les anciens enfants de type récupération conservent leur sémantique. Les calculs, le développement des intervalles, l’affichage et les exports parcourent cette structure. Une copie renouvelle tous les identifiants d’instance, y compris ceux des enfants et récupérations.
 
 `PlanningScreen` et le calendrier classique observent le même `CoachState` issu de Room. Les opérations de déplacement, copie et association passent par les transactions du dépôt. Les sous-objectifs sont indépendants des dates de séance : déplacer une séance ne modifie pas automatiquement ses liens. Les dates de début/fin d’un sous-objectif sont inclusives ; elles peuvent dépasser la préparation et la frise étend son axe en conséquence. Voir [le guide de planification](PLANIFICATION.md).
 
-Un futur import Garmin/Strava peut passer par un adaptateur transformant l’activité distante en `WorkoutResult` et `IntervalLog`, puis utiliser les transactions du dépôt. Aucun SDK de fournisseur n’est couplé à l’interface actuelle.
+Un futur import Strava peut passer par un adaptateur transformant l’activité distante en `WorkoutResult` et `IntervalLog`, puis utiliser les transactions du dépôt. Aucun SDK de fournisseur n’est couplé à l’interface actuelle.
+
+
+## Garmin Connect
+
+Le paquet `garmin/` sépare le contrat réseau `GarminGateway`, le client HTTPS, la configuration chiffrée Android Keystore, le rapprochement pur et les transactions d’import. `GarminImporter` conserve les instantanés antérieurs d’une séance associée afin de restaurer ses mesures et son statut lors d’une dissociation/suppression. L’occurrence planifiée garde son UUID ; elle apparaît au jour réel, et `plannedDate` garde le jour initial pour le volume prévu. Les activités ambiguës restent en attente et hors statistiques jusqu’à décision.
+
+Le service `services/garmin_bridge` exécute le SDK Python dans un environnement Linux fourni. Les jetons et son cache sont chiffrés, ses endpoints sont authentifiés et le proxy Caddy assure le transport HTTPS. Aucun jeton Garmin n’est transmis à Android. Les suppressions ne se déduisent pas d’une page manquante : elles sont confirmées par la ressource distante. `GarminWorkoutExporter` réserve l’interface de l’étape 2 sans implémentation d’envoi. Voir [le guide détaillé](GARMIN.md).

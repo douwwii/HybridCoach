@@ -55,6 +55,19 @@ fun ProgressScreen(state: CoachState) {
             )
         }
         item {
+            SectionTitle("Toutes les activités réalisées")
+            val completed =
+                filtered.workouts.filter {
+                    it.status.isResult && it.date.asDate() in start..LocalDate.now()
+                }
+            Text(
+                "${completed.size} séances · ${completed.sumOf { filtered.results[it.id]?.distanceKm?.decimal() ?: 0.0 }.pretty()} km cumulés"
+            )
+            Text(
+                "${SportMath.durationLabel(completed.sumOf { filtered.results[it.id]?.durationSeconds?.decimal() ?: 0.0 }.toLong())} d’entraînement"
+            )
+        }
+        item {
             SectionTitle("Course à pied")
             Card(Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {

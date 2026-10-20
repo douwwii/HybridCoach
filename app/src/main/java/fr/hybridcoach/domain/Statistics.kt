@@ -1,6 +1,7 @@
 package fr.hybridcoach.domain
 
 import fr.hybridcoach.data.*
+import fr.hybridcoach.garmin.*
 import java.time.LocalDate
 
 // Only completed or partially completed sessions contribute to actual training statistics.
@@ -11,6 +12,7 @@ data class WeeklyVolume(
     val strengthSessions: Int,
     val runSeconds: Double,
     val sessions: Int,
+    val trainingSeconds: Double = 0.0,
 )
 
 data class ExerciseRecord(
@@ -40,8 +42,13 @@ object Statistics {
             val done = w.filter { it.status.isResult }
             WeeklyVolume(
                 day,
-                w.filter {
-                        it.sport in listOf(Sport.RUN, Sport.RACE) && it.status != Status.CANCELLED
+                state.workouts
+                    .filter {
+                        it.hasPlannedContent &&
+                            it.planningDate in day..day.plusDays(6) &&
+                            (preparationId == null || it.preparationId == preparationId) &&
+                            it.sport in listOf(Sport.RUN, Sport.RACE) &&
+                            it.status != Status.CANCELLED
                     }
                     .sumOf { SportMath.plannedMeters(parsePlan(it.planJson).running) / 1000 },
                 done
@@ -52,6 +59,7 @@ object Statistics {
                     .filter { it.sport in listOf(Sport.RUN, Sport.RACE) }
                     .sumOf { state.results[it.id]?.durationSeconds?.decimal() ?: 0.0 },
                 done.size,
+                done.sumOf { state.results[it.id]?.durationSeconds?.decimal() ?: 0.0 },
             )
         }
 

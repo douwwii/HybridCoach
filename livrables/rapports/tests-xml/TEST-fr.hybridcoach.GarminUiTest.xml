@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="fr.hybridcoach.GarminUiTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:54:15" hostname="fedoraleo" time="0.399">
+  <properties/>
+  <testcase name="uncertainActivityIsConfirmedOnceAndDisplayedWithGarminOrigin" classname="fr.hybridcoach.GarminUiTest" time="0.399"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[Invalid ID 0x00000000.
+]]></system-err>
+</testsuite>

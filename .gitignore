@@ -8,3 +8,11 @@ captures/
 *.apk
 
 .local/
+
+# Private Garmin bridge configuration and state
+services/garmin_bridge/secrets.env
+services/garmin_bridge/.venv/
+services/garmin_bridge/.pytest_cache/
+**/__pycache__/
+*.pyc
+*.db

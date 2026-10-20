@@ -2,6 +2,7 @@ package fr.hybridcoach.data
 
 import androidx.room.withTransaction
 import fr.hybridcoach.domain.*
+import fr.hybridcoach.garmin.*
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -19,6 +20,8 @@ data class CoachState(
     val loaded: Boolean = false,
     val subGoals: List<PreparationSubGoal> = emptyList(),
     val workoutSubGoals: List<WorkoutSubGoal> = emptyList(),
+    val garminActivities: List<GarminActivityEntity> = emptyList(),
+    val garminSync: List<GarminSyncEntity> = emptyList(),
 )
 
 class CoachRepository(val db: CoachDatabase) {
@@ -41,9 +44,15 @@ class CoachRepository(val db: CoachDatabase) {
             )
         }
 
-    val state =
+    private val planningState =
         combine(baseState, dao.subGoals(), dao.workoutSubGoals()) { base, goals, links ->
             base.copy(subGoals = goals, workoutSubGoals = links)
+        }
+
+    val state =
+        combine(planningState, dao.garminActivities(), dao.garminSync()) { state, activities, sync
+            ->
+            state.copy(garminActivities = activities, garminSync = sync)
         }
 
     suspend fun saveSubGoal(value: PreparationSubGoal) =
@@ -199,6 +208,8 @@ class CoachRepository(val db: CoachDatabase) {
                     date = date.toString(),
                     status = Status.PLANNED,
                     seriesId = null,
+                    source = "MANUAL",
+                    plannedDate = null,
                     notes = "",
                     planJson = codec.encodeToString(parsePlan(w.planJson).freshCopy()),
                 )
@@ -225,7 +236,8 @@ class CoachRepository(val db: CoachDatabase) {
             val start = source.monday()
             val list =
                 dao.week(start.toString(), start.plusDays(6).toString()).filter {
-                    preparationId == null || it.preparationId == preparationId
+                    it.hasPlannedContent &&
+                        (preparationId == null || it.preparationId == preparationId)
                 }
             require(list.isNotEmpty()) { "Cette semaine ne contient aucune séance." }
             val shift = ChronoUnit.DAYS.between(start, target.monday())
@@ -236,6 +248,8 @@ class CoachRepository(val db: CoachDatabase) {
                             id = newId(),
                             date = old.date.asDate().plusDays(shift + 7L * i).toString(),
                             seriesId = null,
+                            source = "MANUAL",
+                            plannedDate = null,
                             status = Status.PLANNED,
                             notes = "",
                             planJson = codec.encodeToString(parsePlan(old.planJson).freshCopy()),
@@ -255,7 +269,20 @@ class CoachRepository(val db: CoachDatabase) {
             }
         }
 
-    suspend fun delete(id: String) = dao.deleteWorkout(id)
+    suspend fun delete(id: String) =
+        db.withTransaction {
+            dao.garminForWorkout(id)?.let {
+                dao.putGarmin(
+                    it.copy(
+                        workoutId = null,
+                        resolution = "IGNORED",
+                        originalWorkout = null,
+                        originalResult = null,
+                    )
+                )
+            }
+            dao.deleteWorkout(id)
+        }
 
     suspend fun saveTemplate(w: PlannedWorkout) =
         dao.putTemplate(

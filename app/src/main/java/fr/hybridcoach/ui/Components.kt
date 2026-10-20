@@ -131,6 +131,12 @@ fun WorkoutCard(w: PlannedWorkout, click: () -> Unit) {
                     color = MaterialTheme.colorScheme.primary,
                 )
                 Text(w.name, style = MaterialTheme.typography.titleMedium)
+                if (w.source == "GARMIN")
+                    Text(
+                        "GARMIN CONNECT",
+                        color = MaterialTheme.colorScheme.secondary,
+                        style = MaterialTheme.typography.labelSmall,
+                    )
                 val steps = remember(w.planJson) { parsePlan(w.planJson).running }
                 if (steps.isNotEmpty())
                     Text(
