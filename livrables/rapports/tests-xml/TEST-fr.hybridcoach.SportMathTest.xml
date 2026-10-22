@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="fr.hybridcoach.SportMathTest" tests="18" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:54:17" hostname="fedoraleo" time="0.004">
+<testsuite name="fr.hybridcoach.SportMathTest" tests="18" skipped="0" failures="0" errors="0" timestamp="2026-10-22T20:04:05" hostname="fedoraleo" time="0.067">
   <properties/>
-  <testcase name="raceTarget" classname="fr.hybridcoach.SportMathTest" time="0.0"/>
-  <testcase name="invalidResultRejected" classname="fr.hybridcoach.SportMathTest" time="0.0"/>
-  <testcase name="userZonesAreResolvedAndFrozen" classname="fr.hybridcoach.SportMathTest" time="0.001"/>
+  <testcase name="raceTarget" classname="fr.hybridcoach.SportMathTest" time="0.005"/>
+  <testcase name="invalidResultRejected" classname="fr.hybridcoach.SportMathTest" time="0.003"/>
+  <testcase name="userZonesAreResolvedAndFrozen" classname="fr.hybridcoach.SportMathTest" time="0.042"/>
   <testcase name="explosiveRepeatRejected" classname="fr.hybridcoach.SportMathTest" time="0.0"/>
-  <testcase name="missingVmaRejected" classname="fr.hybridcoach.SportMathTest" time="0.0"/>
-  <testcase name="invalidZonesRejected" classname="fr.hybridcoach.SportMathTest" time="0.0"/>
-  <testcase name="snapshotsDoNotDependOnUpdatedProfile" classname="fr.hybridcoach.SportMathTest" time="0.0"/>
-  <testcase name="nestedRepeatsCountTimeAndDistance" classname="fr.hybridcoach.SportMathTest" time="0.001"/>
+  <testcase name="missingVmaRejected" classname="fr.hybridcoach.SportMathTest" time="0.003"/>
+  <testcase name="invalidZonesRejected" classname="fr.hybridcoach.SportMathTest" time="0.001"/>
+  <testcase name="snapshotsDoNotDependOnUpdatedProfile" classname="fr.hybridcoach.SportMathTest" time="0.008"/>
+  <testcase name="nestedRepeatsCountTimeAndDistance" classname="fr.hybridcoach.SportMathTest" time="0.0"/>
   <testcase name="checkedSetNeedsReps" classname="fr.hybridcoach.SportMathTest" time="0.0"/>
   <testcase name="decimalCommaAccepted" classname="fr.hybridcoach.SportMathTest" time="0.0"/>
-  <testcase name="vmaInterval" classname="fr.hybridcoach.SportMathTest" time="0.0"/>
-  <testcase name="zeroSpeedRejected" classname="fr.hybridcoach.SportMathTest" time="0.0"/>
-  <testcase name="durationFormatting" classname="fr.hybridcoach.SportMathTest" time="0.001"/>
+  <testcase name="vmaInterval" classname="fr.hybridcoach.SportMathTest" time="0.001"/>
+  <testcase name="zeroSpeedRejected" classname="fr.hybridcoach.SportMathTest" time="0.001"/>
+  <testcase name="durationFormatting" classname="fr.hybridcoach.SportMathTest" time="0.0"/>
   <testcase name="speedAndPaceRoundTrip" classname="fr.hybridcoach.SportMathTest" time="0.0"/>
   <testcase name="missingZoneRejected" classname="fr.hybridcoach.SportMathTest" time="0.0"/>
   <testcase name="nonFiniteSpeedRejected" classname="fr.hybridcoach.SportMathTest" time="0.0"/>
   <testcase name="rangeUsesMidpointForPlannedEstimates" classname="fr.hybridcoach.SportMathTest" time="0.0"/>
-  <testcase name="epleyOnlyValidForRelevantRepRanges" classname="fr.hybridcoach.SportMathTest" time="0.0"/>
+  <testcase name="epleyOnlyValidForRelevantRepRanges" classname="fr.hybridcoach.SportMathTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

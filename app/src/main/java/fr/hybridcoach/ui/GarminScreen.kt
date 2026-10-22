@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.dp
@@ -35,14 +36,10 @@ fun GarminScreen(vm: CoachViewModel, state: CoachState, open: (String) -> Unit) 
     val connection by vm.garminConnection.collectAsStateWithLifecycle()
     val busy by vm.garminBusy.collectAsStateWithLifecycle()
     val error by vm.garminError.collectAsStateWithLifecycle()
-    val savedUrl by vm.garminUrl.collectAsStateWithLifecycle()
-    var url by rememberSaveable(savedUrl) { mutableStateOf(savedUrl) }
-    // Credentials, bridge key and MFA code deliberately excluded from saved-instance state.
+    val configured by vm.garminConfigured.collectAsStateWithLifecycle()
+    val uriHandler = LocalUriHandler.current
+    // The personal API key never enters saved-instance state.
     var apiKey by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var code by remember { mutableStateOf("") }
-    var isCn by rememberSaveable { mutableStateOf(false) }
     var showIgnored by rememberSaveable { mutableStateOf(false) }
     var selected by remember { mutableStateOf<String?>(null) }
     var disconnect by remember { mutableStateOf(false) }
@@ -69,8 +66,7 @@ fun GarminScreen(vm: CoachViewModel, state: CoachState, open: (String) -> Unit) 
             )
             Text(
                 when {
-                    connection.needsMfa -> "Code de double authentification requis"
-                    connection.connected -> "Session Garmin enregistrée"
+                    connection.connected -> "Connexion directe à Garmin active"
                     else -> "Compte non connecté"
                 },
                 color = MaterialTheme.colorScheme.primary,
@@ -106,52 +102,27 @@ fun GarminScreen(vm: CoachViewModel, state: CoachState, open: (String) -> Unit) 
             }
         }
         item {
-            SectionTitle("Connexion au service personnel")
+            SectionTitle("Clé personnelle Garmin")
             Text(
-                "Installez le service fourni avec Hybrid Coach sur un serveur accessible au téléphone. Utilisez son adresse HTTPS et sa clé privée. Un script lancé sur votre PC n’est pas automatiquement accessible depuis le téléphone.",
+                "Connectez votre compte directement depuis ce téléphone. Aucun serveur à installer. Créez une clé dans Garmin Connect, puis collez-la ci-dessous.",
                 style = MaterialTheme.typography.bodySmall,
             )
-            Field("Adresse HTTPS du service", url, { url = it })
-            SecretField("Clé du service (vide = conserver)", apiKey) { apiKey = it }
-            TextButton(
+            TextButton(onClick = { uriHandler.openUri(GARMIN_PERSONAL_KEY_URL) }, enabled = !busy) {
+                Text("Créer une clé dans Garmin Connect")
+            }
+            SecretField("Clé personnelle Garmin", apiKey) { apiKey = it }
+            Button(
                 onClick = {
-                    vm.saveGarminSettings(url, apiKey)
+                    vm.connectGarmin(apiKey)
                     apiKey = ""
                 },
-                enabled = !busy,
+                enabled = !busy && apiKey.isNotBlank(),
+                modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("Enregistrer le service")
-            }
-        }
-        item {
-            SectionTitle("Compte Garmin")
-            Field("Adresse e-mail Garmin", email, { email = it })
-            SecretField("Mot de passe Garmin", password) { password = it }
-            CheckLine("Compte Garmin Chine", isCn) { isCn = it }
-            TextButton(
-                onClick = {
-                    vm.connectGarmin(email, password, isCn)
-                    password = ""
-                    email = ""
-                },
-                enabled = !busy && savedUrl.isNotBlank(),
-            ) {
-                Text("Connecter Garmin")
-            }
-            if (connection.needsMfa) {
-                SecretField("Code de vérification Garmin", code) { code = it }
-                Button(
-                    onClick = {
-                        vm.garminMfa(code)
-                        code = ""
-                    },
-                    enabled = !busy,
-                ) {
-                    Text("Valider le code")
-                }
+                Text(if (configured) "Remplacer la clé Garmin" else "Connecter Garmin")
             }
             Text(
-                "Le mot de passe et le code ne sont pas enregistrés. La clé du service est chiffrée sur le téléphone ; les jetons Garmin restent chiffrés sur votre service.",
+                "Votre clé est chiffrée sur ce téléphone. Aucun mot de passe Garmin n’est demandé. À son expiration, générez une nouvelle clé puis remplacez-la ici. La synchronisation se lance avec le bouton ci-dessus.",
                 style = MaterialTheme.typography.bodySmall,
             )
         }
@@ -211,7 +182,7 @@ fun GarminScreen(vm: CoachViewModel, state: CoachState, open: (String) -> Unit) 
             "Déconnecter",
         ) {
             Text(
-                "La session Garmin sera retirée du service. Les activités déjà importées resteront dans votre calendrier. Cette action ne révoque pas une éventuelle copie des jetons depuis les paramètres de sécurité Garmin."
+                "La clé et la connexion seront effacées de ce téléphone. Les activités déjà importées resteront dans votre calendrier. Pour révoquer la clé elle-même, supprimez-la également dans Garmin Connect."
             )
         }
     selected?.let { key -> GarminAssociationDialog(vm, state, key) { selected = null } }

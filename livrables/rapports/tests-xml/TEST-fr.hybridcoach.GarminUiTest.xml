@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="fr.hybridcoach.GarminUiTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:54:15" hostname="fedoraleo" time="0.399">
+<testsuite name="fr.hybridcoach.GarminUiTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-22T20:03:27" hostname="fedoraleo" time="3.075">
   <properties/>
-  <testcase name="uncertainActivityIsConfirmedOnceAndDisplayedWithGarminOrigin" classname="fr.hybridcoach.GarminUiTest" time="0.399"/>
+  <testcase name="uncertainActivityIsConfirmedOnceAndDisplayedWithGarminOrigin" classname="fr.hybridcoach.GarminUiTest" time="1.855"/>
+  <testcase name="directConnectionScreenOffersPersonalKeyWithoutServerOrPassword" classname="fr.hybridcoach.GarminUiTest" time="1.22"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[Invalid ID 0x00000000.
+Invalid ID 0x00000000.
+Invalid ID 0x00000000.
 ]]></system-err>
 </testsuite>

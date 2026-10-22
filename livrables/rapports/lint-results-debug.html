@@ -177,9 +177,9 @@ document.getElementById(id).style.display = 'none';
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
   <header class="mdl-layout__header">
     <div class="mdl-layout__header-row">
-      <span class="mdl-layout-title">Lint Report: 25 warnings</span>
+      <span class="mdl-layout-title">Lint Report: 26 warnings</span>
       <div class="mdl-layout-spacer"></div>
-      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Mon Oct 19 17:32:17 CEST 2026 by AGP (8.9.2)</nav>
+      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Thu Oct 22 22:05:12 CEST 2026 by AGP (8.9.2)</nav>
     </div>
   </header>
   <div class="mdl-layout__drawer">
@@ -191,7 +191,7 @@ document.getElementById(id).style.display = 'none';
       <a class="mdl-navigation__link" href="#TrustAllX509TrustManager"><i class="material-icons warning-icon">warning</i>Insecure TLS/SSL trust manager (3)</a>
       <a class="mdl-navigation__link" href="#DataExtractionRules"><i class="material-icons warning-icon">warning</i>Missing data extraction rules (1)</a>
       <a class="mdl-navigation__link" href="#AutoboxingStateCreation"><i class="material-icons warning-icon">warning</i><code>State&lt;T></code> will autobox values assigned to this state. Use a specialized state type instead. (3)</a>
-      <a class="mdl-navigation__link" href="#UseKtx"><i class="material-icons warning-icon">warning</i>Use KTX extension function (4)</a>
+      <a class="mdl-navigation__link" href="#UseKtx"><i class="material-icons warning-icon">warning</i>Use KTX extension function (5)</a>
     </nav>
   </div>
   <main class="mdl-layout__content">
@@ -228,7 +228,7 @@ document.getElementById(id).style.display = 'none';
 <tr><td class="countColumn"></td><td class="categoryColumn"><a href="#Productivity">Productivity</a>
 </td></tr>
 <tr>
-<td class="countColumn">4</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
+<td class="countColumn">5</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
 <a href="#UseKtx">UseKtx</a>: Use KTX extension function</td></tr>
 <tr><td></td><td class="categoryColumn"><a href="#ExtraIssues">Included Additional Checks (76)</a>
 </td></tr>
@@ -251,166 +251,166 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:33</span>: <span class="message">A newer version of androidx.compose:compose-bom than 2025.04.01 is available: 2026.09.00</span><br /><pre class="errorlines">
-<span class="lineno"> 30 </span>ksp { arg("room.schemaLocation", "$projectDir/schemas") }
-<span class="lineno"> 31 </span>
-<span class="lineno"> 32 </span>dependencies {
-<span class="caretline"><span class="lineno"> 33 </span>    implementation(<span class="warning">platform("androidx.compose:compose-bom:2025.04.01")</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 34 </span>    implementation("androidx.core:core-ktx:1.16.0")
-<span class="lineno"> 35 </span>    implementation("com.tom-roush:pdfbox-android:2.0.27.0")
-<span class="lineno"> 36 </span>    implementation("androidx.activity:activity-compose:1.10.1")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:36</span>: <span class="message">A newer version of androidx.compose:compose-bom than 2025.04.01 is available: 2026.09.00</span><br /><pre class="errorlines">
+<span class="lineno"> 33 </span>ksp { arg("room.schemaLocation", "$projectDir/schemas") }
+<span class="lineno"> 34 </span>
+<span class="lineno"> 35 </span>dependencies {
+<span class="caretline"><span class="lineno"> 36 </span>    implementation(<span class="warning">platform("androidx.compose:compose-bom:2025.04.01")</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 37 </span>    implementation("androidx.core:core-ktx:1.16.0")
+<span class="lineno"> 38 </span>    implementation("com.tom-roush:pdfbox-android:2.0.27.0")
+<span class="lineno"> 39 </span>    implementation("androidx.activity:activity-compose:1.10.1")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:34</span>: <span class="message">A newer version of androidx.core:core-ktx than 1.16.0 is available: 1.19.1</span><br /><pre class="errorlines">
-<span class="lineno"> 31 </span>
-<span class="lineno"> 32 </span>dependencies {
-<span class="lineno"> 33 </span>    implementation(platform("androidx.compose:compose-bom:2025.04.01"))
-<span class="caretline"><span class="lineno"> 34 </span>    implementation(<span class="warning">"androidx.core:core-ktx:1.16.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 35 </span>    implementation("com.tom-roush:pdfbox-android:2.0.27.0")
-<span class="lineno"> 36 </span>    implementation("androidx.activity:activity-compose:1.10.1")
-<span class="lineno"> 37 </span>    implementation("androidx.compose.ui:ui")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:37</span>: <span class="message">A newer version of androidx.core:core-ktx than 1.16.0 is available: 1.19.1</span><br /><pre class="errorlines">
+<span class="lineno"> 34 </span>
+<span class="lineno"> 35 </span>dependencies {
+<span class="lineno"> 36 </span>    implementation(platform("androidx.compose:compose-bom:2025.04.01"))
+<span class="caretline"><span class="lineno"> 37 </span>    implementation(<span class="warning">"androidx.core:core-ktx:1.16.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 38 </span>    implementation("com.tom-roush:pdfbox-android:2.0.27.0")
+<span class="lineno"> 39 </span>    implementation("androidx.activity:activity-compose:1.10.1")
+<span class="lineno"> 40 </span>    implementation("androidx.compose.ui:ui")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:36</span>: <span class="message">A newer version of androidx.activity:activity-compose than 1.10.1 is available: 1.13.0</span><br /><pre class="errorlines">
-<span class="lineno"> 33 </span>    implementation(platform("androidx.compose:compose-bom:2025.04.01"))
-<span class="lineno"> 34 </span>    implementation("androidx.core:core-ktx:1.16.0")
-<span class="lineno"> 35 </span>    implementation("com.tom-roush:pdfbox-android:2.0.27.0")
-<span class="caretline"><span class="lineno"> 36 </span>    implementation(<span class="warning">"androidx.activity:activity-compose:1.10.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 37 </span>    implementation("androidx.compose.ui:ui")
-<span class="lineno"> 38 </span>    implementation("androidx.compose.ui:ui-tooling-preview")
-<span class="lineno"> 39 </span>    implementation("androidx.compose.material3:material3")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:39</span>: <span class="message">A newer version of androidx.activity:activity-compose than 1.10.1 is available: 1.13.0</span><br /><pre class="errorlines">
+<span class="lineno"> 36 </span>    implementation(platform("androidx.compose:compose-bom:2025.04.01"))
+<span class="lineno"> 37 </span>    implementation("androidx.core:core-ktx:1.16.0")
+<span class="lineno"> 38 </span>    implementation("com.tom-roush:pdfbox-android:2.0.27.0")
+<span class="caretline"><span class="lineno"> 39 </span>    implementation(<span class="warning">"androidx.activity:activity-compose:1.10.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 40 </span>    implementation("androidx.compose.ui:ui")
+<span class="lineno"> 41 </span>    implementation("androidx.compose.ui:ui-tooling-preview")
+<span class="lineno"> 42 </span>    implementation("androidx.compose.material3:material3")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:42</span>: <span class="message">A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.9.0 is available: 2.11.0</span><br /><pre class="errorlines">
-<span class="lineno"> 39 </span>    implementation("androidx.compose.material3:material3")
-<span class="lineno"> 40 </span>    implementation("androidx.compose.material:material-icons-extended")
-<span class="lineno"> 41 </span>    debugImplementation("androidx.compose.ui:ui-tooling")
-<span class="caretline"><span class="lineno"> 42 </span>    implementation(<span class="warning">"androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 43 </span>    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
-<span class="lineno"> 44 </span>    implementation("androidx.navigation:navigation-compose:2.9.0")
-<span class="lineno"> 45 </span>    implementation("androidx.room:room-runtime:2.7.2")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:45</span>: <span class="message">A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.9.0 is available: 2.11.0</span><br /><pre class="errorlines">
+<span class="lineno"> 42 </span>    implementation("androidx.compose.material3:material3")
+<span class="lineno"> 43 </span>    implementation("androidx.compose.material:material-icons-extended")
+<span class="lineno"> 44 </span>    debugImplementation("androidx.compose.ui:ui-tooling")
+<span class="caretline"><span class="lineno"> 45 </span>    implementation(<span class="warning">"androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 46 </span>    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
+<span class="lineno"> 47 </span>    implementation("androidx.navigation:navigation-compose:2.9.0")
+<span class="lineno"> 48 </span>    implementation("androidx.room:room-runtime:2.7.2")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:43</span>: <span class="message">A newer version of androidx.lifecycle:lifecycle-runtime-compose than 2.9.0 is available: 2.11.0</span><br /><pre class="errorlines">
-<span class="lineno"> 40 </span>    implementation("androidx.compose.material:material-icons-extended")
-<span class="lineno"> 41 </span>    debugImplementation("androidx.compose.ui:ui-tooling")
-<span class="lineno"> 42 </span>    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
-<span class="caretline"><span class="lineno"> 43 </span>    implementation(<span class="warning">"androidx.lifecycle:lifecycle-runtime-compose:2.9.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 44 </span>    implementation("androidx.navigation:navigation-compose:2.9.0")
-<span class="lineno"> 45 </span>    implementation("androidx.room:room-runtime:2.7.2")
-<span class="lineno"> 46 </span>    implementation("androidx.room:room-ktx:2.7.2")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:46</span>: <span class="message">A newer version of androidx.lifecycle:lifecycle-runtime-compose than 2.9.0 is available: 2.11.0</span><br /><pre class="errorlines">
+<span class="lineno"> 43 </span>    implementation("androidx.compose.material:material-icons-extended")
+<span class="lineno"> 44 </span>    debugImplementation("androidx.compose.ui:ui-tooling")
+<span class="lineno"> 45 </span>    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
+<span class="caretline"><span class="lineno"> 46 </span>    implementation(<span class="warning">"androidx.lifecycle:lifecycle-runtime-compose:2.9.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 47 </span>    implementation("androidx.navigation:navigation-compose:2.9.0")
+<span class="lineno"> 48 </span>    implementation("androidx.room:room-runtime:2.7.2")
+<span class="lineno"> 49 </span>    implementation("androidx.room:room-ktx:2.7.2")
 </pre>
 
 <button class="mdl-button mdl-js-button mdl-button--primary" id="GradleDependencyDivLink" onclick="reveal('GradleDependencyDiv');" />+ 11 More Occurrences...</button>
 <div id="GradleDependencyDiv" style="display: none">
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:44</span>: <span class="message">A newer version of androidx.navigation:navigation-compose than 2.9.0 is available: 2.10.2</span><br /><pre class="errorlines">
-<span class="lineno"> 41 </span>    debugImplementation("androidx.compose.ui:ui-tooling")
-<span class="lineno"> 42 </span>    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
-<span class="lineno"> 43 </span>    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
-<span class="caretline"><span class="lineno"> 44 </span>    implementation(<span class="warning">"androidx.navigation:navigation-compose:2.9.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 45 </span>    implementation("androidx.room:room-runtime:2.7.2")
-<span class="lineno"> 46 </span>    implementation("androidx.room:room-ktx:2.7.2")
-<span class="lineno"> 47 </span>    ksp("androidx.room:room-compiler:2.7.2")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:47</span>: <span class="message">A newer version of androidx.navigation:navigation-compose than 2.9.0 is available: 2.10.2</span><br /><pre class="errorlines">
+<span class="lineno"> 44 </span>    debugImplementation("androidx.compose.ui:ui-tooling")
+<span class="lineno"> 45 </span>    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
+<span class="lineno"> 46 </span>    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
+<span class="caretline"><span class="lineno"> 47 </span>    implementation(<span class="warning">"androidx.navigation:navigation-compose:2.9.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 48 </span>    implementation("androidx.room:room-runtime:2.7.2")
+<span class="lineno"> 49 </span>    implementation("androidx.room:room-ktx:2.7.2")
+<span class="lineno"> 50 </span>    ksp("androidx.room:room-compiler:2.7.2")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:45</span>: <span class="message">A newer version of androidx.room:room-runtime than 2.7.2 is available: 2.8.5</span><br /><pre class="errorlines">
-<span class="lineno"> 42 </span>    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
-<span class="lineno"> 43 </span>    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
-<span class="lineno"> 44 </span>    implementation("androidx.navigation:navigation-compose:2.9.0")
-<span class="caretline"><span class="lineno"> 45 </span>    implementation(<span class="warning">"androidx.room:room-runtime:2.7.2"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 46 </span>    implementation("androidx.room:room-ktx:2.7.2")
-<span class="lineno"> 47 </span>    ksp("androidx.room:room-compiler:2.7.2")
-<span class="lineno"> 48 </span>    implementation("androidx.datastore:datastore-preferences:1.1.7")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:48</span>: <span class="message">A newer version of androidx.room:room-runtime than 2.7.2 is available: 2.8.5</span><br /><pre class="errorlines">
+<span class="lineno"> 45 </span>    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
+<span class="lineno"> 46 </span>    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
+<span class="lineno"> 47 </span>    implementation("androidx.navigation:navigation-compose:2.9.0")
+<span class="caretline"><span class="lineno"> 48 </span>    implementation(<span class="warning">"androidx.room:room-runtime:2.7.2"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 49 </span>    implementation("androidx.room:room-ktx:2.7.2")
+<span class="lineno"> 50 </span>    ksp("androidx.room:room-compiler:2.7.2")
+<span class="lineno"> 51 </span>    implementation("androidx.datastore:datastore-preferences:1.1.7")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:46</span>: <span class="message">A newer version of androidx.room:room-ktx than 2.7.2 is available: 2.8.5</span><br /><pre class="errorlines">
-<span class="lineno"> 43 </span>    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
-<span class="lineno"> 44 </span>    implementation("androidx.navigation:navigation-compose:2.9.0")
-<span class="lineno"> 45 </span>    implementation("androidx.room:room-runtime:2.7.2")
-<span class="caretline"><span class="lineno"> 46 </span>    implementation(<span class="warning">"androidx.room:room-ktx:2.7.2"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 47 </span>    ksp("androidx.room:room-compiler:2.7.2")
-<span class="lineno"> 48 </span>    implementation("androidx.datastore:datastore-preferences:1.1.7")
-<span class="lineno"> 49 </span>    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:49</span>: <span class="message">A newer version of androidx.room:room-ktx than 2.7.2 is available: 2.8.5</span><br /><pre class="errorlines">
+<span class="lineno"> 46 </span>    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
+<span class="lineno"> 47 </span>    implementation("androidx.navigation:navigation-compose:2.9.0")
+<span class="lineno"> 48 </span>    implementation("androidx.room:room-runtime:2.7.2")
+<span class="caretline"><span class="lineno"> 49 </span>    implementation(<span class="warning">"androidx.room:room-ktx:2.7.2"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 50 </span>    ksp("androidx.room:room-compiler:2.7.2")
+<span class="lineno"> 51 </span>    implementation("androidx.datastore:datastore-preferences:1.1.7")
+<span class="lineno"> 52 </span>    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:47</span>: <span class="message">A newer version of androidx.room:room-compiler than 2.7.2 is available: 2.8.5</span><br /><pre class="errorlines">
-<span class="lineno"> 44 </span>    implementation("androidx.navigation:navigation-compose:2.9.0")
-<span class="lineno"> 45 </span>    implementation("androidx.room:room-runtime:2.7.2")
-<span class="lineno"> 46 </span>    implementation("androidx.room:room-ktx:2.7.2")
-<span class="caretline"><span class="lineno"> 47 </span>    ksp(<span class="warning">"androidx.room:room-compiler:2.7.2"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 48 </span>    implementation("androidx.datastore:datastore-preferences:1.1.7")
-<span class="lineno"> 49 </span>    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
-<span class="lineno"> 50 </span>    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:50</span>: <span class="message">A newer version of androidx.room:room-compiler than 2.7.2 is available: 2.8.5</span><br /><pre class="errorlines">
+<span class="lineno"> 47 </span>    implementation("androidx.navigation:navigation-compose:2.9.0")
+<span class="lineno"> 48 </span>    implementation("androidx.room:room-runtime:2.7.2")
+<span class="lineno"> 49 </span>    implementation("androidx.room:room-ktx:2.7.2")
+<span class="caretline"><span class="lineno"> 50 </span>    ksp(<span class="warning">"androidx.room:room-compiler:2.7.2"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 51 </span>    implementation("androidx.datastore:datastore-preferences:1.1.7")
+<span class="lineno"> 52 </span>    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+<span class="lineno"> 53 </span>    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:48</span>: <span class="message">A newer version of androidx.datastore:datastore-preferences than 1.1.7 is available: 1.2.1</span><br /><pre class="errorlines">
-<span class="lineno"> 45 </span>    implementation("androidx.room:room-runtime:2.7.2")
-<span class="lineno"> 46 </span>    implementation("androidx.room:room-ktx:2.7.2")
-<span class="lineno"> 47 </span>    ksp("androidx.room:room-compiler:2.7.2")
-<span class="caretline"><span class="lineno"> 48 </span>    implementation(<span class="warning">"androidx.datastore:datastore-preferences:1.1.7"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 49 </span>    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
-<span class="lineno"> 50 </span>    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
-<span class="lineno"> 51 </span>    testImplementation("junit:junit:4.13.2")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:51</span>: <span class="message">A newer version of androidx.datastore:datastore-preferences than 1.1.7 is available: 1.3.0</span><br /><pre class="errorlines">
+<span class="lineno"> 48 </span>    implementation("androidx.room:room-runtime:2.7.2")
+<span class="lineno"> 49 </span>    implementation("androidx.room:room-ktx:2.7.2")
+<span class="lineno"> 50 </span>    ksp("androidx.room:room-compiler:2.7.2")
+<span class="caretline"><span class="lineno"> 51 </span>    implementation(<span class="warning">"androidx.datastore:datastore-preferences:1.1.7"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 52 </span>    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+<span class="lineno"> 53 </span>    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+<span class="lineno"> 54 </span>    testImplementation("junit:junit:4.13.2")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:54</span>: <span class="message">A newer version of androidx.test:core-ktx than 1.6.1 is available: 1.7.0</span><br /><pre class="errorlines">
-<span class="lineno"> 51 </span>    testImplementation("junit:junit:4.13.2")
-<span class="lineno"> 52 </span>    testImplementation("org.robolectric:robolectric:4.16.1")
-<span class="lineno"> 53 </span>    testImplementation("org.apache.pdfbox:pdfbox:2.0.32")
-<span class="caretline"><span class="lineno"> 54 </span>    testImplementation(<span class="warning">"androidx.test:core-ktx:1.6.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 55 </span>    testImplementation("androidx.test.espresso:espresso-core:3.5.0")
-<span class="lineno"> 56 </span>    testImplementation("androidx.compose.ui:ui-test-junit4")
-<span class="lineno"> 57 </span>    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:57</span>: <span class="message">A newer version of androidx.test:core-ktx than 1.6.1 is available: 1.7.0</span><br /><pre class="errorlines">
+<span class="lineno"> 54 </span>    testImplementation("junit:junit:4.13.2")
+<span class="lineno"> 55 </span>    testImplementation("org.robolectric:robolectric:4.16.1")
+<span class="lineno"> 56 </span>    testImplementation("org.apache.pdfbox:pdfbox:2.0.32")
+<span class="caretline"><span class="lineno"> 57 </span>    testImplementation(<span class="warning">"androidx.test:core-ktx:1.6.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 58 </span>    testImplementation("androidx.test.espresso:espresso-core:3.5.0")
+<span class="lineno"> 59 </span>    testImplementation("androidx.compose.ui:ui-test-junit4")
+<span class="lineno"> 60 </span>    androidTestImplementation("androidx.test.ext:junit:1.2.1")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:55</span>: <span class="message">A newer version of androidx.test.espresso:espresso-core than 3.5.0 is available: 3.7.0</span><br /><pre class="errorlines">
-<span class="lineno"> 52 </span>    testImplementation("org.robolectric:robolectric:4.16.1")
-<span class="lineno"> 53 </span>    testImplementation("org.apache.pdfbox:pdfbox:2.0.32")
-<span class="lineno"> 54 </span>    testImplementation("androidx.test:core-ktx:1.6.1")
-<span class="caretline"><span class="lineno"> 55 </span>    testImplementation(<span class="warning">"androidx.test.espresso:espresso-core:3.5.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 56 </span>    testImplementation("androidx.compose.ui:ui-test-junit4")
-<span class="lineno"> 57 </span>    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-<span class="lineno"> 58 </span>    androidTestImplementation("androidx.test:runner:1.6.2")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:58</span>: <span class="message">A newer version of androidx.test.espresso:espresso-core than 3.5.0 is available: 3.7.0</span><br /><pre class="errorlines">
+<span class="lineno"> 55 </span>    testImplementation("org.robolectric:robolectric:4.16.1")
+<span class="lineno"> 56 </span>    testImplementation("org.apache.pdfbox:pdfbox:2.0.32")
+<span class="lineno"> 57 </span>    testImplementation("androidx.test:core-ktx:1.6.1")
+<span class="caretline"><span class="lineno"> 58 </span>    testImplementation(<span class="warning">"androidx.test.espresso:espresso-core:3.5.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 59 </span>    testImplementation("androidx.compose.ui:ui-test-junit4")
+<span class="lineno"> 60 </span>    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+<span class="lineno"> 61 </span>    androidTestImplementation("androidx.test:runner:1.6.2")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:57</span>: <span class="message">A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0</span><br /><pre class="errorlines">
-<span class="lineno"> 54 </span>    testImplementation("androidx.test:core-ktx:1.6.1")
-<span class="lineno"> 55 </span>    testImplementation("androidx.test.espresso:espresso-core:3.5.0")
-<span class="lineno"> 56 </span>    testImplementation("androidx.compose.ui:ui-test-junit4")
-<span class="caretline"><span class="lineno"> 57 </span>    androidTestImplementation(<span class="warning">"androidx.test.ext:junit:1.2.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 58 </span>    androidTestImplementation("androidx.test:runner:1.6.2")
-<span class="lineno"> 59 </span>    androidTestImplementation("androidx.test:core-ktx:1.6.1")
-<span class="lineno"> 60 </span>    androidTestImplementation(platform("androidx.compose:compose-bom:2025.04.01"))
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:60</span>: <span class="message">A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0</span><br /><pre class="errorlines">
+<span class="lineno"> 57 </span>    testImplementation("androidx.test:core-ktx:1.6.1")
+<span class="lineno"> 58 </span>    testImplementation("androidx.test.espresso:espresso-core:3.5.0")
+<span class="lineno"> 59 </span>    testImplementation("androidx.compose.ui:ui-test-junit4")
+<span class="caretline"><span class="lineno"> 60 </span>    androidTestImplementation(<span class="warning">"androidx.test.ext:junit:1.2.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 61 </span>    androidTestImplementation("androidx.test:runner:1.6.2")
+<span class="lineno"> 62 </span>    androidTestImplementation("androidx.test:core-ktx:1.6.1")
+<span class="lineno"> 63 </span>    androidTestImplementation(platform("androidx.compose:compose-bom:2025.04.01"))
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:58</span>: <span class="message">A newer version of androidx.test:runner than 1.6.2 is available: 1.7.0</span><br /><pre class="errorlines">
-<span class="lineno"> 55 </span>    testImplementation("androidx.test.espresso:espresso-core:3.5.0")
-<span class="lineno"> 56 </span>    testImplementation("androidx.compose.ui:ui-test-junit4")
-<span class="lineno"> 57 </span>    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-<span class="caretline"><span class="lineno"> 58 </span>    androidTestImplementation(<span class="warning">"androidx.test:runner:1.6.2"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 59 </span>    androidTestImplementation("androidx.test:core-ktx:1.6.1")
-<span class="lineno"> 60 </span>    androidTestImplementation(platform("androidx.compose:compose-bom:2025.04.01"))
-<span class="lineno"> 61 </span>    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:61</span>: <span class="message">A newer version of androidx.test:runner than 1.6.2 is available: 1.7.0</span><br /><pre class="errorlines">
+<span class="lineno"> 58 </span>    testImplementation("androidx.test.espresso:espresso-core:3.5.0")
+<span class="lineno"> 59 </span>    testImplementation("androidx.compose.ui:ui-test-junit4")
+<span class="lineno"> 60 </span>    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+<span class="caretline"><span class="lineno"> 61 </span>    androidTestImplementation(<span class="warning">"androidx.test:runner:1.6.2"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 62 </span>    androidTestImplementation("androidx.test:core-ktx:1.6.1")
+<span class="lineno"> 63 </span>    androidTestImplementation(platform("androidx.compose:compose-bom:2025.04.01"))
+<span class="lineno"> 64 </span>    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:59</span>: <span class="message">A newer version of androidx.test:core-ktx than 1.6.1 is available: 1.7.0</span><br /><pre class="errorlines">
-<span class="lineno"> 56 </span>    testImplementation("androidx.compose.ui:ui-test-junit4")
-<span class="lineno"> 57 </span>    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-<span class="lineno"> 58 </span>    androidTestImplementation("androidx.test:runner:1.6.2")
-<span class="caretline"><span class="lineno"> 59 </span>    androidTestImplementation(<span class="warning">"androidx.test:core-ktx:1.6.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 60 </span>    androidTestImplementation(platform("androidx.compose:compose-bom:2025.04.01"))
-<span class="lineno"> 61 </span>    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-<span class="lineno"> 62 </span>    debugImplementation("androidx.compose.ui:ui-test-manifest")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:62</span>: <span class="message">A newer version of androidx.test:core-ktx than 1.6.1 is available: 1.7.0</span><br /><pre class="errorlines">
+<span class="lineno"> 59 </span>    testImplementation("androidx.compose.ui:ui-test-junit4")
+<span class="lineno"> 60 </span>    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+<span class="lineno"> 61 </span>    androidTestImplementation("androidx.test:runner:1.6.2")
+<span class="caretline"><span class="lineno"> 62 </span>    androidTestImplementation(<span class="warning">"androidx.test:core-ktx:1.6.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 63 </span>    androidTestImplementation(platform("androidx.compose:compose-bom:2025.04.01"))
+<span class="lineno"> 64 </span>    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+<span class="lineno"> 65 </span>    debugImplementation("androidx.compose.ui:ui-test-manifest")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:60</span>: <span class="message">A newer version of androidx.compose:compose-bom than 2025.04.01 is available: 2026.09.00</span><br /><pre class="errorlines">
-<span class="lineno"> 57 </span>    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-<span class="lineno"> 58 </span>    androidTestImplementation("androidx.test:runner:1.6.2")
-<span class="lineno"> 59 </span>    androidTestImplementation("androidx.test:core-ktx:1.6.1")
-<span class="caretline"><span class="lineno"> 60 </span>    androidTestImplementation(<span class="warning">platform("androidx.compose:compose-bom:2025.04.01")</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 61 </span>    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-<span class="lineno"> 62 </span>    debugImplementation("androidx.compose.ui:ui-test-manifest")
-<span class="lineno"> 63 </span>}
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:63</span>: <span class="message">A newer version of androidx.compose:compose-bom than 2025.04.01 is available: 2026.09.00</span><br /><pre class="errorlines">
+<span class="lineno"> 60 </span>    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+<span class="lineno"> 61 </span>    androidTestImplementation("androidx.test:runner:1.6.2")
+<span class="lineno"> 62 </span>    androidTestImplementation("androidx.test:core-ktx:1.6.1")
+<span class="caretline"><span class="lineno"> 63 </span>    androidTestImplementation(<span class="warning">platform("androidx.compose:compose-bom:2025.04.01")</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 64 </span>    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+<span class="lineno"> 65 </span>    debugImplementation("androidx.compose.ui:ui-test-manifest")
+<span class="lineno"> 66 </span>}
 </pre>
 
 </div>
@@ -668,14 +668,23 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../src/main/java/fr/hybridcoach/garmin/GarminBridgeClient.kt">../../src/main/java/fr/hybridcoach/garmin/GarminBridgeClient.kt</a>:76</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
-<span class="lineno">  73 </span>                    cipher.doFinal(codec.encodeToString(value).toByteArray(Charsets.UTF_8)),
-<span class="lineno">  74 </span>                    Base64.NO_WRAP,
-<span class="lineno">  75 </span>                )
-<span class="caretline"><span class="lineno">  76 </span>        check(<span class="warning">preferences.edit()</span>.putString(<span class="string">"encrypted"</span>, encrypted).commit()) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  77 </span>            <span class="string">"Configuration non enregistrée."</span>
-<span class="lineno">  78 </span>        }
-<span class="lineno">  79 </span>    }
+<span class="location"><a href="../../src/main/java/fr/hybridcoach/garmin/GarminSecureSettings.kt">../../src/main/java/fr/hybridcoach/garmin/GarminSecureSettings.kt</a>:79</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
+<span class="lineno"> 76 </span>
+<span class="lineno"> 77 </span>  <span class="keyword">fun</span> clear() {
+<span class="lineno"> 78 </span>      check(preferences.edit().clear().commit()) { <span class="string">"Déconnexion non enregistrée."</span> }
+<span class="caretline"><span class="lineno"> 79 </span>      check(<span class="warning">legacyPreferences.edit()</span>.clear().commit()) { <span class="string">"Ancienne configuration non effacée."</span> }&nbsp;&nbsp;</span>
+<span class="lineno"> 80 </span>  }
+<span class="lineno"> 81 </span>
+<span class="lineno"> 82 </span>  <span class="keyword">fun</span> save(value: GarminPersonalSettings) {
+</pre>
+
+<span class="location"><a href="../../src/main/java/fr/hybridcoach/garmin/GarminSecureSettings.kt">../../src/main/java/fr/hybridcoach/garmin/GarminSecureSettings.kt</a>:96</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
+<span class="lineno"> 93 </span>        check(preferences.edit().putString(<span class="string">"encrypted"</span>, encrypted).commit()) {
+<span class="lineno"> 94 </span>            <span class="string">"Configuration non enregistrée."</span>
+<span class="lineno"> 95 </span>        }
+<span class="caretline"><span class="lineno"> 96 </span>        check(<span class="warning">legacyPreferences.edit()</span>.clear().commit()) { <span class="string">"Ancienne configuration non effacée."</span> }&nbsp;&nbsp;</span>
+<span class="lineno"> 97 </span>    }
+<span class="lineno"> 98 </span>}
 </pre>
 
 <span class="location"><a href="../../src/main/java/fr/hybridcoach/RestReceiver.kt">../../src/main/java/fr/hybridcoach/RestReceiver.kt</a>:21</span>: <span class="message">Use the KTX extension function <code>String.toUri</code> instead?</span><br /><pre class="errorlines">

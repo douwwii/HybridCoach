@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="fr.hybridcoach.PlanningPersistenceTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:54:15" hostname="fedoraleo" time="0.532">
+<testsuite name="fr.hybridcoach.PlanningPersistenceTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-22T20:03:55" hostname="fedoraleo" time="3.801">
   <properties/>
-  <testcase name="invalidPeriodDoesNotOverwriteExistingPhase" classname="fr.hybridcoach.PlanningPersistenceTest" time="0.043"/>
-  <testcase name="overlapsAndMultipleLinksSurviveReopenAndPeriodEdits" classname="fr.hybridcoach.PlanningPersistenceTest" time="0.073"/>
-  <testcase name="duplicateWeekCopiesLinksAndMoveUsesSameCalendarRecord" classname="fr.hybridcoach.PlanningPersistenceTest" time="0.054"/>
-  <testcase name="realVersionOneFileMigratesWithoutLosingAnyExistingData" classname="fr.hybridcoach.PlanningPersistenceTest" time="0.043"/>
-  <testcase name="pdfRendersSubGoalPeriodsAndStructuredRecoveries" classname="fr.hybridcoach.PlanningPersistenceTest" time="0.229"/>
-  <testcase name="reassociationAndDeletionRemoveIncompatibleLinksOnly" classname="fr.hybridcoach.PlanningPersistenceTest" time="0.046"/>
-  <testcase name="recurrenceAssignsAllOccurrencesAndRejectsInvalidLinksAtomically" classname="fr.hybridcoach.PlanningPersistenceTest" time="0.043"/>
+  <testcase name="invalidPeriodDoesNotOverwriteExistingPhase" classname="fr.hybridcoach.PlanningPersistenceTest" time="0.398"/>
+  <testcase name="overlapsAndMultipleLinksSurviveReopenAndPeriodEdits" classname="fr.hybridcoach.PlanningPersistenceTest" time="0.377"/>
+  <testcase name="duplicateWeekCopiesLinksAndMoveUsesSameCalendarRecord" classname="fr.hybridcoach.PlanningPersistenceTest" time="0.23"/>
+  <testcase name="realVersionOneFileMigratesWithoutLosingAnyExistingData" classname="fr.hybridcoach.PlanningPersistenceTest" time="0.259"/>
+  <testcase name="pdfRendersSubGoalPeriodsAndStructuredRecoveries" classname="fr.hybridcoach.PlanningPersistenceTest" time="1.776"/>
+  <testcase name="reassociationAndDeletionRemoveIncompatibleLinksOnly" classname="fr.hybridcoach.PlanningPersistenceTest" time="0.427"/>
+  <testcase name="recurrenceAssignsAllOccurrencesAndRejectsInvalidLinksAtomically" classname="fr.hybridcoach.PlanningPersistenceTest" time="0.326"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

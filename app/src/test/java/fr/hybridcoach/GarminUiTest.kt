@@ -23,6 +23,47 @@ class GarminUiTest {
     @get:Rule val compose = createAndroidComposeRule<MainActivity>()
 
     @Test
+    fun directConnectionScreenOffersPersonalKeyWithoutServerOrPassword() {
+        compose.waitUntil(15000) {
+            compose.onAllNodesWithText("Un jour, un progrès.").fetchSemanticsNodes().isNotEmpty()
+        }
+        compose.onNodeWithContentDescription("Profil sportif").performClick()
+        compose.onNodeWithText("Garmin Connect").performClick()
+        compose
+            .onNodeWithTag("garmin-screen")
+            .performScrollToNode(hasText("Clé personnelle Garmin", substring = false))
+        compose.onNodeWithText("Créer une clé dans Garmin Connect").assertExists()
+        compose.onNodeWithText("Adresse HTTPS du service").assertDoesNotExist()
+        compose.onNodeWithText("Mot de passe Garmin").assertDoesNotExist()
+        compose.onNodeWithText("Connecter Garmin").assertIsNotEnabled()
+        compose
+            .onNode(hasSetTextAction() and hasText("Clé personnelle Garmin"))
+            .performTextInput("synthetic.personal.key")
+        compose.onNodeWithText("Connecter Garmin").assertIsEnabled()
+        // A fresh activity must never restore the secret field from saved-instance state.
+        compose.activityRule.scenario.recreate()
+        compose.waitForIdle()
+        compose.onNodeWithTag("garmin-screen").performScrollToNode(hasText("Connecter Garmin"))
+        compose.onNodeWithText("Connecter Garmin").assertIsNotEnabled()
+        compose.runOnIdle {
+            val view = compose.activity.window.decorView
+            val bitmap =
+                android.graphics.Bitmap.createBitmap(
+                    view.width,
+                    view.height,
+                    android.graphics.Bitmap.Config.ARGB_8888,
+                )
+            view.draw(android.graphics.Canvas(bitmap))
+            val directory = File(requireNotNull(System.getProperty("hybridcoach.artifactDir")))
+            directory.mkdirs()
+            File(directory, "garmin-personal.png").outputStream().use {
+                bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, it)
+            }
+            bitmap.recycle()
+        }
+    }
+
+    @Test
     fun uncertainActivityIsConfirmedOnceAndDisplayedWithGarminOrigin() {
         androidx.test.espresso.IdlingPolicies.setMasterPolicyTimeout(
             15,

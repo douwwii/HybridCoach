@@ -1,33 +1,61 @@
 # Vérification de Hybrid Coach
 
-## Résultat final du 19/10/2026 à 17:55 (Europe/Paris) — version 1.2.0
+## Résultat du 22/10/2026 — version 1.3.1, connexion Garmin et diagnostic HTTP 406
 
-**81 tests Android/JVM sur 81 réussis**, aucun échec, aucune erreur, aucun test ignoré. **11 tests Python sur 11 réussis**.
+**107 tests Android/JVM sur 107 réussis**, aucun échec, aucune erreur, aucun test ignoré.
 
 | Couverture | Réussites |
 |---|---:|
 | Calculs sportifs, récurrences, statistiques, répétitions, exports | 41 |
 | Room, persistance, préparation et PDF locaux existants | 15 |
 | Parcours Compose existants | 4 |
-| Classement et validation des paramètres Garmin | 7 |
-| Import Garmin, doublons, suppressions, modifications, migrations | 13 |
-| Parcours Compose de confirmation et provenance Garmin | 1 |
-| Total Android/JVM | **81** |
-| Service Python : authentification, MFA, cache, pagination, erreurs, adaptateur | **11** |
+| Classement Garmin et validation de clé personnelle | 7 |
+| Import Garmin, doublons, suppressions, modifications, migrations | 16 |
+| API personnelle : contrat HTTP, formats de jeton, normalisation, pagination, renouvellement, erreurs et comptes | 18 |
+| Transport HTTPS : en-têtes effectifs, POST vide, erreurs brutes exclues | 2 |
+| Chiffrement local, rotation, déconnexion et configuration corrompue | 2 |
+| Parcours Compose Garmin : connexion directe, recréation, association et détail | 2 |
+| Total Android/JVM | **107** |
 
-Contrôles exécutés depuis `Obsidian Vault/My life/Pro/Projets/HybridCoach` : `./gradlew :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest :app:lintDebug` avec JBR 21. Résultat : `BUILD SUCCESSFUL`. Lint : **0 erreur, 25 avertissements et 3 informations**. Les avertissements ne sont pas masqués ; ils concernent notamment les versions de dépendances, des conventions Compose, la configuration de sauvegarde et du code tiers PDFBox/Bouncy Castle.
+Contrôles exécutés depuis `Obsidian Vault/My life/Pro/Projets/HybridCoach` :
 
-La migration réelle **2 → 3** conserve les séances, les plans, les périodes et les associations aux sous-objectifs dans un fichier SQLite créé à partir du schéma v2. La migration **1 → 2 → 3** reste couverte par le test existant. Le rapprochement teste notamment 11 km réalisés pour 12 km prévus, les cas ambigus, deux activités réclamant une seule séance, les séances terminées manuellement et les sessions déjà liées.
+```bash
+JAVA_HOME=/home/douwwii/.jdks/jbr-21.0.11 ./gradlew :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest :app:lintDebug
+```
 
-Les tests d’import vérifient l’absence de doublons, les modifications distantes, les ignorés, les changements de sport, la suppression distante, la dissociation et la restauration des mesures locales, ainsi que le kilométrage prévu dans sa semaine d’origine et le réel à sa date effective. Le parcours Compose confirme une activité ambiguë, ouvre sa séance et vérifie la provenance Garmin. Les contrôles de navigation sont désactivés tant que le graphe et les données ne sont pas chargés, pour éviter les clics prématurés au démarrage. Capture : `docs/screenshots/garmin-session.png`.
+Résultat : **BUILD SUCCESSFUL**. Lint : **0 erreur, 26 avertissements et 3 informations**, sans suppression des avertissements. Ils concernent les versions de dépendances, des conventions Compose/KTX, la sauvegarde et du code tiers PDFBox/Bouncy Castle. Les préférences chiffrées utilisent volontairement `commit()` pour vérifier l’écriture effective avant d’annoncer la connexion/déconnexion.
 
-Le service a été installé/testé localement avec Python 3.14 ; son image **Python 3.13** a été construite avec Podman, puis démarrée sous l’utilisateur non root configuré. Les routes HTTP de santé et d’état ont été vérifiées, avec refus d’un accès non authentifié. La configuration du proxy Caddy 2.10.2 est validée. Les tests Python utilisent le SDK réel pour vérifier le contrat de l’adaptateur, et des réponses simulées pour les échanges Garmin. Un avertissement de dépréciation `TestClient/httpx` est conservé dans le rapport Python ; il n’empêche pas les tests.
+L’APK est en version **1.3.1 / code 5**, Android 8.0 / API 26 minimum, cible 35. La signature debug est vérifiée et identique à celle du précédent APK livré, pour permettre une mise à jour sur place. Les tests instrumentés sont compilés ; ils n’ont pas été exécutés sur un téléphone ou un émulateur complet.
 
-**À configurer et valider sur les équipements réels :** service HTTPS déployé avec votre domaine et votre certificat, connexion à votre compte Garmin (dont MFA), import depuis Garmin réel et usage sur téléphone. Aucun compte ou hébergement n’a été fourni et aucun entraînement n’a été envoyé vers Garmin. Le code de l’étape 2 se limite au contrat abstrait `GarminWorkoutExporter`.
+Mise à jour de l’émulateur déjà connecté : `adb install -r` a réussi, `dumpsys package` confirme **1.3.1 / code 5**, puis `MainActivity` a été démarrée et le processus est resté actif. Aucune désinstallation ni suppression des données n’a été demandée. Aucun secret utilisateur n’a été lu. Rapport : `livrables/rapports/emulator-update-1.3.1.txt`. Ce contrôle ne valide pas l’authentification réelle Garmin.
 
-L’APK est en version **1.2.0 / code 3**, Android 8.0 / API 26 minimum, cible 35. Il déclare désormais `INTERNET` pour la synchronisation explicitement demandée. Les fonctions locales restent disponibles hors ligne. Les tests instrumentés ont été compilés, sans exécution sur téléphone ou émulateur complet.
+### Correctif de compatibilité et diagnostic HTTP 406
 
-Les contrôles PDF existants restent validés : documents de résistance et de parcours lus par un lecteur indépendant. Les fichiers de contrôle et captures utilisent exclusivement des données synthétiques. Les rapports sont conservés dans `livrables/rapports/`.
+Un HTTP 406 sur « Connecter Garmin » a été confirmé par une capture utilisateur. Le client imposait une réponse JSON au point d’accès de jeton alors que l’exemple Garmin ne fixe pas ce format. Il utilise maintenant `Accept: */*` pour le jeton et peut lire du texte brut, une chaîne JSON ou l’objet OAuth JSON. Le transport s’identifie par le User-Agent HybridCoach. Les erreurs conservent le code HTTP et nomment l’étape qui échoue, sans afficher les corps des réponses. Le 403 est distingué d’une clé refusée en 401 et le 407 est identifié comme une demande d’authentification de proxy.
+
+Six tests supplémentaires couvrent ces formats, un serveur simulé refusant l’ancien en-tête en 406, le diagnostic à chaque étape, la distinction 401/403/407, le rejet d’HTML ou de caractères invalides, ainsi que les propriétés réellement transmises à une connexion HTTP injectée. Le POST sans corps, les certificats HTTPS ordinaires, l’absence de redirections et le non-affichage des erreurs brutes sont conservés.
+
+**Limite :** l’origine exacte du 406 n’est pas confirmée sur le compte réel. Les requêtes de contrôle sans clé valide renvoient 401 ; elles ne reproduisent pas le refus vu par l’utilisateur. La compatibilité est corrigée et testée en simulation ; une nouvelle connexion dans l’application est nécessaire pour valider sa résolution. Aucun secret utilisateur n’a été demandé ni utilisé dans les tests.
+
+### Vérifications de l’API personnelle
+
+Le contrat a été vérifié dans la [FAQ officielle](https://developer.garmin.com/gc-developer-program/personal/personal-faq/) et le [schéma OpenAPI officiel](https://developer.garmin.com/gc-developer-program/personal/swagger-docs/) : hôte HTTPS fixe, génération de jeton par clé personnelle, profil, recherche paginée et détail d’activité. Les appels réseau des tests sont simulés ; aucune clé réelle n’est utilisée.
+
+Les tests vérifient les en-têtes `ApiKey`/`Bearer`, les routes officielles, la réutilisation du jeton en mémoire, son renouvellement à expiration et une seule nouvelle tentative après HTTP 401, les erreurs de clé révoquée, les réponses malformées, les limites de requêtes, 100 activités réparties sur deux pages, les pages dupliquées et les propriétaires incohérents. Ils couvrent les deux formes de réponse documentées, les mètres/secondes/bpm, le passage de minuit entre UTC et heure locale, les mesures absentes et les empreintes stables.
+
+La suppression exige un HTTP 404 de la ressource de détail. Les erreurs 403/429/500 ne deviennent pas des suppressions ; une activité temporairement absente de la liste est récupérée par son détail. Les comptes vides et les changements de profil/propriétaire sont couverts. Une rotation de clé conserve l’identité vérifiée sans confondre deux profils.
+
+Les tests de stockage utilisent AES-GCM avec une clé de test injectée : aller-retour, texte chiffré sans clé en clair, IV différent à chaque écriture, suppression de l’ancienne configuration et déconnexion. Ils ne prétendent pas valider le matériel Keystore d’un téléphone. En production, le fournisseur est Android Keystore.
+
+Les migrations Room réelles **2 → 3** et **1 → 2 → 3** restent couvertes. La base ne change pas de version. Trois tests supplémentaires vérifient la réattribution transactionnelle des comptes issus de l’ancien service après preuve par identifiant d’activité commun, la conservation des corrections locales, l’absence de doublons et le retour arrière si le snapshot est invalide. Aucun ancien compte sans correspondance n’est réattribué arbitrairement.
+
+Le parcours Compose vérifie le formulaire par clé, l’absence de champs serveur/mot de passe et l’effacement du secret après recréation de l’activité. Capture inspectée : `docs/screenshots/garmin-personal.png`. Le parcours d’association confirme une activité ambiguë, ouvre le détail et vérifie sa provenance Garmin. Les tests utilisent exclusivement des activités synthétiques.
+
+**Validation réelle restante :** création d’une clé sur votre compte Garmin, connexion et import de vos activités sur le téléphone. Aucun compte ou clé réelle n’a été fourni. Aucune séance n’a été envoyée vers Garmin ; l’export vers la montre n’est pas implémenté. La synchronisation est manuelle.
+
+Le service Python de la version 1.2 est une archive technique non utilisée par l’application actuelle. Ses 11 tests et ses anciens rapports de conteneur sont conservés à titre historique ; ils n’ont pas été relancés pour cette modification Android.
+
+Les contrôles PDF existants restent validés par un lecteur indépendant. Les rapports actuels sont conservés dans `livrables/rapports/` et le mode d’emploi dans [GARMIN.md](GARMIN.md).
 
 ## Tests automatisés
 
@@ -72,7 +100,7 @@ Les fichiers dans `docs/screenshots/` sont exclusivement des artefacts de test e
 | Génération, texte, pagination et lecture PDF | Moteur applicatif + lecteur indépendant + Poppler |
 | Navigation, saisie et partage | Tests Compose locaux, résultat dans le bilan final |
 | Téléphone physique, vibration, économie d’énergie | À vérifier sur appareil |
-| Émulateur Android complet | Non exécuté jusqu’au bout : les versions essayées ont quitté avec le code 139 avant une connexion ADB utilisable |
+| Émulateur Android complet | Mise à jour 1.3.0 → 1.3.1 par `adb install -r` et démarrage réussis sur `emulator-5554` (SDK 37). Tests instrumentés non exécutés ; connexion Garmin réelle à retester |
 | Android Studio sous Windows 11 | Instructions fournies ; non exécuté ici |
 | Toutes tailles d’écran et toutes versions Android | Couverture non exhaustive |
 
@@ -87,5 +115,6 @@ Les tests instrumentés dans `app/src/androidTest` restent disponibles pour un �
 5. Terminer la séance, consigner une sortie de course puis consulter l’historique et la progression.
 6. Partager un PDF dans une application installée et l’ouvrir sur un autre appareil.
 7. Vérifier l’apparence claire/sombre et la lisibilité avec la taille de police habituelle.
+8. Ouvrir Profil sportif → Garmin Connect, créer une clé personnelle dans le navigateur, la connecter et synchroniser. Vérifier une deuxième synchronisation sans doublon, les associations proposées et la conservation des séances après déconnexion.
 
 Ce contrôle complémentaire concerne les interactions réelles avec Android et les autres applications ; les résultats sportifs restent locaux et aucun compte n’est nécessaire.

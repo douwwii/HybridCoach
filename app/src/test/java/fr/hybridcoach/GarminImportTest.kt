@@ -88,6 +88,67 @@ class GarminImportTest {
         )
 
     @Test
+    fun personalApiAdoptsBridgeLinksWithoutDuplicatingOrOverwritingLocalCorrections() =
+        runBlocking {
+            val legacy = "b".repeat(64)
+            val remote = activity()
+            repo.saveWorkout(workout(), null, emptySet(), false)
+            importer.import(GarminSnapshot(legacy, 200, listOf(remote)))
+            val row = db.dao().allGarmin().single()
+            val result = db.dao().result(row.workoutId!!)!!
+            val corrected =
+                parseResult(result.payload).copy(distanceKm = "10.5", notes = "Correction locale")
+            db.dao().putResult(result.copy(payload = codec.encodeToString(corrected)))
+            val personal =
+                remote.copy(localDateTime = "2026-10-19T08:00", fingerprint = "c".repeat(64))
+            assertEquals(
+                0,
+                importer.importPersonal(GarminSnapshot("personal:42", 1, listOf(personal))),
+            )
+            val migrated = db.dao().allGarmin().single()
+            assertEquals("personal:42:1", migrated.key)
+            assertEquals(row.workoutId, migrated.workoutId)
+            assertEquals(row.originalWorkout, migrated.originalWorkout)
+            assertEquals(corrected, parseResult(db.dao().result(row.workoutId!!)!!.payload))
+            assertEquals(1, db.dao().allWorkouts().size)
+            assertNull(db.dao().syncForAccount(legacy))
+            assertEquals(
+                0,
+                importer.importPersonal(GarminSnapshot("personal:42", 2, listOf(personal))),
+            )
+        }
+
+    @Test
+    fun personalApiMigrationRollsBackWhenSnapshotIsIncomplete() = runBlocking {
+        val legacy = "b".repeat(64)
+        importer.import(GarminSnapshot(legacy, 1, listOf(activity())))
+        val before = db.dao().allGarmin().single()
+        val failure =
+            runCatching {
+                    importer.importPersonal(
+                        GarminSnapshot("personal:42", 1, listOf(activity()), complete = false)
+                    )
+                }
+                .exceptionOrNull()
+        assertTrue(failure is IllegalArgumentException)
+        assertEquals(before, db.dao().allGarmin().single())
+        assertNotNull(db.dao().syncForAccount(legacy))
+        assertNull(db.dao().syncForAccount("personal:42"))
+    }
+
+    @Test
+    fun personalApiDoesNotAdoptAnUnprovenAccount() = runBlocking {
+        val legacy = "b".repeat(64)
+        importer.import(GarminSnapshot(legacy, 1, listOf(activity())))
+        importer.importPersonal(GarminSnapshot("personal:42", 1, listOf(activity(id = "2"))))
+        assertEquals(
+            setOf(legacy, "personal:42"),
+            db.dao().allGarmin().map { it.accountId }.toSet(),
+        )
+        assertNotNull(db.dao().syncForAccount(legacy))
+    }
+
+    @Test
     fun automaticImportPreservesPlanAndAvoidsDuplicateWorkoutsAndKilometers() = runBlocking {
         val original = workout()
         repo.saveWorkout(original, null, emptySet(), false)

@@ -1,139 +1,77 @@
-# Garmin Connect — étape 1, version 1.2.0
+# Garmin Connect — connexion directe par API personnelle
 
-## Ce qui est fourni
+Depuis **Hybrid Coach 1.3.0**, aucun serveur, Docker, domaine ni clé de service intermédiaire n’est nécessaire. L’application Android communique en HTTPS avec l’API personnelle officielle de Garmin. Cette connexion est facultative ; les fonctions locales restent utilisables hors ligne.
 
-**Profil sportif → Garmin Connect** donne accès à la connexion, la double authentification, l’état, la dernière synchronisation, le nombre d’activités importées et à **Synchroniser Garmin**. Les activités ambiguës se valident depuis **Activités à examiner**. Une association peut être modifiée depuis cet écran ou le détail d’une séance importée.
+## Connecter son compte
 
-L’application conserve ses fonctions locales hors ligne. Une synchronisation nécessite le service personnel décrit ci-dessous, une connexion Internet et un compte Garmin. Aucun service hébergé ni identifiant Garmin n’est préconfiguré dans l’APK.
-
-## Architecture et choix Android
-
-```text
-Téléphone Kotlin / Compose
-  GarminGateway                 contrat remplaçable
-    GarminBridgeClient          HTTPS / JSON v1, aucune dépendance Python Android
-  GarminImporter                transactions Room et décisions utilisateur
-  GarminMatcher                 calcul pur, indépendant du réseau et de Room
-  Room v3                       activités, liens uniques, historique prévu, résultats
-    CoachState                  calendrier, préparation, historique, statistiques
-           |
-           | HTTPS + clé privée du service
-           v
-Service Python personnel, un utilisateur
-  bridge.app                    API authentifiée, erreurs sans secrets
-  bridge.provider               seul adaptateur de python-garminconnect 0.3.19
-  bridge.core                   normalisation, pagination, détection des modifications/suppressions
-  Vault                         SQLite chiffré avec Fernet
-           |
-           | HTTPS Garmin
-           v
-Garmin Connect
-```
-
-La version fixée de [python-garminconnect](https://pypi.org/project/garminconnect/0.3.19/) demande Python 3.12 ou plus et utilise notamment `curl_cffi`. Elle est exécutée dans un service Linux Python 3.13 fourni, plutôt que de supposer que ses dépendances natives fonctionnent dans l’APK. Le dépôt contient le code du service, son image Docker et un reverse proxy HTTPS. Les appels du SDK sont isolés dans `PythonGarminProvider`, derrière `ActivityProvider` : le remplacement par une API officielle ne touche ni le rapprochement ni la base Android. Le client Android est lui-même abstrait derrière `GarminGateway`.
-
-`GarminWorkoutExporter` réserve le contrat de l’étape 2. Il n’existe ni implémentation d’envoi, ni bouton d’export vers Garmin, ni écriture d’entraînement dans Garmin. L’arbre `WorkoutPlan` conserve déjà répétitions, cibles et récupérations.
-
-La bibliothèque est non officielle : un changement ou un blocage de Garmin peut nécessiter sa mise à jour. Les tests utilisent la version réelle du SDK pour vérifier les signatures de l’adaptateur, et des réponses simulées pour les authentifications et activités. Aucune authentification sur un vrai compte n’est déclarée validée.
-
-## Installer le service sur un serveur
-
-Prévoir un serveur Linux qui reste allumé, avec Docker + Docker Compose, accès sortant HTTPS vers Garmin, un nom DNS et les ports 80/443 accessibles pour le proxy Caddy. Un VPS ou un serveur personnel correctement joignable convient ; le service est **privé et mono-utilisateur**. Ne partagez pas une même instance entre plusieurs personnes : elles partageraient la session Garmin et les données de l’instance.
-
-Depuis la racine du projet, sur ce serveur :
-
-```bash
-cd services/garmin_bridge
-python3 -m bridge.bootstrap --domain garmin.votre-domaine.fr
-docker compose up --build -d
-```
-
-Remplacez le domaine d’exemple par votre véritable domaine, dont les enregistrements DNS A/AAAA pointent vers le serveur. Le script génère **sans les afficher** une clé d’accès et une clé de chiffrement dans `secrets.env`, en permissions 0600. Ce fichier est ignoré par Git. Il n’inclut aucun mot de passe Garmin. Le bootstrap utilise seulement la bibliothèque standard Python ; Python 3.13 et les dépendances du service sont installés dans l’image.
-
-Caddy obtient et renouvelle le certificat public si le domaine et les ports sont correctement configurés ; voir ses [conditions d’HTTPS automatique](https://caddyserver.com/docs/automatic-https). Le port interne 8000 du service n’est pas publié par Compose. Les accès Android utilisent exclusivement HTTPS avec vérification normale du certificat ; aucun contournement de certificat ni mode HTTP n’est ajouté.
-
-Contrôlez l’état public :
-
-```bash
-curl --fail https://garmin.votre-domaine.fr/health
-```
-
-La réponse attendue est `{"ok":true}`. Ce point ne révèle aucune donnée de compte. Tous les points `/v1/*` exigent la clé privée. Les journaux d’accès applicatifs sont désactivés et les erreurs de l’API ne renvoient pas les corps de réponse du SDK, tickets SSO ou identifiants.
-
-Sauvegardez **le volume `garmin-data` et `secrets.env` ensemble**, en lieu privé. La clé maître permet de déchiffrer les jetons et les activités stockées. Sa perte rend la session et le cache illisibles ; sa régénération change aussi l’identité de connexion. Android refuse de réimporter les mêmes identifiants Garmin sous une nouvelle identité de service, afin d’éviter les doublons. Restaurer la sauvegarde d’origine est le chemin normal de récupération. Ne lancez pas `docker compose down -v` si vous souhaitez conserver le cache.
-
-Le service fonctionne avec **un seul worker**, car une demande de MFA contient un état temporaire en mémoire. Le code expire après cinq minutes ; après un redémarrage du service, recommencer la connexion. La session validée et ses jetons rafraîchis sont persistés chiffrés. Les sessions que le SDK ne peut pas sérialiser en jetons persistants sont refusées plutôt que présentées comme connectées.
-
-### Depuis le téléphone
-
-1. Installer/lancer Hybrid Coach 1.2.0.
+1. Installer l’APK 1.3.1 ou lancer le projet de ce dossier dans Android Studio.
 2. Ouvrir **Profil sportif → Garmin Connect**.
-3. Saisir `https://garmin.votre-domaine.fr` et la valeur `GARMIN_BRIDGE_API_KEY` de votre fichier privé `secrets.env`, puis **Enregistrer le service**. Garder la clé confidentielle ; ne pas la coller dans une URL ou une capture partagée.
-4. Saisir le compte et le mot de passe Garmin, puis **Connecter Garmin**. Cocher le compte Chine uniquement si nécessaire.
-5. Si demandé, saisir le code Garmin puis **Valider le code**.
-6. Appuyer sur **Synchroniser Garmin**. Le premier import peut durer plus longtemps si l’historique est important.
-7. Examiner les activités à confirmer et choisir une séance ou **Activité non planifiée**. Les activités en attente ne sont pas encore comptabilisées.
+3. Toucher **Créer une clé dans Garmin Connect**. Le navigateur ouvre [la page officielle des clés personnelles](https://connect.garmin.com/app/settings/personalApiToken). Se connecter à Garmin dans ce navigateur si nécessaire.
+4. Choisir **Create Key**, accepter les conditions de Garmin et choisir la durée de validité. Copier la clé affichée une seule fois.
+5. Revenir dans Hybrid Coach, coller la clé dans **Clé personnelle Garmin**, puis toucher **Connecter Garmin**. La connexion est vérifiée avant l’enregistrement de la clé.
+6. Toucher **Synchroniser Garmin**. Le calendrier, l’historique et les statistiques utilisent immédiatement les activités importées.
+7. Examiner **Activités à examiner** si une association à une séance prévue demande confirmation. Choisir une séance proposée ou **Activité non planifiée**.
 
-Le mot de passe et le code restent transitoires : ni Room, ni DataStore, ni l’état sauvegardé d’Android ne les enregistrent. Ils transitent chiffrés jusqu’au service personnel, puis vers Garmin. La clé du service et son adresse sont chiffrées avec AES-GCM et Android Keystore sur le téléphone. Les jetons Garmin restent sur le service, chiffrés avec Fernet ; aucun jeton n’est renvoyé à Android. Faites confiance au serveur et à son administrateur : ce serveur traite temporairement les identifiants de connexion et conserve un accès au compte Garmin.
+Ne pas saisir la clé de l’ancien service Python : il faut une clé créée par Garmin. Le mot de passe et le code MFA restent dans le parcours Garmin du navigateur. Ils ne sont plus demandés par Hybrid Coach.
 
-**Déconnecter** efface la session du service et son éventuelle demande MFA. Les séances déjà importées restent locales. Cela n’est pas une révocation d’un jeton précédemment copié : une telle révocation se fait dans les paramètres de sécurité Garmin.
+La synchronisation est **manuelle**. La montre doit d’abord avoir synchronisé son activité avec Garmin Connect. L’application télécharge ensuite l’historique paginé disponible dans l’API, sans filtre de date. Elle ne modifie ni ne supprime rien dans le compte Garmin. L’envoi des programmes et des séances structurées vers la montre n’est pas implémenté.
 
-### PC, réseau local et émulateur
+## Correctif 1.3.1 — erreur HTTP 406 à la connexion
 
-`localhost` sur le téléphone désigne le téléphone, pas votre PC. Une application Python démarrée sur un ordinateur n’est pas automatiquement joignable depuis Android. Pour utiliser un PC comme serveur, il doit rester allumé et être réellement joignable avec une adresse DNS, un certificat approuvé par Android et les règles réseau appropriées. Un VPN peut assurer cette connectivité, mais il faut configurer le DNS et le certificat. Cette configuration n’est pas réalisée automatiquement par le projet.
+Une capture utilisateur a confirmé un HTTP 406 après « Connecter Garmin » en version 1.3.0. La requête de jeton imposait `Accept: application/json`, alors que l’exemple officiel Garmin ne précise pas ce format de réponse. La version 1.3.1 utilise `Accept: */*` pour ce point d’accès et accepte un jeton en texte brut, une chaîne JSON ou l’objet OAuth JSON. Les lectures de données restent analysées strictement comme du JSON. Le client s’identifie avec son propre User-Agent HybridCoach.
 
-L’adresse d’hôte d’un émulateur ne constitue pas à elle seule une configuration HTTPS valable. Pour le parcours Android complet, utiliser le domaine HTTPS du service comme sur le téléphone. Le développement local du serveur peut se tester avec un client HTTP local, sans envoyer d’identifiants Garmin sur un réseau en clair.
+Cette incompatibilité est une piste corrigée, pas une cause confirmée sur le compte réel. Les essais sans clé valide n’ont pas reproduit le 406 : ils retournent HTTP 401. Une nouvelle tentative avec votre clé dans l’application est nécessaire pour confirmer la résolution.
 
-## Synchronisation et sécurité des suppressions
+Les erreurs affichent désormais le **code HTTP et l’étape** : obtention du jeton, lecture du profil, lecture des activités ou lecture du détail. Les corps des erreurs, la clé et les jetons ne sont jamais affichés. Un HTTP 403 n’est plus présenté comme la preuve d’une clé invalide. Si le 406 persiste, communiquer uniquement ce message d’erreur avec l’étape ; ne pas transmettre la clé.
 
-Le service parcourt toutes les pages d’activités, y compris anciennes, pour détecter les éditions rétrospectives. L’identifiant Garmin reste stable ; l’empreinte SHA-256 des valeurs normalisées détermine si une activité a changé. Android ne réécrit pas les résultats d’une activité inchangée. Une révision de snapshot est persistée par compte et toute régression est refusée.
+## Expiration et déconnexion
 
-Une activité absente d’une page n’est pas considérée comme supprimée. Pour chaque identifiant connu absent du parcours complet, l’adaptateur interroge la ressource directement : seuls **404 ou 410** constituent une suppression. Une ressource encore présente est conservée avec ses dernières données connues. Une erreur réseau, d’authentification, de quota ou une pagination incohérente interrompt le snapshot, sans application partielle dans Room. Le service conserve les tombstones pour qu’un téléphone qui a manqué une synchronisation retrouve les suppressions suivantes.
+La clé peut être créée pour 30, 90, 180 jours ou un an selon la documentation Garmin. À son expiration ou après sa révocation, créer une nouvelle clé et utiliser **Remplacer la clé Garmin**. Une nouvelle clé du même compte conserve les associations existantes : l’identité repose sur l’identifiant propriétaire des activités, pas sur la clé.
 
-L’import Android d’un snapshot et chaque décision utilisateur sont atomiques. Une association est unique des deux côtés : clé d’activité, identifiant Garmin unique et index SQL unique sur la séance liée. Les activités ignorées et les suppressions locales ne réapparaissent pas automatiquement lors d’une modification distante.
+**Actualiser l’état** vérifie la connexion auprès de Garmin. Un compte sans activité peut se connecter ; il n’entraîne aucune suppression d’un autre compte. Un changement inattendu de profil ou de propriétaire interrompt la synchronisation et demande de reconnecter la clé.
 
-Le parcours est borné à 100 000 activités ; au-delà, il échoue explicitement sans import partiel. Les délais de réseau sont bornés. Un très gros historique ou un serveur lent peut dépasser le délai du téléphone ; dans ce cas les données locales restent intactes et une nouvelle synchronisation peut être tentée. Ce choix privilégie la vérification des modifications anciennes ; un futur protocole différentiel par curseur peut être ajouté derrière l’interface sans changer Room.
+**Déconnecter** efface la clé chiffrée locale et le jeton en mémoire, en conservant les activités du calendrier. Pour révoquer la clé et ses jetons auprès de Garmin, supprimer aussi cette clé sur la page officielle. La déconnexion locale ne réalise pas cette révocation distante.
 
-## Rapprochement et conservation des données
+## Données, rapprochement et suppressions
 
-Le moteur compare le jour (écart maximal d’un jour), le sport, la distance, la durée, les mots du nom et l’horaire prévu facultatif. Il compare aussi les mesures locales d’une séance déjà terminée pour éviter de créer un doublon lorsqu’elle a été saisie manuellement. Une distance réelle de 11 km peut correspondre à 12 km prévus. Le seuil automatique est 0,78, avec une avance minimale de 0,12 sur le deuxième candidat ; ces scores sont des règles de classement, pas des probabilités.
+Les distances sont converties depuis les mètres, les durées depuis les secondes et la fréquence cardiaque depuis les bpm. L’allure moyenne est calculée en secondes/km. La date du calendrier est la date locale de l’activité, distincte de son instant UTC. Les mesures facultatives absentes restent absentes.
 
-Une séance active ou un sport générique **Autre sport** n’est jamais finalisé automatiquement. Deux activités réclamant la même séance sont examinées manuellement. Un choix manuel peut rechercher toutes les séances ; une séance déjà liée à une autre activité ou encore en cours est refusée. Sans candidat, une occurrence réalisée hors programme est créée avec un plan vide, sans kilométrage prévu inventé.
+Les activités de course et de force utilisent les catégories correspondantes ; les autres sports restent dans « Autre », avec leur type Garmin consultable. Les activités multisports sont demandées sans leurs enfants pour éviter de comptabiliser le parent et chacune de ses étapes.
 
-Pour une association, l’ID de la séance planifiée est conservé. Sa date d’affichage devient la date locale réelle Garmin ; `plannedDate` garde la date d’origine. Le plan, ses blocs et ses sous-objectifs restent en place. La date prévue facultative et les mesures Garmin sont affichées dans le détail ; les cartes portent la mention **GARMIN CONNECT**. Les exports de préparation indiquent la source et la date initiale.
+Le rapprochement existant est conservé : proximité de date, sport, distance, durée, nom et horaire prévu, avec validation des cas ambigus. Une séance associée garde son UUID, son programme, ses sous-objectifs et sa date prévue. Les résultats apparaissent à la date réelle ; le volume prévu reste dans sa semaine d’origine. Les activités en attente et ignorées ne sont pas comptabilisées comme résultats.
 
-Les volumes réels sont attribués à la date réelle et ceux prévus à la date initiale. Le calendrier, l’historique, les préparations et les statistiques observent le même `CoachState`. Les statistiques de course incluent les activités de course ; les totaux toutes activités comptent aussi les autres sports et leurs durées. Les charges et séries de musculation ne sont pas inventées à partir d’un simple résumé d’activité Garmin.
+Une activité est identifiée par son identifiant Garmin et une empreinte des mesures normalisées. Une synchronisation identique ne réécrit pas les corrections locales. Les modifications distantes mettent à jour les mesures en conservant les annotations locales. Toute synchronisation incomplète est abandonnée avant la transaction d’import.
 
-Une nouvelle mesure Garmin remplace les mesures réelles correspondantes dans le résultat, en conservant notes, RPE, fatigue, ressenti et séries saisis localement. Une synchronisation inchangée conserve aussi les corrections locales des mesures. Lors d’une dissociation, la séance planifiée retrouve sa date, son statut et ses anciennes mesures ; l’activité passe en attente sans créer immédiatement un deuxième résultat. Lors d’une suppression distante, une occurrence générée hors programme est retirée, tandis qu’une séance initialement planifiée est restaurée. Le résumé distant supprimé reste disponible dans Room pour l’historique technique ; il n’est plus compté.
+Une disparition de la liste ne suffit pas à supprimer un résultat : l’application vérifie la ressource de détail et exige un **HTTP 404**. Si le détail existe, il est récupéré. Un HTTP 401/403/429, une panne, une page dupliquée ou des données invalides interrompent l’opération sans appliquer de suppressions partielles. L’import et les décisions d’association sont transactionnels.
 
-## API et évolutivité
+## Passage depuis la version 1.2
 
-Tous les points ci-dessous, sauf `/health`, utilisent `Authorization: Bearer <clé privée>` et `Cache-Control: no-store` :
+La base Room reste en **version 3** : aucun nouveau stockage SQL n’est nécessaire, aucun effacement de données n’est effectué. Les anciennes URL/clés du service ne sont jamais utilisées pour contacter Garmin et sont effacées du stockage de configuration lors de l’enregistrement réussi d’une clé personnelle ou de la déconnexion.
 
-| Route | Fonction |
-|---|---|
-| `GET /health` | disponibilité sans données privées |
-| `GET /v1/status` | session enregistrée et identité opaque du compte |
-| `POST /v1/login` | `email`, `password`, `isCn` ; connexion ou challenge MFA |
-| `POST /v1/mfa` | `challengeId`, `code` ; fin de connexion |
-| `DELETE /v1/session` | suppression de la session du service |
-| `POST /v1/sync` | snapshot normalisé complet, révision et identifiants supprimés |
+Si une activité déjà importée par l’ancien service est retrouvée dans le compte personnel, son identifiant Garmin commun prouve la correspondance. Les enregistrements de ce compte sont alors rattachés à l’identité personnelle dans la même transaction, en conservant les séances et leurs associations. Les anciennes empreintes sont réconciliées sans écraser une correction locale si les mesures distantes sont identiques. Sans activité commune, aucun ancien compte n’est réattribué arbitrairement ; son historique reste conservé.
 
-Les valeurs utilisent mètres, secondes, secondes/km, bpm et mètres de dénivelé positif. Le début absolu est ISO UTC ; `localDateTime` préserve le jour et l’heure Garmin de l’activité, sans les convertir au fuseau du serveur. Les champs absents restent `null`. Les erreurs exposent seulement un code stable (`AUTH_REQUIRED`, `MFA_EXPIRED`, `RATE_LIMIT`, `BUSY`, `INCOMPLETE`, etc.).
+Le service Python et son ancien guide sont conservés pour maintenance dans `services/garmin_bridge` et [GARMIN_BRIDGE_LEGACY.md](GARMIN_BRIDGE_LEGACY.md). Ils ne sont plus nécessaires au fonctionnement de l’application Android.
 
-Room passe de 2 à 3 avec `MIGRATION_2_3`, en conservant la migration 1 → 2. Ajouts : date initiale, heure prévue, source, tables `garminActivities` et `garminSync`. Les schémas 1, 2 et 3 sont versionnés. Les sauvegardes d’une séance et de son résultat antérieurs à l’association servent à la restauration ; elles ne contiennent aucun secret d’authentification.
+## Stockage et échanges
 
-## Validation reproductible
+- Seul le domaine HTTPS `personal.connectapi.garmin.com` est utilisé pour les appels API ; l’utilisateur ne configure aucune URL. Les redirections HTTP ne sont pas suivies et les certificats sont vérifiés normalement.
+- La clé personnelle et les identifiants vérifiés sont chiffrés avec AES-GCM, via une clé non exportable de l’Android Keystore. Aucune clé n’entre dans Room, les exports, les journaux ou l’état d’interface sauvegardé. Les sauvegardes Android de l’application sont désactivées.
+- Le jeton d’accès reste en mémoire. Il est obtenu en transmettant la clé uniquement au point d’accès officiel, avec `Authorization: ApiKey …`, puis utilisé avec `Authorization: Bearer …` pour les lectures.
+- Le jeton est renouvelé avant son expiration (24 h maximum selon Garmin) et une fois après un refus HTTP 401. Aucun mot de passe ni refresh token n’est nécessaire. Au redémarrage de l’application, un nouveau jeton est obtenu depuis la clé chiffrée.
+- Les erreurs présentées ne recopient pas les réponses brutes de Garmin ni les secrets. Les réponses ne sont pas mises en cache par le client HTTP.
 
-Depuis la racine :
+Les données sportives importées restent dans la base locale habituelle, consultable hors ligne. L’API personnelle est destinée à un usage individuel ; une application commerciale pour plusieurs utilisateurs relève d’un autre programme Garmin.
 
-```bash
-./gradlew testDebugUnitTest assembleDebug assembleDebugAndroidTest lintDebug
-python3 -m venv services/garmin_bridge/.venv
-services/garmin_bridge/.venv/bin/pip install -r services/garmin_bridge/requirements-test.txt
-PYTHONPATH=services/garmin_bridge services/garmin_bridge/.venv/bin/python -m pytest services/garmin_bridge/tests
-```
+## Contrat officiel consulté le 22 octobre 2026
 
-Les tests couvrent le classement, les ambiguïtés, les collisions, les duplications, les changements distants, les suppressions, la réattribution de semaine, la conservation des résultats manuels et la migration réelle d’un fichier SQLite v2. Un parcours Compose confirme une activité incertaine et ouvre la séance avec sa provenance Garmin. Les tests Python vérifient les routes réelles, l’authentification du service, la MFA, le chiffrement, la pagination et les erreurs simulées. Voir `VERIFICATION.md` pour les résultats réellement exécutés.
+- [Création de clé et obtention du jeton](https://developer.garmin.com/gc-developer-program/personal/personal-api/).
+- [FAQ : usage personnel, expiration, révocation et jetons](https://developer.garmin.com/gc-developer-program/personal/personal-faq/).
+- [Schéma OpenAPI officiel](https://developer.garmin.com/gc-developer-program/personal/swagger-docs/) : liste paginée `/activitylist-service/activities/search/activities`, détail `/activity-service/activity/{activityId}` et profil `/userprofile-service/userprofile/settings`.
 
-L’image de service a été construite et démarrée avec Podman (format Docker), et son API HTTP a été vérifiée avec et sans clé. La configuration Caddy a été validée avec l’image 2.10.2. Le déploiement Compose sur votre serveur, le certificat public et l’authentification sur un vrai compte Garmin restent à vérifier sur les environnements configurés ; ils ne sont pas déduits de ces tests.
+La documentation Swagger est rendue par JavaScript. Le contrat utilisé a été lu dans le schéma OpenAPI incorporé à cette page officielle. Le client reconnaît les deux formes documentées : `SummarizedActivityDTO` pour la liste et `ActivitySummaryDTO`/`summaryDTO` pour le détail.
+
+## Validation
+
+Les tests automatisés emploient des clés et activités synthétiques, un transport simulé et une base Room locale. Ils couvrent l’authentification, le renouvellement, la pagination, les unités, les dates, les erreurs, les suppressions confirmées, la rotation de clé, le chiffrement, la migration depuis le service et l’interface. Voir [VERIFICATION.md](VERIFICATION.md) pour les résultats.
+
+Aucun compte ni clé Garmin réel n’a été fourni : l’authentification et l’import réels restent à vérifier sur le téléphone après saisie de votre propre clé. Ne jamais transmettre cette clé dans une conversation ni la versionner dans le projet.

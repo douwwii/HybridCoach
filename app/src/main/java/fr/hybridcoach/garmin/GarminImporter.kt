@@ -10,6 +10,48 @@ import kotlinx.serialization.encodeToString
 class GarminImporter(private val db: CoachDatabase) {
     private val dao = db.dao()
 
+    /** Adopt the former bridge identity only when Garmin returned a shared global activity ID. */
+    suspend fun importPersonal(snapshot: GarminSnapshot): Int =
+        db.withTransaction {
+            require(snapshot.accountId.matches(Regex("personal:[0-9]+")))
+            val incoming = snapshot.activities.associateBy { it.id }
+            val legacy =
+                dao.allGarmin()
+                    .filter {
+                        it.accountId.matches(Regex("[a-f0-9]{64}")) && it.remoteId in incoming
+                    }
+                    .map { it.accountId }
+                    .distinct()
+            for (oldAccount in legacy) {
+                dao.moveGarminAccount(oldAccount, snapshot.accountId)
+                dao.deleteGarminSync(oldAccount)
+            }
+            // The old Python adapter used another canonical JSON format for fingerprints.
+            // Re-hash identical measures without overwriting a user's local corrections.
+            if (legacy.isNotEmpty()) {
+                for (row in dao.allGarmin().filter { it.accountId == snapshot.accountId }) {
+                    val current = incoming[row.remoteId] ?: continue
+                    val old = codec.decodeFromString<GarminActivity>(row.payload)
+                    if (
+                        old.copy(
+                            startedAt = Instant.parse(old.startedAt).toString(),
+                            localDateTime =
+                                java.time.LocalDateTime.parse(old.localDateTime).toString(),
+                            fingerprint = current.fingerprint,
+                        ) == current
+                    ) {
+                        dao.putGarmin(
+                            row.copy(
+                                payload = codec.encodeToString(current),
+                                fingerprint = current.fingerprint,
+                            )
+                        )
+                    }
+                }
+            }
+            import(snapshot)
+        }
+
     suspend fun import(snapshot: GarminSnapshot): Int =
         db.withTransaction {
             require(snapshot.complete && snapshot.accountId.isNotBlank() && snapshot.revision > 0) {
@@ -20,14 +62,14 @@ class GarminImporter(private val db: CoachDatabase) {
             snapshot.activities.forEach { it.validate() }
             val oldSync = dao.syncForAccount(snapshot.accountId)
             require(oldSync == null || snapshot.revision >= oldSync.revision) {
-                "Le service Garmin a été réinitialisé. Vérifiez sa sauvegarde avant de synchroniser."
+                "Cette synchronisation Garmin est antérieure à la dernière importation. Recommencez la synchronisation."
             }
             val known = dao.allGarmin()
             val incomingIds = snapshot.activities.map { it.id }.toSet()
             require(
                 known.none { it.accountId != snapshot.accountId && it.remoteId in incomingIds }
             ) {
-                "Ces activités existent déjà sous une autre connexion Garmin. Restaurez la configuration du service d’origine pour éviter les doublons."
+                "Ces activités existent déjà sous une autre connexion Garmin. Aucune donnée n’a été dupliquée ; vérifiez le compte connecté."
             }
             var changes = 0
             snapshot.deletedIds.distinct().forEach { id ->

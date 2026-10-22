@@ -1,6 +1,6 @@
 # Architecture de Hybrid Coach
 
-Application Android native, Kotlin, Compose Material 3, MVVM et Navigation Compose. L’injection est explicite via `CoachApplication` ; fonctions locales sans compte ; import Garmin facultatif via un service personnel HTTPS.
+Application Android native, Kotlin, Compose Material 3, MVVM et Navigation Compose. L’injection est explicite via `CoachApplication` ; fonctions locales sans compte ; import Garmin facultatif par HTTPS directement vers l’API personnelle officielle.
 
 ## Données
 
@@ -63,6 +63,10 @@ Un futur import Strava peut passer par un adaptateur transformant l’activité 
 
 ## Garmin Connect
 
-Le paquet `garmin/` sépare le contrat réseau `GarminGateway`, le client HTTPS, la configuration chiffrée Android Keystore, le rapprochement pur et les transactions d’import. `GarminImporter` conserve les instantanés antérieurs d’une séance associée afin de restaurer ses mesures et son statut lors d’une dissociation/suppression. L’occurrence planifiée garde son UUID ; elle apparaît au jour réel, et `plannedDate` garde le jour initial pour le volume prévu. Les activités ambiguës restent en attente et hors statistiques jusqu’à décision.
+Le paquet `garmin/` sépare le client de l’API personnelle officielle `GarminPersonalClient`, son transport HTTPS injectable, la configuration chiffrée Android Keystore, le rapprochement pur et les transactions d’import. L’hôte API est fixe et les redirections sont désactivées. La clé personnelle est conservée dans des préférences AES-GCM ; le jeton reste en mémoire et est renouvelé depuis cette clé. Aucun mot de passe, serveur ou endpoint configurable ne fait partie du parcours Android.
 
-Le service `services/garmin_bridge` exécute le SDK Python dans un environnement Linux fourni. Les jetons et son cache sont chiffrés, ses endpoints sont authentifiés et le proxy Caddy assure le transport HTTPS. Aucun jeton Garmin n’est transmis à Android. Les suppressions ne se déduisent pas d’une page manquante : elles sont confirmées par la ressource distante. `GarminWorkoutExporter` réserve l’interface de l’étape 2 sans implémentation d’envoi. Voir [le guide détaillé](GARMIN.md).
+`GarminImporter` conserve les instantanés antérieurs d’une séance associée afin de restaurer ses mesures et son statut lors d’une dissociation/suppression. L’occurrence planifiée garde son UUID ; elle apparaît au jour réel, et `plannedDate` garde le jour initial pour le volume prévu. Les activités ambiguës restent en attente et hors statistiques jusqu’à décision.
+
+Le client parcourt toutes les pages et vérifie par le détail chaque activité connue absente de la liste. Seul un HTTP 404 confirme une suppression ; les erreurs et les réponses incomplètes n’atteignent pas l’import. L’identité numérique `ownerId` sépare les comptes et reste indépendante de la clé. Une identité de profil hachée permet de vérifier la continuité du compte même si sa liste d’activités devient vide. Les empreintes portent sur les mesures normalisées ; une importation identique ne réécrit pas les corrections locales.
+
+`importPersonal` réattribue une ancienne identité du service seulement après correspondance d’un identifiant Garmin global. Cette réattribution, la réconciliation des empreintes et l’import sont dans une transaction Room, sans changement de schéma v3. Le service Python 1.2 est conservé comme archive technique et n’est plus utilisé par Android. `GarminWorkoutExporter` réserve l’interface d’un futur envoi sans implémentation. Voir [le guide détaillé](GARMIN.md).

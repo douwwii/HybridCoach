@@ -1,6 +1,14 @@
 # Hybrid Coach
 
-Application Android native de planification et de suivi de course à pied et de musculation, entièrement locale et utilisable hors ligne. Interface française, thème sombre par défaut, thèmes clair et système disponibles.
+Application Android native de planification et de suivi de course à pied et de musculation, avec données locales et fonctions utilisables hors ligne. La synchronisation Garmin facultative nécessite Internet. Interface française, thème sombre par défaut, thèmes clair et système disponibles.
+
+## Correctif 1.3.1 — connexion Garmin
+
+La demande de jeton accepte désormais les réponses texte et JSON au lieu d’imposer JSON. Les erreurs indiquent le code HTTP et l’étape précise (jeton, profil, activités ou détail), sans exposer les secrets. Ce correctif vise le HTTP 406 observé à la connexion ; sa résolution avec le compte réel reste à confirmer après une nouvelle tentative.
+
+## Nouveauté 1.3 — Garmin sans serveur
+
+Dans **Profil sportif → Garmin Connect**, ouvrir la page officielle pour créer une clé personnelle Garmin, coller cette clé et toucher **Connecter Garmin**, puis **Synchroniser Garmin**. Connexion HTTPS directe depuis Android, clé chiffrée sur le téléphone, aucun serveur ni mot de passe Garmin à configurer dans Hybrid Coach. L’import retrouve les séances prévues, demande confirmation en cas d’ambiguïté et évite les doublons. Les fonctions de calendrier et de statistiques utilisent les mêmes données locales. [Guide Garmin](docs/GARMIN.md).
 
 ## Nouveauté 1.1 — Planification avancée
 
@@ -37,7 +45,7 @@ Sur Linux/macOS :
 ./gradlew assembleDebug testDebugUnitTest lintDebug
 ```
 
-La première compilation nécessite Internet pour télécharger Gradle et les dépendances. L’application, une fois installée, n’a besoin d’aucun accès réseau. Android **8.0 / API 26** minimum. La compilation et les tests automatisés ont été exécutés sur Linux ; l’ouverture dans Android Studio sous Windows n’a pas été exécutée dans cet environnement.
+La première compilation nécessite Internet pour télécharger Gradle et les dépendances. Les fonctions locales n’ont besoin d’aucun accès réseau ; la connexion et la synchronisation Garmin utilisent Internet. Android **8.0 / API 26** minimum. La compilation et les tests automatisés ont été exécutés sur Linux ; l’ouverture dans Android Studio sous Windows n’a pas été exécutée dans cet environnement.
 
 Pour un téléphone : activer le débogage USB, connecter le téléphone, le sélectionner dans Android Studio puis **Run**. Ou transférer l’APK et autoriser son installation depuis l’application qui l’ouvre. Une installation par-dessus une version existante signée avec la même clé conserve la base. La désinstallation efface les données locales ; exporter les préparations avant toute désinstallation. L’APK fourni utilise une signature debug, pas une clé de publication Play Store.
 
@@ -88,7 +96,7 @@ Cette liste décrit les parcours codés. La couverture de vérification et les l
 
 ## Limites de cette version
 
-- La course est planifiée puis consignée manuellement : pas de GPS, guidage vocal, import Garmin/Strava, capteurs, synchronisation ni compte. Ces intégrations n’étaient pas nécessaires à cette version.
+- Les résultats peuvent être consignés manuellement ou importés depuis Garmin avec une clé personnelle. Pas de GPS, guidage vocal, import Strava ni envoi de séances à la montre. La synchronisation Garmin est manuelle ; la connexion et l’import avec un compte réel restent à valider par l’utilisateur.
 - Les durées/chronos/allures se saisissent en secondes, les distances de résultat en km et les étapes en mètres. Les répétitions chronométrées (gainage, par exemple) peuvent être décrites dans les répétitions/notes, mais la validation des séries de force enregistre un nombre entier de répétitions.
 - Réorganisation des étapes par flèches et duplication des blocs. Le glisser-déposer est disponible pour déplacer les séances entre les jours visibles de la vue hebdomadaire. Un changement de parent d’une étape nécessite de la recréer dans l’autre bloc.
 - Cinq niveaux de répétition, 10 000 étapes développées par séance, 50 séries par exercice ; une création récurrente couvre dix ans au maximum et une répétition de semaine 104 semaines au maximum. On peut planifier au-delà par opérations supplémentaires.
@@ -99,7 +107,7 @@ Cette liste décrit les parcours codés. La couverture de vérification et les l
 - Les brouillons d’éditeur ne sont pas conservés après suppression du processus avant enregistrement. Les résultats saisis, eux, sont envoyés progressivement à Room ; attendre la fin de l’indicateur de sauvegarde avant un arrêt forcé.
 - Le PDF intègre Liberation Sans ; les caractères non couverts (certains emoji ou alphabets) sont remplacés par `?`. Le JSON conserve l’Unicode original.
 - Export de préparation, sans import ni restauration globale de la base dans l’interface. Le PDF présente les dates et semaines sous forme de liste, sans grille mensuelle ni graphiques vectoriels élaborés.
-- Base v2 : migration additive testée depuis la v1, schémas conservés et aucun effacement destructif automatique. Toute future évolution SQL devra fournir et tester une migration explicite.
+- Base v3 : migrations additives testées depuis les v1 et v2, schémas conservés et aucun effacement destructif automatique. Toute future évolution SQL devra fournir et tester une migration explicite.
 
 ## Organisation
 

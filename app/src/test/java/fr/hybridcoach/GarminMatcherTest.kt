@@ -140,17 +140,10 @@ class GarminMatcherTest {
     }
 
     @Test
-    fun bridgeRejectsUnencryptedOrCredentialBearingUrls() {
-        listOf(
-                "http://server.test",
-                "https://user:password@server.test",
-                "https://server.test?token=secret",
-            )
-            .forEach {
-                assertThrows(IllegalArgumentException::class.java) {
-                    validateBridgeSettings(GarminBridgeSettings(it, "k".repeat(48)))
-                }
-            }
-        validateBridgeSettings(GarminBridgeSettings("https://server.test", "k".repeat(48)))
+    fun personalKeyRejectsWhitespaceAndControlCharacters() {
+        listOf("", "a b", "a\nb", "a\rb", "clé", "x".repeat(4097)).forEach {
+            assertThrows(IllegalArgumentException::class.java) { validatePersonalKey(it) }
+        }
+        validatePersonalKey("personal.key_123-456")
     }
 }

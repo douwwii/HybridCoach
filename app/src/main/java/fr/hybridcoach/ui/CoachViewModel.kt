@@ -17,7 +17,9 @@ class CoachViewModel(application: Application) : AndroidViewModel(application) {
     val garminConnection = MutableStateFlow(GarminConnection())
     val garminBusy = MutableStateFlow(false)
     val garminError = MutableStateFlow<String?>(null)
-    val garminUrl = MutableStateFlow("")
+    val garminConfigured = MutableStateFlow(false)
+    private var personalClient: GarminPersonalClient? = null
+    private var personalClientKey: String? = null
 
     private fun garminOperation(block: suspend () -> Unit) {
         if (garminBusy.value) return
@@ -29,8 +31,13 @@ class CoachViewModel(application: Application) : AndroidViewModel(application) {
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                if (e is GarminGatewayException && e.code == "AUTH_REQUIRED")
+                if (
+                    e is GarminGatewayException &&
+                        e.code in setOf("AUTH_REQUIRED", "ACCOUNT_CHANGED")
+                ) {
+                    personalClient?.clearToken()
                     garminConnection.value = GarminConnection()
+                }
                 garminError.value = e.localizedMessage ?: "Synchronisation Garmin impossible."
             } finally {
                 garminBusy.value = false
@@ -38,56 +45,85 @@ class CoachViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private suspend fun garminGateway(): GarminGateway {
-        val settings = withContext(Dispatchers.IO) { garminSettings.read() }
-        return GarminBridgeClient(settings)
+    private fun garminClient(key: String): GarminPersonalClient {
+        if (personalClientKey != key) {
+            personalClient?.clearToken()
+            personalClient = GarminPersonalClient(key)
+            personalClientKey = key
+        }
+        return requireNotNull(personalClient)
     }
 
     fun refreshGarmin() = garminOperation {
         val settings = withContext(Dispatchers.IO) { garminSettings.read() }
-        garminUrl.value = settings.url
-        if (settings.url.isNotBlank())
-            garminConnection.value = GarminBridgeClient(settings).status()
-    }
-
-    fun saveGarminSettings(url: String, key: String) = garminOperation {
-        val old =
-            runCatching { withContext(Dispatchers.IO) { garminSettings.read() } }
-                .getOrDefault(GarminBridgeSettings())
-        val value = GarminBridgeSettings(url.trim().trimEnd('/'), key.trim().ifBlank { old.apiKey })
-        withContext(Dispatchers.IO) { garminSettings.save(value) }
-        garminUrl.value = value.url
-        garminConnection.value = GarminConnection()
-        garminConnection.value = GarminBridgeClient(value).status()
-    }
-
-    fun connectGarmin(email: String, password: String, isCn: Boolean) = garminOperation {
-        require(email.isNotBlank() && password.isNotBlank()) {
-            "Saisissez votre compte et votre mot de passe Garmin."
+        garminConfigured.value = settings.apiKey.isNotBlank()
+        if (settings.apiKey.isBlank()) {
+            garminConnection.value = GarminConnection()
+        } else {
+            val verified = garminClient(settings.apiKey).connect()
+            if (
+                settings.profileHash != verified.profileHash ||
+                    settings.accountId != null &&
+                        verified.accountId != null &&
+                        settings.accountId != verified.accountId
+            ) {
+                throw GarminGatewayException(
+                    "ACCOUNT_CHANGED",
+                    "Le compte Garmin a changé. Enregistrez à nouveau votre clé personnelle.",
+                )
+            }
+            val updated = verified.copy(accountId = verified.accountId ?: settings.accountId)
+            withContext(Dispatchers.IO) { garminSettings.save(updated) }
+            garminConnection.value = GarminConnection(true, updated.accountId)
         }
-        garminConnection.value = garminGateway().login(email.trim(), password, isCn)
     }
 
-    fun garminMfa(code: String) = garminOperation {
-        val challenge =
-            requireNotNull(garminConnection.value.challengeId) { "Recommencez la connexion." }
-        garminConnection.value = garminGateway().completeMfa(challenge, code.trim())
+    fun connectGarmin(key: String) = garminOperation {
+        val trimmed = key.trim()
+        validatePersonalKey(trimmed)
+        val client = GarminPersonalClient(trimmed)
+        val verified = client.connect()
+        val previous =
+            runCatching { withContext(Dispatchers.IO) { garminSettings.read() } }
+                .getOrDefault(GarminPersonalSettings())
+        val updated = verified.preserveAccountFrom(previous)
+        withContext(Dispatchers.IO) { garminSettings.save(updated) }
+        personalClient?.clearToken()
+        personalClient = client
+        personalClientKey = trimmed
+        garminConfigured.value = true
+        garminConnection.value = GarminConnection(true, updated.accountId)
+        notice("Clé personnelle Garmin connectée. Vous pouvez synchroniser vos activités.")
     }
 
     fun disconnectGarmin() = garminOperation {
-        garminGateway().disconnect()
+        withContext(Dispatchers.IO) { garminSettings.clear() }
+        personalClient?.clearToken()
+        personalClient = null
+        personalClientKey = null
+        garminConfigured.value = false
         garminConnection.value = GarminConnection()
     }
 
     fun syncGarmin() = garminOperation {
-        val snapshot = garminGateway().fetchActivities()
-        val current = garminConnection.value.accountId
-        require(current == null || current == snapshot.accountId) {
-            "Le compte du service a changé. Actualisez la connexion avant de synchroniser."
+        val settings = withContext(Dispatchers.IO) { garminSettings.read() }
+        val known = repo.dao.allGarmin()
+        val download = garminClient(settings.apiKey).fetchActivities(settings, known)
+        val account = download.accountId
+        if (account == null) {
+            notice("Garmin : aucune activité disponible pour ce compte.")
+        } else {
+            val revision = (repo.dao.syncForAccount(account)?.revision ?: 0L) + 1
+            val snapshot =
+                GarminSnapshot(account, revision, download.activities, download.deletedIds)
+            val changed = GarminImporter(repo.db).importPersonal(snapshot)
+            if (settings.accountId != account)
+                withContext(Dispatchers.IO) {
+                    garminSettings.save(settings.copy(accountId = account))
+                }
+            garminConnection.value = GarminConnection(true, account)
+            notice("Garmin : $changed activités nouvelles, modifiées ou supprimées")
         }
-        val changed = GarminImporter(repo.db).import(snapshot)
-        garminConnection.value = GarminConnection(connected = true, accountId = snapshot.accountId)
-        notice("Garmin : $changed activités nouvelles, modifiées ou supprimées")
     }
 
     val error = MutableStateFlow<String?>(null)

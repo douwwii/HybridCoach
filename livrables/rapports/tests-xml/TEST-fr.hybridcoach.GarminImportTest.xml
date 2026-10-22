@@ -1,58 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="fr.hybridcoach.GarminImportTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:54:12" hostname="fedoraleo" time="3.426">
+<testsuite name="fr.hybridcoach.GarminImportTest" tests="16" skipped="0" failures="0" errors="0" timestamp="2026-10-22T20:03:14" hostname="fedoraleo" time="11.185">
   <properties/>
-  <testcase name="deletingOrIgnoringLocallyDoesNotReimportOnRemoteModification" classname="fr.hybridcoach.GarminImportTest" time="2.758"/>
-  <testcase name="realDateControlsActualStatsWhilePlannedDateRetainsOriginalWeek" classname="fr.hybridcoach.GarminImportTest" time="0.106"/>
-  <testcase name="twoActivitiesCompetingForOnePlanAreBothReviewed" classname="fr.hybridcoach.GarminImportTest" time="0.048"/>
-  <testcase name="ambiguousAndCollidingActivitiesStayUncountedUntilResolved" classname="fr.hybridcoach.GarminImportTest" time="0.057"/>
-  <testcase name="sportChangesUpdateUnplannedRecordsAndReopenIncompatibleAssociations" classname="fr.hybridcoach.GarminImportTest" time="0.061"/>
-  <testcase name="uniqueAssociationReassignmentRollbackAndInvalidSnapshot" classname="fr.hybridcoach.GarminImportTest" time="0.05"/>
-  <testcase name="changingBridgeIdentityCannotDuplicateExistingRemoteIds" classname="fr.hybridcoach.GarminImportTest" time="0.037"/>
-  <testcase name="automaticImportPreservesPlanAndAvoidsDuplicateWorkoutsAndKilometers" classname="fr.hybridcoach.GarminImportTest" time="0.056"/>
-  <testcase name="unplannedOtherSportsHaveActualDurationButNoInventedPlannedVolume" classname="fr.hybridcoach.GarminImportTest" time="0.046"/>
-  <testcase name="versionTwoMigrationPreservesPhasesLinksAndNestedPlans" classname="fr.hybridcoach.GarminImportTest" time="0.077"/>
-  <testcase name="manuallyCompletedSessionIsCountedOnceAndRestoredOnUnlink" classname="fr.hybridcoach.GarminImportTest" time="0.04"/>
-  <testcase name="remoteDeletesRestorePlansAndRemoveOnlyGeneratedOccurrences" classname="fr.hybridcoach.GarminImportTest" time="0.05"/>
-  <testcase name="remoteEditsUpdateSameRecordButUnchangedSyncPreservesLocalCorrections" classname="fr.hybridcoach.GarminImportTest" time="0.04"/>
+  <testcase name="personalApiAdoptsBridgeLinksWithoutDuplicatingOrOverwritingLocalCorrections" classname="fr.hybridcoach.GarminImportTest" time="8.602"/>
+  <testcase name="deletingOrIgnoringLocallyDoesNotReimportOnRemoteModification" classname="fr.hybridcoach.GarminImportTest" time="0.24"/>
+  <testcase name="realDateControlsActualStatsWhilePlannedDateRetainsOriginalWeek" classname="fr.hybridcoach.GarminImportTest" time="0.203"/>
+  <testcase name="twoActivitiesCompetingForOnePlanAreBothReviewed" classname="fr.hybridcoach.GarminImportTest" time="0.061"/>
+  <testcase name="personalApiMigrationRollsBackWhenSnapshotIsIncomplete" classname="fr.hybridcoach.GarminImportTest" time="0.17"/>
+  <testcase name="ambiguousAndCollidingActivitiesStayUncountedUntilResolved" classname="fr.hybridcoach.GarminImportTest" time="0.158"/>
+  <testcase name="sportChangesUpdateUnplannedRecordsAndReopenIncompatibleAssociations" classname="fr.hybridcoach.GarminImportTest" time="0.113"/>
+  <testcase name="uniqueAssociationReassignmentRollbackAndInvalidSnapshot" classname="fr.hybridcoach.GarminImportTest" time="0.109"/>
+  <testcase name="changingBridgeIdentityCannotDuplicateExistingRemoteIds" classname="fr.hybridcoach.GarminImportTest" time="0.154"/>
+  <testcase name="automaticImportPreservesPlanAndAvoidsDuplicateWorkoutsAndKilometers" classname="fr.hybridcoach.GarminImportTest" time="0.1"/>
+  <testcase name="unplannedOtherSportsHaveActualDurationButNoInventedPlannedVolume" classname="fr.hybridcoach.GarminImportTest" time="0.14"/>
+  <testcase name="versionTwoMigrationPreservesPhasesLinksAndNestedPlans" classname="fr.hybridcoach.GarminImportTest" time="0.437"/>
+  <testcase name="manuallyCompletedSessionIsCountedOnceAndRestoredOnUnlink" classname="fr.hybridcoach.GarminImportTest" time="0.163"/>
+  <testcase name="remoteDeletesRestorePlansAndRemoveOnlyGeneratedOccurrences" classname="fr.hybridcoach.GarminImportTest" time="0.266"/>
+  <testcase name="remoteEditsUpdateSameRecordButUnchangedSyncPreservesLocalCorrections" classname="fr.hybridcoach.GarminImportTest" time="0.142"/>
+  <testcase name="personalApiDoesNotAdoptAnUnprovenAccount" classname="fr.hybridcoach.GarminImportTest" time="0.124"/>
   <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[System.logW: A resource was acquired at attached stack trace but never released. See java.io.Closeable for information on avoiding resource leaks.
-java.lang.Throwable: Explicit termination method 'close' not called
-	at dalvik.system.CloseGuard.$$robo$$dalvik_system_CloseGuard$openWithCallSite(CloseGuard.java:288)
-	at dalvik.system.CloseGuard.openWithCallSite(CloseGuard.java)
-	at dalvik.system.CloseGuard.$$robo$$dalvik_system_CloseGuard$open(CloseGuard.java:257)
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at org.robolectric.shadows.ShadowCloseGuard$CloseGuardReflector$$Reflector34.open(Unknown Source)
-	at org.robolectric.shadows.ShadowCloseGuard.open(ShadowCloseGuard.java:38)
-	at dalvik.system.CloseGuard.open(CloseGuard.java)
-	at android.database.sqlite.SQLiteDatabase.$$robo$$android_database_sqlite_SQLiteDatabase$openInner(SQLiteDatabase.java:1164)
-	at android.database.sqlite.SQLiteDatabase.openInner(SQLiteDatabase.java)
-	at android.database.sqlite.SQLiteDatabase.$$robo$$android_database_sqlite_SQLiteDatabase$open(SQLiteDatabase.java:1143)
-	at android.database.sqlite.SQLiteDatabase.open(SQLiteDatabase.java)
-	at android.database.sqlite.SQLiteDatabase.$$robo$$android_database_sqlite_SQLiteDatabase$openDatabase(SQLiteDatabase.java:1007)
-	at android.database.sqlite.SQLiteDatabase.openDatabase(SQLiteDatabase.java)
-	at android.database.sqlite.SQLiteDatabase.$$robo$$android_database_sqlite_SQLiteDatabase$openDatabase(SQLiteDatabase.java:996)
-	at android.database.sqlite.SQLiteDatabase.openDatabase(SQLiteDatabase.java)
-	at android.database.sqlite.SQLiteOpenHelper.$$robo$$android_database_sqlite_SQLiteOpenHelper$getDatabaseLocked(SQLiteOpenHelper.java:373)
-	at android.database.sqlite.SQLiteOpenHelper.getDatabaseLocked(SQLiteOpenHelper.java)
-	at android.database.sqlite.SQLiteOpenHelper.$$robo$$android_database_sqlite_SQLiteOpenHelper$getWritableDatabase(SQLiteOpenHelper.java:316)
-	at android.database.sqlite.SQLiteOpenHelper.getWritableDatabase(SQLiteOpenHelper.java)
-	at androidx.sqlite.db.framework.FrameworkSQLiteOpenHelper$OpenHelper.getWritableOrReadableDatabase(FrameworkSQLiteOpenHelper.android.kt:224)
-	at androidx.sqlite.db.framework.FrameworkSQLiteOpenHelper$OpenHelper.innerGetDatabase(FrameworkSQLiteOpenHelper.android.kt:167)
-	at androidx.sqlite.db.framework.FrameworkSQLiteOpenHelper$OpenHelper.getSupportDatabase(FrameworkSQLiteOpenHelper.android.kt:141)
-	at androidx.sqlite.db.framework.FrameworkSQLiteOpenHelper.getWritableDatabase(FrameworkSQLiteOpenHelper.android.kt:96)
-	at androidx.room.driver.SupportSQLiteDriver.open(SupportSQLiteDriver.android.kt:26)
-	at androidx.room.driver.SupportSQLiteConnectionPool.getSupportConnection(SupportSQLiteConnectionPool.android.kt:35)
-	at androidx.room.driver.SupportSQLiteConnectionPool.useConnection(SupportSQLiteConnectionPool.android.kt:42)
-	at androidx.room.RoomConnectionManager.useConnection(RoomConnectionManager.android.kt:126)
-	at androidx.room.RoomDatabase.useConnection$room_runtime_release(RoomDatabase.android.kt:593)
-	at androidx.room.TriggerBasedInvalidationTracker.syncTriggers$room_runtime_release(InvalidationTracker.kt:300)
-	at androidx.room.TriggerBasedInvalidationTracker$createFlow$1$1.invokeSuspend(InvalidationTracker.kt:233)
-	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
-	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
-	at java.base/java.lang.Thread.run(Thread.java:1583)
-
-]]></system-err>
+  <system-err><![CDATA[]]></system-err>
 </testsuite>

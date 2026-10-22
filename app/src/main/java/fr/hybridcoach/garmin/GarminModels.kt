@@ -49,12 +49,7 @@ data class GarminSnapshot(
 )
 
 @Serializable
-data class GarminConnection(
-    val connected: Boolean = false,
-    val accountId: String? = null,
-    val challengeId: String? = null,
-    val needsMfa: Boolean = false,
-)
+data class GarminConnection(val connected: Boolean = false, val accountId: String? = null)
 
 @Serializable
 data class GarminCandidate(val workoutId: String, val score: Double, val reasons: List<String>)
@@ -106,16 +101,4 @@ val PlannedWorkout.hasPlannedContent: Boolean
 /** Stage two contract only: no upload implementation and no UI action. */
 interface GarminWorkoutExporter {
     suspend fun export(workout: PlannedWorkout, plan: WorkoutPlan): String
-}
-
-interface GarminGateway {
-    suspend fun status(): GarminConnection
-
-    suspend fun login(email: String, password: String, isCn: Boolean): GarminConnection
-
-    suspend fun completeMfa(challengeId: String, code: String): GarminConnection
-
-    suspend fun disconnect()
-
-    suspend fun fetchActivities(): GarminSnapshot
 }

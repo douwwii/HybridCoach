@@ -188,6 +188,14 @@ interface CoachDao {
 
     @Query("SELECT * FROM results") suspend fun allResults(): List<ResultEntity>
 
+    @Query(
+        "UPDATE garminActivities SET `key` = :newAccount || ':' || remoteId, accountId = :newAccount WHERE accountId = :oldAccount"
+    )
+    suspend fun moveGarminAccount(oldAccount: String, newAccount: String)
+
+    @Query("DELETE FROM garminSync WHERE accountId = :account")
+    suspend fun deleteGarminSync(account: String)
+
     @Upsert suspend fun putGarmin(value: GarminActivityEntity)
 
     @Upsert suspend fun putSync(value: GarminSyncEntity)
