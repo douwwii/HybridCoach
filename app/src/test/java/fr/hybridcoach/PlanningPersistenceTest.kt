@@ -34,7 +34,7 @@ class PlanningPersistenceTest {
     private fun open() {
         db =
             Room.databaseBuilder(context, CoachDatabase::class.java, filename)
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
                 .build()
         repo = CoachRepository(db)
     }

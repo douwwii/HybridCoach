@@ -1,18 +1,104 @@
 package fr.hybridcoach.ui
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.*
 import fr.hybridcoach.*
+import fr.hybridcoach.backup.*
 import fr.hybridcoach.data.*
 import fr.hybridcoach.domain.*
 import fr.hybridcoach.garmin.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class CoachViewModel(application: Application) : AndroidViewModel(application) {
     val repo = (application as CoachApplication).repository
-    val preferences = AthletePreferences(application)
+    val preferences = AthletePreferences(application, repo.db)
+    private val dataOperations = Mutex()
+    private var dataGeneration = 0L
+    private val backupService = BackupService(application, repo.db, preferences)
+    val backupBusy = MutableStateFlow(false)
+    val backupError = MutableStateFlow<String?>(null)
+    val backupMessage = MutableStateFlow<String?>(null)
+    val backupPreview = MutableStateFlow<BackupDocument?>(null)
+    val backupHasRecovery = MutableStateFlow(backupService.hasRecovery())
+
+    private fun backupOperation(block: suspend () -> Unit) {
+        if (backupBusy.value) return
+        backupBusy.value = true
+        backupError.value = null
+        backupMessage.value = null
+        action {
+            try {
+                block()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                backupError.value =
+                    when (e) {
+                        is kotlinx.serialization.SerializationException ->
+                            "Le contenu de la sauvegarde est invalide. Aucune restauration effectuée."
+                        else -> e.localizedMessage ?: "Opération de sauvegarde impossible."
+                    }
+            } finally {
+                backupHasRecovery.value = backupService.hasRecovery()
+                backupBusy.value = false
+            }
+        }
+    }
+
+    fun exportBackup(uri: Uri, previous: Boolean = false) = backupOperation {
+        if (previous) backupService.exportRecovery(uri) else backupService.export(uri)
+        backupMessage.value =
+            if (previous)
+                "Le carnet précédent a été exporté. Vous pouvez sélectionner ce JSON pour le restaurer."
+            else
+                "Sauvegarde JSON complète enregistrée. Vous pouvez la transférer sur votre autre téléphone."
+    }
+
+    fun previewBackup(uri: Uri) {
+        if (backupBusy.value) return
+        backupPreview.value = null
+        backupOperation { backupPreview.value = backupService.preview(uri) }
+    }
+
+    fun dismissBackupPreview() {
+        if (!backupBusy.value) backupPreview.value = null
+    }
+
+    fun restoreBackup() {
+        val document = backupPreview.value ?: return
+        backupOperation {
+            backupService.restore(document)
+            dataGeneration++
+            // Alarm registrations belong to the device, while recorded times belong to the carnet.
+            val alarmsRestored =
+                runCatching {
+                        withContext(Dispatchers.Main) {
+                            RestAlarm.cancelAll(getApplication())
+                            document.data.workouts
+                                .filter { it.status == Status.ACTIVE }
+                                .forEach { w ->
+                                    val result =
+                                        document.data.results
+                                            .find { it.workoutId == w.id }
+                                            ?.let { parseResult(it.payload) }
+                                    RestAlarm.schedule(getApplication(), w.id, result?.restUntil)
+                                }
+                        }
+                    }
+                    .isSuccess
+            backupPreview.value = null
+            backupMessage.value =
+                "Restauration terminée : ${document.data.workouts.size} séance${if (document.data.workouts.size == 1) "" else "s"}. Le carnet précédent reste exportable ci-dessous. Reconnectez Garmin sur votre nouveau téléphone." +
+                    if (alarmsRestored) ""
+                    else " Ouvrez les séances en cours pour relancer les alertes de repos."
+        }
+    }
+
     private val garminSettings = GarminSecureSettings(application)
     val garminConnection = MutableStateFlow(GarminConnection())
     val garminBusy = MutableStateFlow(false)
@@ -107,22 +193,28 @@ class CoachViewModel(application: Application) : AndroidViewModel(application) {
 
     fun syncGarmin() = garminOperation {
         val settings = withContext(Dispatchers.IO) { garminSettings.read() }
-        val known = repo.dao.allGarmin()
+        val (generation, known) = dataOperations.withLock { dataGeneration to repo.dao.allGarmin() }
+        // Network downloads must not block local result entry or backup creation.
         val download = garminClient(settings.apiKey).fetchActivities(settings, known)
-        val account = download.accountId
-        if (account == null) {
-            notice("Garmin : aucune activité disponible pour ce compte.")
-        } else {
-            val revision = (repo.dao.syncForAccount(account)?.revision ?: 0L) + 1
-            val snapshot =
-                GarminSnapshot(account, revision, download.activities, download.deletedIds)
-            val changed = GarminImporter(repo.db).importPersonal(snapshot)
-            if (settings.accountId != account)
-                withContext(Dispatchers.IO) {
-                    garminSettings.save(settings.copy(accountId = account))
-                }
-            garminConnection.value = GarminConnection(true, account)
-            notice("Garmin : $changed activités nouvelles, modifiées ou supprimées")
+        dataOperations.withLock {
+            require(generation == dataGeneration) {
+                "Le carnet a été restauré pendant la synchronisation. Relancez la synchronisation Garmin."
+            }
+            val account = download.accountId
+            if (account == null) {
+                notice("Garmin : aucune activité disponible pour ce compte.")
+            } else {
+                val revision = (repo.dao.syncForAccount(account)?.revision ?: 0L) + 1
+                val snapshot =
+                    GarminSnapshot(account, revision, download.activities, download.deletedIds)
+                val changed = GarminImporter(repo.db).importPersonal(snapshot)
+                if (settings.accountId != account)
+                    withContext(Dispatchers.IO) {
+                        garminSettings.save(settings.copy(accountId = account))
+                    }
+                garminConnection.value = GarminConnection(true, account)
+                notice("Garmin : $changed activités nouvelles, modifiées ou supprimées")
+            }
         }
     }
 
@@ -152,7 +244,7 @@ class CoachViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             for (operation in operations) {
                 try {
-                    operation()
+                    dataOperations.withLock { operation() }
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: Exception) {
@@ -162,7 +254,10 @@ class CoachViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
         }
-        action { repo.seed() }
+        action {
+            preferences.ensureInitialized()
+            repo.seed()
+        }
     }
 
     fun action(block: suspend () -> Unit) {

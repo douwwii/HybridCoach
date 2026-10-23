@@ -437,11 +437,27 @@
         priority="6"
         summary="Use KTX extension function"
         explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
+        errorLine1="        preferences.edit().clear().apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/RestReceiver.kt"
+            line="30"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        severity="Warning"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        category="Productivity"
+        priority="6"
+        summary="Use KTX extension function"
+        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
         errorLine1="        context"
         errorLine2="        ^">
         <location
             file="/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/RestReceiver.kt"
-            line="30"
+            line="37"
             column="9"/>
     </issue>
 
@@ -457,7 +473,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~">
         <location
             file="/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/RestReceiver.kt"
-            line="42"
+            line="49"
             column="13"/>
     </issue>
 

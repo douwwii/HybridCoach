@@ -12,6 +12,7 @@ Room constitue la source de vérité. Les identifiants UUID restent stables. Les
 - `workouts` : occurrences planifiées, avec association facultative à une préparation et identifiant de série récurrente.
 - `subGoals` : périodes personnalisées d’une préparation, pouvant se chevaucher.
 - `workoutSubGoals` : liaison plusieurs-à-plusieurs, indexée avec suppression en cascade. Le dépôt impose la cohérence avec la préparation de la séance.
+- `athleteSettings` : profil sportif sérialisé et thème, restaurés dans la même transaction que le carnet.
 - `results` : résultat propre à une occurrence, avec séries, intervalles, ressenti et horodatages. Suppression en cascade seulement après suppression explicite de la séance.
 
 Les plans de musculation et les arbres d’étapes sont des agrégats JSON versionnés par le schéma applicatif, dans des colonnes Room. Ce choix réduit les jointures et rend les instantanés indépendants. Les relations entre agrégats restent des clés étrangères SQL. Il n’y a pas de table séparée par série ou étape ; les statistiques parcourent les agrégats locaux.
@@ -24,7 +25,7 @@ Les occurrences créées depuis un modèle copient son contenu. Modifier un mod�
 
 La séance en cours, les séries validées et les échéances de repos survivent à la fermeture du processus. Le chrono est calculé à partir des horodatages conservés et inclut les interruptions. Les brouillons des éditeurs survivent aux recréations d’activité via `rememberSaveable` ; ils ne sont pas des séances persistées avant validation.
 
-DataStore conserve le profil sportif et le thème. Les zones sont définies par l’utilisateur, sans formule physiologique imposée. Les saisies numériques acceptent la virgule décimale.
+Room conserve désormais le profil sportif et le thème. `AthletePreferences.ensureInitialized` copie une seule fois le profil de l’ancien DataStore `athlete` si la ligne Room est absente ; il ne supprime pas le fichier historique et ne réécrit jamais un profil Room déjà présent. Les zones sont définies par l’utilisateur, sans formule physiologique imposée. Les saisies numériques acceptent la virgule décimale.
 
 ## Répétitions et récurrences
 
@@ -52,7 +53,7 @@ Le PDF est généré par PDFBox-Android, avec pagination, police Liberation Sans
 
 ## Évolutions et migrations
 
-La base est à la version **3**. `MIGRATION_2_3` ajoute la provenance et l’historique de date des séances ainsi que les tables Garmin, sans altérer les valeurs existantes. Les liens sur un identifiant Garmin et sur une séance sont uniques. `MIGRATION_1_2` ajoute les tables des sous-objectifs et des associations sans altérer les tables existantes. Elle est enregistrée dans `CoachApplication` et vérifiée avec un fichier SQLite réellement créé selon le schéma 1. Les trois schémas sont conservés dans `app/schemas`. Aucun effacement destructif automatique n’est configuré.
+La base est à la version **4**. `MIGRATION_3_4` ajoute uniquement `athleteSettings` ; le profil et le thème sont repris sans effacement depuis l’ancien DataStore. `MIGRATION_2_3` ajoute la provenance et l’historique de date des séances ainsi que les tables Garmin, sans altérer les valeurs existantes. Les liens sur un identifiant Garmin et sur une séance sont uniques. `MIGRATION_1_2` ajoute les tables des sous-objectifs et des associations sans altérer les tables existantes. Elle est enregistrée dans `CoachApplication` et vérifiée avec un fichier SQLite réellement créé selon le schéma 1. Les quatre schémas sont conservés dans `app/schemas`. Aucun effacement destructif automatique n’est configuré.
 
 Les nouveaux champs sérialisés possèdent des valeurs par défaut. `RunningStep.recovery`, facultatif, représente une récupération entre les répétitions uniquement ; les anciens enfants de type récupération conservent leur sémantique. Les calculs, le développement des intervalles, l’affichage et les exports parcourent cette structure. Une copie renouvelle tous les identifiants d’instance, y compris ceux des enfants et récupérations.
 
@@ -69,4 +70,12 @@ Le paquet `garmin/` sépare le client de l’API personnelle officielle `GarminP
 
 Le client parcourt toutes les pages et vérifie par le détail chaque activité connue absente de la liste. Seul un HTTP 404 confirme une suppression ; les erreurs et les réponses incomplètes n’atteignent pas l’import. L’identité numérique `ownerId` sépare les comptes et reste indépendante de la clé. Une identité de profil hachée permet de vérifier la continuité du compte même si sa liste d’activités devient vide. Les empreintes portent sur les mesures normalisées ; une importation identique ne réécrit pas les corrections locales.
 
-`importPersonal` réattribue une ancienne identité du service seulement après correspondance d’un identifiant Garmin global. Cette réattribution, la réconciliation des empreintes et l’import sont dans une transaction Room, sans changement de schéma v3. Le service Python 1.2 est conservé comme archive technique et n’est plus utilisé par Android. `GarminWorkoutExporter` réserve l’interface d’un futur envoi sans implémentation. Voir [le guide détaillé](GARMIN.md).
+`importPersonal` réattribue une ancienne identité du service seulement après correspondance d’un identifiant Garmin global. Cette réattribution, la réconciliation des empreintes et l’import sont dans une transaction Room, sans modifier les tables Garmin existantes. Le service Python 1.2 est conservé comme archive technique et n’est plus utilisé par Android. `GarminWorkoutExporter` réserve l’interface d’un futur envoi sans implémentation. Voir [le guide détaillé](GARMIN.md).
+
+## Sauvegarde complète et restauration
+
+`BackupDocument` et `BackupData` définissent un format complet `fr.hybridcoach.backup` version 1, distinct du partage de préparation. `BackupCodec` contrôle format, taille, intégrité SHA-256, identifiants, plans et références avant import. Les brouillons de résultats sont conservés sans imposer leur validation de fin de séance. Aucun stockage de connexion ou secret Keystore n’entre dans le document.
+
+`BackupService` capture toutes les données applicatives dans une transaction Room. La restauration écrit d’abord une copie privée avec `AtomicFile`, puis remplace les tables et le profil dans une transaction unique. Une erreur d’écriture de la copie ou d’import empêche un remplacement partiel. La copie précédente est exportable pour revenir en arrière. Les fichiers externes passent uniquement par les contrats Android `CreateDocument` et `OpenDocument`.
+
+Le ViewModel coordonne les opérations locales avec un mutex et une file FIFO. Le réseau Garmin reste hors de ce verrou ; une génération du carnet empêche d’appliquer un téléchargement commencé avant une restauration. Les anciennes alarmes de repos sont annulées après restauration et les échéances futures des séances actives sont reprogrammées. Voir [le guide de sauvegarde](SAUVEGARDE.md).

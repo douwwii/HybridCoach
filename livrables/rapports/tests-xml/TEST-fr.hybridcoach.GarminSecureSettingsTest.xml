@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="fr.hybridcoach.GarminSecureSettingsTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-22T20:03:26" hostname="fedoraleo" time="0.273">
+<testsuite name="fr.hybridcoach.GarminSecureSettingsTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-23T11:42:44" hostname="fedoraleo" time="0.063">
   <properties/>
-  <testcase name="encryptedKeyRoundTripRotationAndDisconnectRemoveLegacyCredentials" classname="fr.hybridcoach.GarminSecureSettingsTest" time="0.161"/>
-  <testcase name="corruptedCiphertextHasActionableErrorWithoutSecret" classname="fr.hybridcoach.GarminSecureSettingsTest" time="0.112"/>
+  <testcase name="encryptedKeyRoundTripRotationAndDisconnectRemoveLegacyCredentials" classname="fr.hybridcoach.GarminSecureSettingsTest" time="0.039"/>
+  <testcase name="corruptedCiphertextHasActionableErrorWithoutSecret" classname="fr.hybridcoach.GarminSecureSettingsTest" time="0.024"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

@@ -1,5 +1,7 @@
 # Export de préparation, version 2
 
+Pour transférer l’intégralité de l’application sur un autre téléphone, utiliser le format distinct décrit dans [SAUVEGARDE.md](SAUVEGARDE.md). Le présent format est un export partiel de préparation.
+
 Le type Kotlin de référence est `PreparationDocument` dans `export/PreparationExport.kt`.
 
 ```json

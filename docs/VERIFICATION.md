@@ -1,8 +1,8 @@
 # Vérification de Hybrid Coach
 
-## Résultat du 22/10/2026 — version 1.3.1, connexion Garmin et diagnostic HTTP 406
+## Résultat du 23/10/2026 — version 1.4.0, sauvegarde et transfert JSON
 
-**107 tests Android/JVM sur 107 réussis**, aucun échec, aucune erreur, aucun test ignoré.
+**125 tests Android/JVM sur 125 réussis**, aucun échec, aucune erreur, aucun test ignoré.
 
 | Couverture | Réussites |
 |---|---:|
@@ -15,7 +15,10 @@
 | Transport HTTPS : en-têtes effectifs, POST vide, erreurs brutes exclues | 2 |
 | Chiffrement local, rotation, déconnexion et configuration corrompue | 2 |
 | Parcours Compose Garmin : connexion directe, recréation, association et détail | 2 |
-| Total Android/JVM | **107** |
+| Sauvegarde : format, intégrité, Unicode, brouillons, références et versions | 6 |
+| Transfert, transactions, reprise, copie de sécurité, migration v3 et profil | 10 |
+| Parcours Compose : sélecteurs de fichiers, aperçu, confirmation, annulation et restauration | 2 |
+| Total Android/JVM | **125** |
 
 Contrôles exécutés depuis `Obsidian Vault/My life/Pro/Projets/HybridCoach` :
 
@@ -23,13 +26,29 @@ Contrôles exécutés depuis `Obsidian Vault/My life/Pro/Projets/HybridCoach` :
 JAVA_HOME=/home/douwwii/.jdks/jbr-21.0.11 ./gradlew :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest :app:lintDebug
 ```
 
-Résultat : **BUILD SUCCESSFUL**. Lint : **0 erreur, 26 avertissements et 3 informations**, sans suppression des avertissements. Ils concernent les versions de dépendances, des conventions Compose/KTX, la sauvegarde et du code tiers PDFBox/Bouncy Castle. Les préférences chiffrées utilisent volontairement `commit()` pour vérifier l’écriture effective avant d’annoncer la connexion/déconnexion.
+Résultat : **BUILD SUCCESSFUL**. Lint : **0 erreur, 27 avertissements et 3 informations**, sans suppression des avertissements. Ils concernent les versions de dépendances, des conventions Compose/KTX, la sauvegarde et du code tiers PDFBox/Bouncy Castle. Les préférences chiffrées utilisent volontairement `commit()` pour vérifier l’écriture effective avant d’annoncer la connexion/déconnexion.
 
-L’APK est en version **1.3.1 / code 5**, Android 8.0 / API 26 minimum, cible 35. La signature debug est vérifiée et identique à celle du précédent APK livré, pour permettre une mise à jour sur place. Les tests instrumentés sont compilés ; ils n’ont pas été exécutés sur un téléphone ou un émulateur complet.
+L’APK est en version **1.4.0 / code 6**, Android 8.0 / API 26 minimum, cible 35. La signature debug est vérifiée et identique à celle du précédent APK livré, pour permettre une mise à jour sur place. Les tests instrumentés sont compilés ; ils n’ont pas été exécutés sur un téléphone ou un émulateur complet.
 
-Mise à jour de l’émulateur déjà connecté : `adb install -r` a réussi, `dumpsys package` confirme **1.3.1 / code 5**, puis `MainActivity` a été démarrée et le processus est resté actif. Aucune désinstallation ni suppression des données n’a été demandée. Aucun secret utilisateur n’a été lu. Rapport : `livrables/rapports/emulator-update-1.3.1.txt`. Ce contrôle ne valide pas l’authentification réelle Garmin.
+Contrôle historique de la version 1.3.1 sur l’émulateur alors connecté : `adb install -r` a réussi, `dumpsys package` confirme **1.3.1 / code 5**, puis `MainActivity` a été démarrée et le processus est resté actif. Aucune désinstallation ni suppression des données n’a été demandée. Aucun secret utilisateur n’a été lu. Rapport : `livrables/rapports/emulator-update-1.3.1.txt`. Ce contrôle ne valide pas l’authentification réelle Garmin.
 
-### Correctif de compatibilité et diagnostic HTTP 406
+### Sauvegarde complète et restauration — version 1.4
+
+**18 nouveaux tests réussis.** L’export complet et l’import sur une autre base conservent les exercices, modèles, objectifs, préparations, statuts, séries récurrentes, plans imbriqués, résultats, brouillons non terminés, notes Unicode, profil, apparence, sous-objectifs, liens et associations Garmin. Une double restauration ne crée pas de doublons. Le résultat local corrigé reste conservé lors de la synchronisation Garmin suivant le transfert.
+
+Le format dédié `fr.hybridcoach.backup` version 1 possède un contrôle SHA-256 canonique et une limite de 64 Mio. Les tests vérifient un fichier modifié ou tronqué, les versions incompatibles, les exports de préparation, les références absentes, les identifiants en double, l’imbrication excessive, les clés d’objets réordonnées et les mesures en cours de saisie. Une clé synthétique présente dans le stockage de connexion n’apparaît jamais dans le JSON exporté et ce stockage n’est pas modifié par l’import.
+
+La base passe de **3 à 4** avec une table `athleteSettings` additive. Le profil et le thème de l’ancien DataStore sont copiés une seule fois, sans effacement et sans écraser ensuite un profil Room existant. Un fichier SQLite v3 réel contenant les données du carnet et des associations Garmin est migré puis exporté avec son profil historique. Les anciens tests valident également les chemins **1 → 2 → 3 → 4** et **2 → 3 → 4**.
+
+Le remplacement du carnet et du profil est atomique. Un déclencheur SQLite provoque un échec après le début du remplacement : toutes les données précédentes et le profil restent intacts. Si la copie de sécurité locale ne peut pas être écrite, aucune suppression ne commence. Le carnet précédent est récupérable par export puis restauration de son JSON. Une sauvegarde vide, la fermeture/réouverture de la base et une reprise de synchronisation Garmin sont également couvertes.
+
+Le test Compose ouvre les contrats Android `CreateDocument` et `OpenDocument`, écrit réellement un fichier via un fournisseur de contenu, vérifie l’aperçu sans modification, la case de confirmation obligatoire, la recréation de l’activité, la restauration et la disponibilité du carnet précédent. Un second test vérifie l’annulation du sélecteur et le refus d’un fichier invalide. Capture inspectée : `docs/screenshots/backup-transfer.png`.
+
+Les tests locaux font avancer explicitement la boucle Android Robolectric pour les opérations asynchrones et les retours du sélecteur. Le test de partage PDF réinitialise aussi le cache des racines FileProvider à chaque nouveau contexte de test, comme lors du démarrage réel d’un processus Android. Les anciens parcours de partage et de planification passent dans la suite complète.
+
+**Portée :** le transfert entre deux bases et les parcours locaux sont vérifiés ; le transfert physique entre deux téléphones et les fournisseurs de fichiers tiers restent à vérifier sur les appareils concernés. Aucun appareil ADB n’était connecté à la fin de cette livraison ; aucun carnet personnel n’a été lu ou remplacé. Installer l’APK fourni par-dessus l’ancienne version avant d’exporter. Guide : [SAUVEGARDE.md](SAUVEGARDE.md).
+
+### Historique : correctif de compatibilité et diagnostic HTTP 406
 
 Un HTTP 406 sur « Connecter Garmin » a été confirmé par une capture utilisateur. Le client imposait une réponse JSON au point d’accès de jeton alors que l’exemple Garmin ne fixe pas ce format. Il utilise maintenant `Accept: */*` pour le jeton et peut lire du texte brut, une chaîne JSON ou l’objet OAuth JSON. Le transport s’identifie par le User-Agent HybridCoach. Les erreurs conservent le code HTTP et nomment l’étape qui échoue, sans afficher les corps des réponses. Le 403 est distingué d’une clé refusée en 401 et le 407 est identifié comme une demande d’authentification de proxy.
 
@@ -47,7 +66,7 @@ La suppression exige un HTTP 404 de la ressource de détail. Les erreurs 403/429
 
 Les tests de stockage utilisent AES-GCM avec une clé de test injectée : aller-retour, texte chiffré sans clé en clair, IV différent à chaque écriture, suppression de l’ancienne configuration et déconnexion. Ils ne prétendent pas valider le matériel Keystore d’un téléphone. En production, le fournisseur est Android Keystore.
 
-Les migrations Room réelles **2 → 3** et **1 → 2 → 3** restent couvertes. La base ne change pas de version. Trois tests supplémentaires vérifient la réattribution transactionnelle des comptes issus de l’ancien service après preuve par identifiant d’activité commun, la conservation des corrections locales, l’absence de doublons et le retour arrière si le snapshot est invalide. Aucun ancien compte sans correspondance n’est réattribué arbitrairement.
+Les migrations Room réelles **2 → 3** et **1 → 2 → 3** restent couvertes. Le passage à l’API personnelle ne modifiait pas les tables Garmin. Trois tests supplémentaires vérifient la réattribution transactionnelle des comptes issus de l’ancien service après preuve par identifiant d’activité commun, la conservation des corrections locales, l’absence de doublons et le retour arrière si le snapshot est invalide. Aucun ancien compte sans correspondance n’est réattribué arbitrairement.
 
 Le parcours Compose vérifie le formulaire par clé, l’absence de champs serveur/mot de passe et l’effacement du secret après recréation de l’activité. Capture inspectée : `docs/screenshots/garmin-personal.png`. Le parcours d’association confirme une activité ambiguë, ouvre le détail et vérifie sa provenance Garmin. Les tests utilisent exclusivement des activités synthétiques.
 
@@ -115,6 +134,7 @@ Les tests instrumentés dans `app/src/androidTest` restent disponibles pour un �
 5. Terminer la séance, consigner une sortie de course puis consulter l’historique et la progression.
 6. Partager un PDF dans une application installée et l’ouvrir sur un autre appareil.
 7. Vérifier l’apparence claire/sombre et la lisibilité avec la taille de police habituelle.
-8. Ouvrir Profil sportif → Garmin Connect, créer une clé personnelle dans le navigateur, la connecter et synchroniser. Vérifier une deuxième synchronisation sans doublon, les associations proposées et la conservation des séances après déconnexion.
+8. Exporter le JSON complet depuis Profil sportif → Sauvegarde et transfert, le transférer sur un second appareil, vérifier l’aperçu puis restaurer et contrôler le carnet et le profil.
+9. Ouvrir Profil sportif → Garmin Connect, créer une clé personnelle dans le navigateur, la connecter et synchroniser. Vérifier une deuxième synchronisation sans doublon, les associations proposées et la conservation des séances après déconnexion.
 
 Ce contrôle complémentaire concerne les interactions réelles avec Android et les autres applications ; les résultats sportifs restent locaux et aucun compte n’est nécessaire.

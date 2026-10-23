@@ -177,9 +177,9 @@ document.getElementById(id).style.display = 'none';
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
   <header class="mdl-layout__header">
     <div class="mdl-layout__header-row">
-      <span class="mdl-layout-title">Lint Report: 26 warnings</span>
+      <span class="mdl-layout-title">Lint Report: 27 warnings</span>
       <div class="mdl-layout-spacer"></div>
-      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Thu Oct 22 22:05:12 CEST 2026 by AGP (8.9.2)</nav>
+      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Fri Oct 23 13:42:50 CEST 2026 by AGP (8.9.2)</nav>
     </div>
   </header>
   <div class="mdl-layout__drawer">
@@ -191,7 +191,7 @@ document.getElementById(id).style.display = 'none';
       <a class="mdl-navigation__link" href="#TrustAllX509TrustManager"><i class="material-icons warning-icon">warning</i>Insecure TLS/SSL trust manager (3)</a>
       <a class="mdl-navigation__link" href="#DataExtractionRules"><i class="material-icons warning-icon">warning</i>Missing data extraction rules (1)</a>
       <a class="mdl-navigation__link" href="#AutoboxingStateCreation"><i class="material-icons warning-icon">warning</i><code>State&lt;T></code> will autobox values assigned to this state. Use a specialized state type instead. (3)</a>
-      <a class="mdl-navigation__link" href="#UseKtx"><i class="material-icons warning-icon">warning</i>Use KTX extension function (5)</a>
+      <a class="mdl-navigation__link" href="#UseKtx"><i class="material-icons warning-icon">warning</i>Use KTX extension function (6)</a>
     </nav>
   </div>
   <main class="mdl-layout__content">
@@ -228,7 +228,7 @@ document.getElementById(id).style.display = 'none';
 <tr><td class="countColumn"></td><td class="categoryColumn"><a href="#Productivity">Productivity</a>
 </td></tr>
 <tr>
-<td class="countColumn">5</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
+<td class="countColumn">6</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
 <a href="#UseKtx">UseKtx</a>: Use KTX extension function</td></tr>
 <tr><td></td><td class="categoryColumn"><a href="#ExtraIssues">Included Additional Checks (76)</a>
 </td></tr>
@@ -698,23 +698,33 @@ Dismiss</button>            </div>
 </pre>
 
 <span class="location"><a href="../../src/main/java/fr/hybridcoach/RestReceiver.kt">../../src/main/java/fr/hybridcoach/RestReceiver.kt</a>:30</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
-<span class="lineno"> 27 </span>        <span class="keyword">val</span> manager = context.getSystemService(AlarmManager::<span class="keyword">class</span>.java)
-<span class="lineno"> 28 </span>        <span class="keyword">val</span> pi = pending(context, id, until ?: <span class="number">0</span>)
-<span class="lineno"> 29 </span>        manager.cancel(pi)
-<span class="caretline"><span class="lineno"> 30 </span>        <span class="warning">context</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 31 </span>            .getSharedPreferences(<span class="string">"rest"</span>, Context.MODE_PRIVATE)
-<span class="lineno"> 32 </span>            .edit()
-<span class="lineno"> 33 </span>            .putLong(id, until ?: <span class="number">0</span>)
+<span class="lineno"> 27 </span>        <span class="keyword">val</span> preferences = context.getSharedPreferences(<span class="string">"rest"</span>, Context.MODE_PRIVATE)
+<span class="lineno"> 28 </span>        <span class="keyword">val</span> manager = context.getSystemService(AlarmManager::<span class="keyword">class</span>.java)
+<span class="lineno"> 29 </span>        preferences.all.keys.forEach { manager.cancel(pending(context, it)) }
+<span class="caretline"><span class="lineno"> 30 </span>        <span class="warning">preferences.edit()</span>.clear().apply()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 31 </span>    }
+<span class="lineno"> 32 </span>
+<span class="lineno"> 33 </span>    <span class="keyword">fun</span> schedule(context: Context, id: String, until: Long?) {
 </pre>
 
-<span class="location"><a href="../../src/main/java/fr/hybridcoach/RestReceiver.kt">../../src/main/java/fr/hybridcoach/RestReceiver.kt</a>:42</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
-<span class="lineno"> 39 </span>    <span class="keyword">fun</span> fire(context: Context, id: String, until: Long) {
-<span class="lineno"> 40 </span>        <span class="keyword">val</span> preferences = context.getSharedPreferences(<span class="string">"rest"</span>, Context.MODE_PRIVATE)
-<span class="lineno"> 41 </span>        <span class="keyword">if</span> (until > <span class="number">0</span> &amp;&amp; preferences.getLong(id, <span class="number">0</span>) == until) {
-<span class="caretline"><span class="lineno"> 42 </span>            <span class="warning">preferences.edit()</span>.putLong(id, <span class="number">0</span>).apply()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 43 </span>            vibrate(context)
-<span class="lineno"> 44 </span>        }
-<span class="lineno"> 45 </span>    }
+<span class="location"><a href="../../src/main/java/fr/hybridcoach/RestReceiver.kt">../../src/main/java/fr/hybridcoach/RestReceiver.kt</a>:37</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
+<span class="lineno"> 34 </span>        <span class="keyword">val</span> manager = context.getSystemService(AlarmManager::<span class="keyword">class</span>.java)
+<span class="lineno"> 35 </span>        <span class="keyword">val</span> pi = pending(context, id, until ?: <span class="number">0</span>)
+<span class="lineno"> 36 </span>        manager.cancel(pi)
+<span class="caretline"><span class="lineno"> 37 </span>        <span class="warning">context</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 38 </span>            .getSharedPreferences(<span class="string">"rest"</span>, Context.MODE_PRIVATE)
+<span class="lineno"> 39 </span>            .edit()
+<span class="lineno"> 40 </span>            .putLong(id, until ?: <span class="number">0</span>)
+</pre>
+
+<span class="location"><a href="../../src/main/java/fr/hybridcoach/RestReceiver.kt">../../src/main/java/fr/hybridcoach/RestReceiver.kt</a>:49</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
+<span class="lineno"> 46 </span>    <span class="keyword">fun</span> fire(context: Context, id: String, until: Long) {
+<span class="lineno"> 47 </span>        <span class="keyword">val</span> preferences = context.getSharedPreferences(<span class="string">"rest"</span>, Context.MODE_PRIVATE)
+<span class="lineno"> 48 </span>        <span class="keyword">if</span> (until > <span class="number">0</span> &amp;&amp; preferences.getLong(id, <span class="number">0</span>) == until) {
+<span class="caretline"><span class="lineno"> 49 </span>            <span class="warning">preferences.edit()</span>.putLong(id, <span class="number">0</span>).apply()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 50 </span>            vibrate(context)
+<span class="lineno"> 51 </span>        }
+<span class="lineno"> 52 </span>    }
 </pre>
 
 </div>

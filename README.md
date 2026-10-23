@@ -2,6 +2,10 @@
 
 Application Android native de planification et de suivi de course à pied et de musculation, avec données locales et fonctions utilisables hors ligne. La synchronisation Garmin facultative nécessite Internet. Interface française, thème sombre par défaut, thèmes clair et système disponibles.
 
+## Nouveauté 1.4 — Sauvegarde et transfert de téléphone
+
+Dans **Profil sportif → Sauvegarde et transfert**, exporter un JSON complet puis le restaurer sur un autre téléphone. Le fichier inclut le carnet, les modèles, le profil et l’historique Garmin, avec contrôle d’intégrité et aperçu avant confirmation. La restauration remplace le carnet cible ; une copie locale du carnet précédent est conservée. Les clés de connexion ne sont pas transférées. [Mode d’emploi](docs/SAUVEGARDE.md).
+
 ## Correctif 1.3.1 — connexion Garmin
 
 La demande de jeton accepte désormais les réponses texte et JSON au lieu d’imposer JSON. Les erreurs indiquent le code HTTP et l’étape précise (jeton, profil, activités ou détail), sans exposer les secrets. Ce correctif vise le HTTP 406 observé à la connexion ; sa résolution avec le compte réel reste à confirmer après une nouvelle tentative.
@@ -83,7 +87,7 @@ Ils utilisent une base de test distincte pour les vérifications Room. Le test d
 - Séances de force ordonnées : séries, répétitions/plages, charge, RIR, RPE, repos, tempo, notes, modes standard/unilatéral/poids du corps/lesté/assisté et blocs superset/biset/triset.
 - Exécution avec performances précédentes, saisie par série, validation, ajout/retrait de séries, chrono et sauvegarde progressive. Repos : +30 s, passer, vibration.
 - Course simple ou structurée : temps, distance ou fin manuelle ; blocs imbriqués ; récupération active/passive ; cibles allure/plage, vitesse, FC/zone, zone d’allure, puissance, cadence, RPE, % VMA et références de course.
-- Profil sportif dans DataStore, conversions et objectifs calculés figés dans les séances planifiées.
+- Profil sportif persistant dans Room (copié depuis l’ancien DataStore), conversions et objectifs calculés figés dans les séances planifiées.
 - Résultats de course facultatifs : distance, durée, FC, dénivelé, RPE, fatigue, ressenti, notes et intervalles ; affichage du prévu/réalisé.
 - Objectifs et préparations multiples : modification, archivage, semaines, compte à rebours, volumes prévus/réalisés, progression temporelle, résultats et séances restantes.
 - Modèles réutilisables : création, modification, duplication, suppression et planification indépendante.
@@ -106,12 +110,13 @@ Cette liste décrit les parcours codés. La couverture de vérification et les l
 - Le plan d’une séance commencée est verrouillé pour préserver son objectif initial. Les séries supplémentaires et les résultats restent modifiables ; dupliquer la séance permet de changer le plan.
 - Les brouillons d’éditeur ne sont pas conservés après suppression du processus avant enregistrement. Les résultats saisis, eux, sont envoyés progressivement à Room ; attendre la fin de l’indicateur de sauvegarde avant un arrêt forcé.
 - Le PDF intègre Liberation Sans ; les caractères non couverts (certains emoji ou alphabets) sont remplacés par `?`. Le JSON conserve l’Unicode original.
-- Export de préparation, sans import ni restauration globale de la base dans l’interface. Le PDF présente les dates et semaines sous forme de liste, sans grille mensuelle ni graphiques vectoriels élaborés.
-- Base v3 : migrations additives testées depuis les v1 et v2, schémas conservés et aucun effacement destructif automatique. Toute future évolution SQL devra fournir et tester une migration explicite.
+- Les sauvegardes JSON complètes permettent une restauration avec remplacement du carnet, sans fusion. Les exports PDF/JSON de préparation sont distincts et ne sont pas restaurables comme une sauvegarde complète. Le PDF présente les dates et semaines sous forme de liste.
+- Base v4 : migrations additives testées depuis les v1, v2 et v3, schémas conservés et aucun effacement destructif automatique. Toute future évolution SQL devra fournir et tester une migration explicite.
 
 ## Organisation
 
-- `data/` : Room, dépôt transactionnel, bibliothèque et DataStore.
+- `data/` : Room, dépôt transactionnel, bibliothèque et reprise du profil depuis l’ancien DataStore.
+- `backup/` : sauvegarde JSON versionnée, intégrité, aperçu et restauration transactionnelle.
 - `domain/` : plans, résultats, calculs, récurrences et statistiques.
 - `ui/` : ViewModel, navigation et écrans Compose.
 - `export/` : document commun JSON/PDF et partage Android.

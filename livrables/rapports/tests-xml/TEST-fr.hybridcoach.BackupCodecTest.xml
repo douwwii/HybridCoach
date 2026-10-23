@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="fr.hybridcoach.BackupCodecTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-23T11:42:37" hostname="fedoraleo" time="0.153">
+  <properties/>
+  <testcase name="completeRoundTripPreservesIdsUnicodeDraftsAndGarminOriginals" classname="fr.hybridcoach.BackupCodecTest" time="0.108"/>
+  <testcase name="malformedNestedPlansAndNewerDatabaseSchemasAreRejected" classname="fr.hybridcoach.BackupCodecTest" time="0.003"/>
+  <testcase name="invalidReferencesAndDuplicateIdsAreRejectedBeforeRestore" classname="fr.hybridcoach.BackupCodecTest" time="0.005"/>
+  <testcase name="otherExportsAndFutureVersionsAreRejectedClearly" classname="fr.hybridcoach.BackupCodecTest" time="0.012"/>
+  <testcase name="checksumSurvivesWhitespaceAndReorderedObjectProperties" classname="fr.hybridcoach.BackupCodecTest" time="0.014"/>
+  <testcase name="modifiedOrTruncatedFilesFailIntegrityWithoutLeakingPrivateNotes" classname="fr.hybridcoach.BackupCodecTest" time="0.01"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

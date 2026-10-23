@@ -16,7 +16,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
-fun ProfileScreen(vm: CoachViewModel, back: () -> Unit, garmin: () -> Unit = {}) {
+fun ProfileScreen(
+    vm: CoachViewModel,
+    back: () -> Unit,
+    garmin: () -> Unit = {},
+    backup: () -> Unit = {},
+) {
     val current by vm.profile.collectAsStateWithLifecycle()
     val currentTheme by vm.theme.collectAsStateWithLifecycle()
     var raw by
@@ -38,6 +43,9 @@ fun ProfileScreen(vm: CoachViewModel, back: () -> Unit, garmin: () -> Unit = {})
         )
         FilledTonalButton(onClick = garmin, modifier = Modifier.fillMaxWidth()) {
             Text("Garmin Connect")
+        }
+        FilledTonalButton(onClick = backup, modifier = Modifier.fillMaxWidth()) {
+            Text("Sauvegarde et transfert")
         }
         Choice(
             "Apparence",

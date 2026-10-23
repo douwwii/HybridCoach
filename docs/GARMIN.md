@@ -46,7 +46,7 @@ Une disparition de la liste ne suffit pas à supprimer un résultat : l’applic
 
 ## Passage depuis la version 1.2
 
-La base Room reste en **version 3** : aucun nouveau stockage SQL n’est nécessaire, aucun effacement de données n’est effectué. Les anciennes URL/clés du service ne sont jamais utilisées pour contacter Garmin et sont effacées du stockage de configuration lors de l’enregistrement réussi d’une clé personnelle ou de la déconnexion.
+Le passage à l’API personnelle n’a pas modifié les tables Garmin de la base v3. Depuis Hybrid Coach 1.4, la base v4 ajoute le profil sportif pour la sauvegarde complète, sans effacer les données existantes. Les anciennes URL/clés du service ne sont jamais utilisées pour contacter Garmin et sont effacées du stockage de configuration lors de l’enregistrement réussi d’une clé personnelle ou de la déconnexion.
 
 Si une activité déjà importée par l’ancien service est retrouvée dans le compte personnel, son identifiant Garmin commun prouve la correspondance. Les enregistrements de ce compte sont alors rattachés à l’identité personnelle dans la même transaction, en conservant les séances et leurs associations. Les anciennes empreintes sont réconciliées sans écraser une correction locale si les mesures distantes sont identiques. Sans activité commune, aucun ancien compte n’est réattribué arbitrairement ; son historique reste conservé.
 
@@ -75,3 +75,7 @@ La documentation Swagger est rendue par JavaScript. Le contrat utilisé a été 
 Les tests automatisés emploient des clés et activités synthétiques, un transport simulé et une base Room locale. Ils couvrent l’authentification, le renouvellement, la pagination, les unités, les dates, les erreurs, les suppressions confirmées, la rotation de clé, le chiffrement, la migration depuis le service et l’interface. Voir [VERIFICATION.md](VERIFICATION.md) pour les résultats.
 
 Aucun compte ni clé Garmin réel n’a été fourni : l’authentification et l’import réels restent à vérifier sur le téléphone après saisie de votre propre clé. Ne jamais transmettre cette clé dans une conversation ni la versionner dans le projet.
+
+## Transfert vers un autre téléphone
+
+La [sauvegarde JSON complète](SAUVEGARDE.md) inclut les activités et associations Garmin locales, les corrections et les révisions de synchronisation. La clé personnelle et les jetons ne sont pas exportés : reconnecter le même compte Garmin sur le nouveau téléphone. Les identifiants d’activités permettent ensuite de reprendre la synchronisation sans doublons.

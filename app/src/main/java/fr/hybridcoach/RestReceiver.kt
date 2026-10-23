@@ -23,6 +23,13 @@ object RestAlarm {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
 
+    fun cancelAll(context: Context) {
+        val preferences = context.getSharedPreferences("rest", Context.MODE_PRIVATE)
+        val manager = context.getSystemService(AlarmManager::class.java)
+        preferences.all.keys.forEach { manager.cancel(pending(context, it)) }
+        preferences.edit().clear().apply()
+    }
+
     fun schedule(context: Context, id: String, until: Long?) {
         val manager = context.getSystemService(AlarmManager::class.java)
         val pi = pending(context, id, until ?: 0)

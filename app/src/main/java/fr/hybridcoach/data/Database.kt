@@ -155,6 +155,15 @@ data class WorkoutSubGoal(val workoutId: String, val subGoalId: String)
 )
 data class ResultEntity(@PrimaryKey val workoutId: String, val payload: String)
 
+@Entity(tableName = "athleteSettings")
+data class AthleteSettingsEntity(
+    @PrimaryKey val id: Int = 1,
+    val profileJson: String,
+    val theme: String,
+)
+
+const val DATABASE_VERSION = 4
+
 class Converters {
     @TypeConverter fun sport(value: String): Sport = Sport.valueOf(value)
 
@@ -167,6 +176,51 @@ class Converters {
 
 @Dao
 interface CoachDao {
+    @Query("SELECT * FROM athleteSettings WHERE id=1")
+    fun settingsFlow(): Flow<AthleteSettingsEntity?>
+
+    @Query("SELECT * FROM athleteSettings WHERE id=1")
+    suspend fun settings(): AthleteSettingsEntity?
+
+    @Upsert suspend fun putSettings(value: AthleteSettingsEntity)
+
+    @Query("SELECT * FROM exercises ORDER BY id") suspend fun allExercises(): List<Exercise>
+
+    @Query("SELECT * FROM templates ORDER BY id") suspend fun allTemplates(): List<WorkoutTemplate>
+
+    @Query("SELECT * FROM goals ORDER BY id") suspend fun allGoals(): List<TrainingGoal>
+
+    @Query("SELECT * FROM preparations ORDER BY id")
+    suspend fun allPreparations(): List<TrainingPreparation>
+
+    @Query("SELECT * FROM subGoals ORDER BY id") suspend fun allSubGoals(): List<PreparationSubGoal>
+
+    @Query("SELECT * FROM workoutSubGoals ORDER BY workoutId,subGoalId")
+    suspend fun allLinks(): List<WorkoutSubGoal>
+
+    @Query("SELECT * FROM garminSync ORDER BY accountId")
+    suspend fun allGarminSync(): List<GarminSyncEntity>
+
+    @Query("DELETE FROM garminActivities") suspend fun clearGarminActivities()
+
+    @Query("DELETE FROM garminSync") suspend fun clearGarminSync()
+
+    @Query("DELETE FROM results") suspend fun clearResults()
+
+    @Query("DELETE FROM workoutSubGoals") suspend fun clearAllLinks()
+
+    @Query("DELETE FROM workouts") suspend fun clearWorkouts()
+
+    @Query("DELETE FROM subGoals") suspend fun clearSubGoals()
+
+    @Query("DELETE FROM preparations") suspend fun clearPreparations()
+
+    @Query("DELETE FROM goals") suspend fun clearGoals()
+
+    @Query("DELETE FROM templates") suspend fun clearTemplates()
+
+    @Query("DELETE FROM exercises") suspend fun clearExercises()
+
     @Query("SELECT * FROM garminActivities ORDER BY remoteId DESC")
     fun garminActivities(): Flow<List<GarminActivityEntity>>
 
@@ -287,8 +341,9 @@ interface CoachDao {
             WorkoutSubGoal::class,
             GarminActivityEntity::class,
             GarminSyncEntity::class,
+            AthleteSettingsEntity::class,
         ],
-    version = 3,
+    version = DATABASE_VERSION,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -335,6 +390,16 @@ val MIGRATION_2_3 =
             )
             db.execSQL(
                 "CREATE TABLE IF NOT EXISTS garminSync (accountId TEXT NOT NULL, revision INTEGER NOT NULL, syncedAt INTEGER NOT NULL, PRIMARY KEY(accountId))"
+            )
+        }
+    }
+
+/** Preferences join Room so restoring the complete carnet and profile is one atomic transaction. */
+val MIGRATION_3_4 =
+    object : androidx.room.migration.Migration(3, 4) {
+        override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS athleteSettings (id INTEGER NOT NULL, profileJson TEXT NOT NULL, theme TEXT NOT NULL, PRIMARY KEY(id))"
             )
         }
     }

@@ -23,6 +23,14 @@ class PlannerLocalAndroidUiTest {
 
     @Before
     fun configureIdleTimeout() {
+        // Robolectric gives each test a new data directory while AndroidX caches provider roots.
+        // Model the provider's process startup so a previous test cannot supply a stale root.
+        val context = compose.activity.application
+        val info =
+            requireNotNull(
+                context.packageManager.resolveContentProvider("${context.packageName}.files", 0)
+            )
+        androidx.core.content.FileProvider().attachInfo(context, info)
         androidx.test.espresso.IdlingPolicies.setMasterPolicyTimeout(
             15,
             java.util.concurrent.TimeUnit.SECONDS,
@@ -190,6 +198,13 @@ class PlannerLocalAndroidUiTest {
         compose.onNodeWithText("Générer et partager").performClick()
         var shared: android.content.Intent? = null
         compose.waitUntil(20000) {
+            // The PDF completes on IO and posts its chooser launch to the Android main loop.
+            compose.runOnIdle {}
+            val viewModel =
+                androidx.lifecycle
+                    .ViewModelProvider(compose.activity)[
+                        fr.hybridcoach.ui.CoachViewModel::class.java]
+            check(viewModel.error.value == null) { "PDF share failed: ${viewModel.error.value}" }
             shared = org.robolectric.Shadows.shadowOf(compose.activity).nextStartedActivity
             shared != null
         }

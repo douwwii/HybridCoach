@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="fr.hybridcoach.GarminPersonalClientTest" tests="18" skipped="0" failures="0" errors="0" timestamp="2026-10-22T20:03:26" hostname="fedoraleo" time="0.519">
+<testsuite name="fr.hybridcoach.GarminPersonalClientTest" tests="18" skipped="0" failures="0" errors="0" timestamp="2026-10-23T11:42:44" hostname="fedoraleo" time="0.121">
   <properties/>
-  <testcase name="tokenErrorsDistinguishAuthenticationForbiddenAndProxy" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.111"/>
-  <testcase name="emptyAccountIsConnectableAndDoesNotDeleteAnotherAccount" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.091"/>
+  <testcase name="tokenErrorsDistinguishAuthenticationForbiddenAndProxy" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.022"/>
+  <testcase name="emptyAccountIsConnectableAndDoesNotDeleteAnotherAccount" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.008"/>
   <testcase name="rotatingKeyForAnEmptyAccountRetainsOnlyTheVerifiedPreviousIdentity" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.0"/>
-  <testcase name="normalizesDocumentedUnitsAndActivityLocalDate" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.002"/>
-  <testcase name="deletionRequiresExplicit404AndTemporaryOmissionLoadsDetail" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.022"/>
-  <testcase name="changedProfileOrOwnerRequiresReconnection" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.015"/>
-  <testcase name="revokedKeyAndMalformedResponsesAreSanitized" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.009"/>
-  <testcase name="expiredTokenIsRenewedOnceAndCachedBeforeExpiry" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.024"/>
-  <testcase name="fingerprintsAreStableAcrossPropertyOrderAndChangeWithRemoteMeasures" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.003"/>
-  <testcase name="invalidRemoteDataIsRejectedWithSanitizedError" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.009"/>
-  <testcase name="duplicatePagesAndMixedOwnersAbortTheDownload" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.147"/>
-  <testcase name="tokenNegotiationDoesNotDemandJsonAndSupportsTextOrJsonResponses" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.013"/>
-  <testcase name="http406ReportsTheFailingStageWithoutDisclosingTheKeyOrBody" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.011"/>
-  <testcase name="htmlOrMalformedPlainTokenIsNotForwardedToTheProfileEndpoint" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.006"/>
-  <testcase name="forbiddenOrNetworkFailureNeverTurnsIntoDeletion" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.019"/>
-  <testcase name="officialEndpointsAndStableOwnerIdentityAcrossKeyRotation" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.004"/>
-  <testcase name="downloadsAllPagesWithoutMultisportChildren" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.03"/>
+  <testcase name="normalizesDocumentedUnitsAndActivityLocalDate" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.001"/>
+  <testcase name="deletionRequiresExplicit404AndTemporaryOmissionLoadsDetail" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.004"/>
+  <testcase name="changedProfileOrOwnerRequiresReconnection" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.004"/>
+  <testcase name="revokedKeyAndMalformedResponsesAreSanitized" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.002"/>
+  <testcase name="expiredTokenIsRenewedOnceAndCachedBeforeExpiry" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.005"/>
+  <testcase name="fingerprintsAreStableAcrossPropertyOrderAndChangeWithRemoteMeasures" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.001"/>
+  <testcase name="invalidRemoteDataIsRejectedWithSanitizedError" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.001"/>
+  <testcase name="duplicatePagesAndMixedOwnersAbortTheDownload" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.033"/>
+  <testcase name="tokenNegotiationDoesNotDemandJsonAndSupportsTextOrJsonResponses" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.004"/>
+  <testcase name="http406ReportsTheFailingStageWithoutDisclosingTheKeyOrBody" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.003"/>
+  <testcase name="htmlOrMalformedPlainTokenIsNotForwardedToTheProfileEndpoint" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.003"/>
+  <testcase name="forbiddenOrNetworkFailureNeverTurnsIntoDeletion" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.007"/>
+  <testcase name="officialEndpointsAndStableOwnerIdentityAcrossKeyRotation" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.002"/>
+  <testcase name="downloadsAllPagesWithoutMultisportChildren" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.02"/>
   <testcase name="optionalMetricsAndNonRunningSportsDoNotInventValues" classname="fr.hybridcoach.GarminPersonalClientTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

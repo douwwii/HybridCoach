@@ -1,19 +1,17 @@
-# Hybrid Coach 1.3.1 — compatibilité de connexion Garmin
+# Hybrid Coach 1.4.0 — Sauvegarde JSON et transfert de téléphone
 
-Le HTTP 406 à la connexion est confirmé par une capture utilisateur. La demande de jeton n’impose plus JSON et accepte aussi une réponse texte ; les erreurs indiquent désormais le code HTTP et l’étape exacte. Ce correctif de compatibilité reste à confirmer par une nouvelle tentative sur le compte réel, dont aucune clé n’a été communiquée.
+Dans **Profil sportif → Sauvegarde et transfert**, exporter un JSON complet, transférer le fichier sur un autre téléphone, puis le sélectionner avec **Restaurer un fichier JSON**. Un aperçu daté affiche le contenu avant confirmation. La restauration remplace le carnet et le profil ; elle ne fusionne pas deux carnets.
 
-Le projet Obsidian Vault utilise désormais directement l’API personnelle officielle Garmin. Dans Profil sportif → Garmin Connect, créer une clé avec le lien officiel, la coller et toucher Connecter Garmin, puis Synchroniser Garmin. Aucun serveur, domaine, Docker ni mot de passe Garmin n’est nécessaire dans l’application. Le jeton est renouvelé automatiquement depuis la clé ; la synchronisation des activités reste manuelle.
+Le fichier inclut les séances et performances, séries et saisies en cours, modèles, exercices, objectifs, préparations, sous-objectifs, plans imbriqués, notes, profil sportif, thème et historique/associations Garmin. Les identifiants restent stables. Les clés de connexion Garmin et le Keystore sont exclus ; reconnecter Garmin sur le nouveau téléphone. Le JSON contient les données personnelles en clair.
 
-Les activités retrouvent le calendrier, les séances prévues et les statistiques existantes. Les doublons, corrections, cas ambigus et suppressions confirmées sont gérés. La base reste en version 3 et les anciennes associations du service sont conservées après vérification par identifiant Garmin commun. La clé est chiffrée sur Android ; le jeton reste en mémoire. La déconnexion conserve l’historique local.
+Avant remplacement, une copie privée du carnet précédent est conservée et reste exportable. L’import est transactionnel : un fichier invalide, une impossibilité d’écrire la copie de sécurité ou un échec SQL n’entraîne pas de remplacement partiel. Le format est versionné et contrôlé par SHA-256. La base v4 ajoute le profil sportif ; les migrations depuis v1/v2/v3 sont couvertes et l’ancien DataStore est repris sans effacement.
 
-Validation : **107 tests Android/JVM réussis**, APK et tests instrumentés compilés, lint avec **0 erreur, 26 avertissements et 3 informations**. Signature APK vérifiée et identique à la précédente livraison. Les échanges Garmin sont simulés dans les tests ; la connexion à votre compte réel reste à valider après saisie de votre clé sur le téléphone. L’envoi des programmes vers la montre n’est pas implémenté.
+Validation : **125 tests Android/JVM réussis**, APK et tests instrumentés compilés, lint avec **0 erreur, 27 avertissements et 3 informations**. Signature debug vérifiée et identique à la précédente livraison. Les tests couvrent le transfert entre bases et le parcours de fichiers local ; la migration physique entre deux téléphones reste à vérifier. Aucun appareil ADB n’était connecté pour installer la nouvelle version dans cette livraison.
 
-- APK 1.3.1 / code 5 : `HybridCoach-debug.apk`.
+- APK **1.4.0 / code 6** : `HybridCoach-debug.apk`.
 - Sources actualisées : `HybridCoach-sources.zip`.
-- Mode d’emploi actuel : `docs/GARMIN.md`.
-- Vérifications et limites : `docs/VERIFICATION.md` et `livrables/rapports/`.
-- L’ancienne archive `HybridCoach-garmin-bridge.zip` concerne uniquement la version 1.2 ; elle n’est plus nécessaire. Le code du service et son guide sont conservés pour maintenance.
+- Guide : `docs/SAUVEGARDE.md`.
+- Vérifications : `docs/VERIFICATION.md` et `livrables/rapports/`.
+- L’ancien service Garmin 1.2 reste archivé ; il n’est pas nécessaire à l’application actuelle.
 
-Installer la nouvelle version par-dessus l’ancienne signée avec la même clé. Ne pas désinstaller si vous souhaitez conserver votre base locale.
-
-La version 1.3.1 a aussi été installée par-dessus la 1.3.0 sur l’émulateur connecté (SDK 37) et démarrée avec succès, sans désinstallation ni effacement demandé. L’utilisateur doit réessayer la connexion avec sa clé ; le secret n’a pas été lu par l’agent.
+Installer cette version par-dessus l’ancienne pour conserver le carnet local, puis exporter la sauvegarde avant tout changement de téléphone ou désinstallation. La clé de signature actuelle est conservée ; une nouvelle clé de publication n’a pas été créée dans cette évolution.

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="fr.hybridcoach.BackupPersistenceTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-10-23T11:42:37" hostname="fedoraleo" time="4.442">
+  <properties/>
+  <testcase name="exportedJsonRestoresEveryTableOnAnotherDatabaseAndRemainsIdempotent" classname="fr.hybridcoach.BackupPersistenceTest" time="3.711"/>
+  <testcase name="garminSyncAfterTransferDoesNotDuplicateOrOverwriteLocalCorrections" classname="fr.hybridcoach.BackupPersistenceTest" time="0.073"/>
+  <testcase name="inabilityToWriteTheSafetyCopyAbortsBeforeReplacingAnything" classname="fr.hybridcoach.BackupPersistenceTest" time="0.073"/>
+  <testcase name="invalidDocumentDoesNotModifyTargetOrCreateRecoveryFile" classname="fr.hybridcoach.BackupPersistenceTest" time="0.05"/>
+  <testcase name="restoredDataAndProfileSurviveClosingAndReopeningDatabase" classname="fr.hybridcoach.BackupPersistenceTest" time="0.085"/>
+  <testcase name="unreadableOrWrongFilesAreRejectedWithoutChangingTheCarnet" classname="fr.hybridcoach.BackupPersistenceTest" time="0.054"/>
+  <testcase name="sqlFailureRollsBackAllTablesAndProfileAfterClearingStarts" classname="fr.hybridcoach.BackupPersistenceTest" time="0.066"/>
+  <testcase name="versionThreeMigrationAndLegacyDataStorePreserveTheEntireExistingCarnet" classname="fr.hybridcoach.BackupPersistenceTest" time="0.178"/>
+  <testcase name="anEmptyBackupCanReplaceTheCarnetWithoutLeavingOrphans" classname="fr.hybridcoach.BackupPersistenceTest" time="0.076"/>
+  <testcase name="previousCarnetIsRecoverableAfterReplacementIncludingProfile" classname="fr.hybridcoach.BackupPersistenceTest" time="0.073"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

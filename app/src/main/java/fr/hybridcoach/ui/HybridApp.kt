@@ -29,6 +29,7 @@ fun HybridApp(vm: CoachViewModel) {
     val state by vm.state.collectAsStateWithLifecycle()
     val error by vm.error.collectAsStateWithLifecycle()
     val pending by vm.pending.collectAsStateWithLifecycle()
+    val backupBusy by vm.backupBusy.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
     LaunchedEffect(vm) { vm.notices.collect { snackbar.showSnackbar(it) } }
     val nav = rememberNavController()
@@ -50,6 +51,7 @@ fun HybridApp(vm: CoachViewModel) {
                                     route.startsWith("session") -> "Votre séance"
                                     route.startsWith("preparation/") -> "Préparation"
                                     route == "garmin" -> "Garmin Connect"
+                                    route == "backup" -> "Sauvegarde et transfert"
                                     route == "profile" -> "Profil sportif"
                                     route == "exercises" -> "Exercices"
                                     else -> "Modèles de séances"
@@ -59,7 +61,7 @@ fun HybridApp(vm: CoachViewModel) {
                     },
                     navigationIcon = {
                         if (!main)
-                            IconButton(onClick = { nav.popBackStack() }) {
+                            IconButton(onClick = { nav.popBackStack() }, enabled = !backupBusy) {
                                 Icon(Icons.AutoMirrored.Filled.ArrowBack, "Retour")
                             }
                     },
@@ -191,8 +193,14 @@ fun HybridApp(vm: CoachViewModel) {
                         }
                         composable("progress") { ProgressScreen(state) }
                         composable("profile") {
-                            ProfileScreen(vm, { nav.popBackStack() }, { nav.navigate("garmin") })
+                            ProfileScreen(
+                                vm,
+                                { nav.popBackStack() },
+                                { nav.navigate("garmin") },
+                                { nav.navigate("backup") },
+                            )
                         }
+                        composable("backup") { BackupScreen(vm, state) }
                         composable("garmin") {
                             GarminScreen(vm, state) { nav.navigate("session/$it") }
                         }

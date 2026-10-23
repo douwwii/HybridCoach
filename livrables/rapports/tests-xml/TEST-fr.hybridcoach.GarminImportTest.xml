@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="fr.hybridcoach.GarminImportTest" tests="16" skipped="0" failures="0" errors="0" timestamp="2026-10-22T20:03:14" hostname="fedoraleo" time="11.185">
+<testsuite name="fr.hybridcoach.GarminImportTest" tests="16" skipped="0" failures="0" errors="0" timestamp="2026-10-23T11:42:43" hostname="fedoraleo" time="0.9">
   <properties/>
-  <testcase name="personalApiAdoptsBridgeLinksWithoutDuplicatingOrOverwritingLocalCorrections" classname="fr.hybridcoach.GarminImportTest" time="8.602"/>
-  <testcase name="deletingOrIgnoringLocallyDoesNotReimportOnRemoteModification" classname="fr.hybridcoach.GarminImportTest" time="0.24"/>
-  <testcase name="realDateControlsActualStatsWhilePlannedDateRetainsOriginalWeek" classname="fr.hybridcoach.GarminImportTest" time="0.203"/>
-  <testcase name="twoActivitiesCompetingForOnePlanAreBothReviewed" classname="fr.hybridcoach.GarminImportTest" time="0.061"/>
-  <testcase name="personalApiMigrationRollsBackWhenSnapshotIsIncomplete" classname="fr.hybridcoach.GarminImportTest" time="0.17"/>
-  <testcase name="ambiguousAndCollidingActivitiesStayUncountedUntilResolved" classname="fr.hybridcoach.GarminImportTest" time="0.158"/>
-  <testcase name="sportChangesUpdateUnplannedRecordsAndReopenIncompatibleAssociations" classname="fr.hybridcoach.GarminImportTest" time="0.113"/>
-  <testcase name="uniqueAssociationReassignmentRollbackAndInvalidSnapshot" classname="fr.hybridcoach.GarminImportTest" time="0.109"/>
-  <testcase name="changingBridgeIdentityCannotDuplicateExistingRemoteIds" classname="fr.hybridcoach.GarminImportTest" time="0.154"/>
-  <testcase name="automaticImportPreservesPlanAndAvoidsDuplicateWorkoutsAndKilometers" classname="fr.hybridcoach.GarminImportTest" time="0.1"/>
-  <testcase name="unplannedOtherSportsHaveActualDurationButNoInventedPlannedVolume" classname="fr.hybridcoach.GarminImportTest" time="0.14"/>
-  <testcase name="versionTwoMigrationPreservesPhasesLinksAndNestedPlans" classname="fr.hybridcoach.GarminImportTest" time="0.437"/>
-  <testcase name="manuallyCompletedSessionIsCountedOnceAndRestoredOnUnlink" classname="fr.hybridcoach.GarminImportTest" time="0.163"/>
-  <testcase name="remoteDeletesRestorePlansAndRemoveOnlyGeneratedOccurrences" classname="fr.hybridcoach.GarminImportTest" time="0.266"/>
-  <testcase name="remoteEditsUpdateSameRecordButUnchangedSyncPreservesLocalCorrections" classname="fr.hybridcoach.GarminImportTest" time="0.142"/>
-  <testcase name="personalApiDoesNotAdoptAnUnprovenAccount" classname="fr.hybridcoach.GarminImportTest" time="0.124"/>
+  <testcase name="personalApiAdoptsBridgeLinksWithoutDuplicatingOrOverwritingLocalCorrections" classname="fr.hybridcoach.GarminImportTest" time="0.076"/>
+  <testcase name="deletingOrIgnoringLocallyDoesNotReimportOnRemoteModification" classname="fr.hybridcoach.GarminImportTest" time="0.044"/>
+  <testcase name="realDateControlsActualStatsWhilePlannedDateRetainsOriginalWeek" classname="fr.hybridcoach.GarminImportTest" time="0.065"/>
+  <testcase name="twoActivitiesCompetingForOnePlanAreBothReviewed" classname="fr.hybridcoach.GarminImportTest" time="0.037"/>
+  <testcase name="personalApiMigrationRollsBackWhenSnapshotIsIncomplete" classname="fr.hybridcoach.GarminImportTest" time="0.047"/>
+  <testcase name="ambiguousAndCollidingActivitiesStayUncountedUntilResolved" classname="fr.hybridcoach.GarminImportTest" time="0.078"/>
+  <testcase name="sportChangesUpdateUnplannedRecordsAndReopenIncompatibleAssociations" classname="fr.hybridcoach.GarminImportTest" time="0.062"/>
+  <testcase name="uniqueAssociationReassignmentRollbackAndInvalidSnapshot" classname="fr.hybridcoach.GarminImportTest" time="0.054"/>
+  <testcase name="changingBridgeIdentityCannotDuplicateExistingRemoteIds" classname="fr.hybridcoach.GarminImportTest" time="0.035"/>
+  <testcase name="automaticImportPreservesPlanAndAvoidsDuplicateWorkoutsAndKilometers" classname="fr.hybridcoach.GarminImportTest" time="0.056"/>
+  <testcase name="unplannedOtherSportsHaveActualDurationButNoInventedPlannedVolume" classname="fr.hybridcoach.GarminImportTest" time="0.052"/>
+  <testcase name="versionTwoMigrationPreservesPhasesLinksAndNestedPlans" classname="fr.hybridcoach.GarminImportTest" time="0.059"/>
+  <testcase name="manuallyCompletedSessionIsCountedOnceAndRestoredOnUnlink" classname="fr.hybridcoach.GarminImportTest" time="0.047"/>
+  <testcase name="remoteDeletesRestorePlansAndRemoveOnlyGeneratedOccurrences" classname="fr.hybridcoach.GarminImportTest" time="0.065"/>
+  <testcase name="remoteEditsUpdateSameRecordButUnchangedSyncPreservesLocalCorrections" classname="fr.hybridcoach.GarminImportTest" time="0.071"/>
+  <testcase name="personalApiDoesNotAdoptAnUnprovenAccount" classname="fr.hybridcoach.GarminImportTest" time="0.052"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

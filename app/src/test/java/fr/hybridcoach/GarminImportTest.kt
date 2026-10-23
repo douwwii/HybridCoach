@@ -384,7 +384,7 @@ class GarminImportTest {
         }
         db =
             Room.databaseBuilder(context, CoachDatabase::class.java, filename)
-                .addMigrations(MIGRATION_2_3)
+                .addMigrations(MIGRATION_2_3, MIGRATION_3_4)
                 .build()
         repo = CoachRepository(db)
         val state = repo.state.first()

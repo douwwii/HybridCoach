@@ -86,6 +86,7 @@ data class GarminActivityEntity(
     val deleted: Boolean = false,
 )
 
+@Serializable
 @Entity(tableName = "garminSync")
 data class GarminSyncEntity(
     @PrimaryKey val accountId: String,

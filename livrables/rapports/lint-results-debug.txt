@@ -137,9 +137,12 @@
                 .setData(android.net.Uri.parse("hybridcoach://rest/$id"))
                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/RestReceiver.kt:30: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
+        preferences.edit().clear().apply()
+        ~~~~~~~~~~~~~~~~~~
+/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/RestReceiver.kt:37: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
         context
         ^
-/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/RestReceiver.kt:42: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
+/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/RestReceiver.kt:49: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
             preferences.edit().putLong(id, 0).apply()
             ~~~~~~~~~~~~~~~~~~
 
@@ -196,4 +199,4 @@
    </lint>
    ```
 
-0 errors, 26 warnings
+0 errors, 27 warnings

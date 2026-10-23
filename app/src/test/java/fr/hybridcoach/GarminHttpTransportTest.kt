@@ -64,7 +64,7 @@ class GarminHttpTransportTest {
         assertEquals("POST", connection.requestMethod)
         assertEquals("*/*", connection.getRequestProperty("Accept"))
         assertEquals("ApiKey synthetic-key", connection.getRequestProperty("Authorization"))
-        assertTrue(connection.getRequestProperty("User-Agent").startsWith("HybridCoach/1.3.1"))
+        assertTrue(connection.getRequestProperty("User-Agent").startsWith("HybridCoach/${BuildConfig.VERSION_NAME}"))
         assertFalse(connection.instanceFollowRedirects)
         assertFalse(connection.useCaches)
         assertTrue(connection.openedOutput)
