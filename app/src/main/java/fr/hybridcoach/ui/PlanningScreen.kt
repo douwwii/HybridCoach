@@ -69,9 +69,11 @@ fun PlanningScreen(
     val phases = state.subGoals.filter { it.preparationId == prepId }
     var adding by rememberSaveable { mutableStateOf<String?>(null) }
     var copyWeek by remember { mutableStateOf(false) }
+    var readjust by rememberSaveable { mutableStateOf(false) }
     var editPhase by remember { mutableStateOf<PreparationSubGoal?>(null) }
     var export by remember { mutableStateOf(false) }
-    var showPhases by rememberSaveable { mutableStateOf(false) }
+    var jump by rememberSaveable { mutableStateOf(false) }
+    var help by rememberSaveable { mutableStateOf(false) }
     val listState = rememberLazyListState()
     val weekScroll = rememberScrollState()
     val density = LocalDensity.current
@@ -116,11 +118,6 @@ fun PlanningScreen(
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         item {
-            Text(
-                "Organisez vos séances et vos phases de travail.",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(vertical = 8.dp),
-            )
             Choice(
                 "Préparation",
                 prepId,
@@ -136,15 +133,7 @@ fun PlanningScreen(
         }
         stickyHeader {
             Column(Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background)) {
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    PlanningView.entries.forEach { mode ->
-                        FilterChip(
-                            selected = view == mode,
-                            onClick = { viewRaw = mode.name },
-                            label = { Text(mode.label) },
-                        )
-                    }
-                }
+                Choice("Vue", view, PlanningView.entries, text = { it.label }) { viewRaw = it.name }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = { navigate(-1) }) {
                         Icon(Icons.Default.ChevronLeft, "Période précédente")
@@ -167,17 +156,22 @@ fun PlanningScreen(
             }
         }
         item {
-            DateField("Aller à la date", dateRaw) { dateRaw = it }
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                TextButton(onClick = { dateRaw = LocalDate.now().toString() }) {
-                    Text("Aujourd’hui")
-                }
-                FilledTonalButton(onClick = { adding = dateRaw }) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                FilledTonalButton(onClick = { adding = dateRaw }, modifier = Modifier.weight(1f)) {
                     Icon(Icons.Default.Add, null)
                     Text("Ajouter une séance")
                 }
-                TextButton(onClick = { copyWeek = true }) { Text("Dupliquer la semaine") }
-                if (prep != null) TextButton(onClick = { export = true }) { Text("Exporter") }
+                ActionsMenu(
+                    buildList {
+                        add(MenuAction("Aujourd’hui") { dateRaw = LocalDate.now().toString() })
+                        add(MenuAction("Aller à la date") { jump = true })
+                        add(MenuAction("Dupliquer la semaine") { copyWeek = true })
+                        add(MenuAction("Réajuster rapidement") { readjust = true })
+                        add(MenuAction("Aide au déplacement") { help = true })
+                        if (prep != null) add(MenuAction("Exporter") { export = true })
+                    },
+                    label = "Outils",
+                )
             }
         }
         if (prep != null) {
@@ -188,33 +182,12 @@ fun PlanningScreen(
                         LocalDate.now(),
                         race?.raceDate?.asDate() ?: prep.end.asDate(),
                     )
-                if (view == PlanningView.ALL || showPhases) {
-                    Text(
-                        "${prep.start} → ${prep.end} · ${race?.name ?: prep.name} · ${if (days >= 0) "J−$days" else "J+${-days}"}",
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                    val total =
-                        ChronoUnit.DAYS.between(prep.start.asDate(), prep.end.asDate())
-                            .coerceAtLeast(1)
-                    val progress =
-                        ChronoUnit.DAYS.between(prep.start.asDate(), LocalDate.now()).toFloat() /
-                            total
-                    LinearProgressIndicator(
-                        progress = { progress.coerceIn(0f, 1f) },
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                    )
-                } else
-                    Text(
-                        "${race?.name ?: prep.name} · ${if (days >= 0) "J−$days" else "J+${-days}"}",
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-                SectionTitle(
-                    if (view == PlanningView.ALL) "Périodes & sous-objectifs" else "Sous-objectifs"
-                ) {
-                    if (view != PlanningView.ALL)
-                        TextButton(onClick = { showPhases = !showPhases }) {
-                            Text(if (showPhases) "Réduire" else "Voir")
-                        }
+                Text(
+                    "${race?.name ?: prep.name} · ${if (days >= 0) "J−$days" else "J+${-days}"}",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Disclosure("Périodes & sous-objectifs", "${phases.size} sous-objectif(s)") {
+                    Text("${dateLabel(prep.start)} → ${dateLabel(prep.end)}")
                     TextButton(
                         onClick = {
                             editPhase =
@@ -227,15 +200,9 @@ fun PlanningScreen(
                                 )
                         }
                     ) {
-                        Text("Ajouter")
+                        Text("Ajouter un sous-objectif")
                     }
-                }
-                if (view == PlanningView.ALL || showPhases) {
-                    if (phases.isEmpty())
-                        Text(
-                            "Ajoutez vos phases de travail. Leurs périodes peuvent se chevaucher.",
-                            style = MaterialTheme.typography.bodySmall,
-                        )
+                    if (phases.isEmpty()) Text("Aucun sous-objectif pour cette préparation.")
                     else SubGoalTimeline(prep, phases) { editPhase = it }
                 }
             }
@@ -263,10 +230,6 @@ fun PlanningScreen(
                         sessions.filter {
                             it.planningDate in date.monday()..date.monday().plusDays(6)
                         }
-                    )
-                    Text(
-                        "Appui long sur une séance, puis glissez vers un autre jour. Les flèches et le menu Déplacer restent disponibles.",
-                        style = MaterialTheme.typography.bodySmall,
                     )
                     Row(
                         Modifier.horizontalScroll(weekScroll),
@@ -517,16 +480,43 @@ fun PlanningScreen(
                 Text("Les séances enregistrées comme modèles apparaîtront ici.")
         }
     }
+    if (help)
+        AlertDialog(
+            onDismissRequest = { help = false },
+            title = { Text("Aide au déplacement") },
+            text = {
+                Text(
+                    "En vue semaine, faites un appui long sur une séance et glissez-la vers un autre jour. Le menu Actions → Déplacer permet de choisir une date éloignée. En vue mois, touchez un jour pour son détail ou faites un appui long pour ajouter une séance."
+                )
+            },
+            confirmButton = { TextButton(onClick = { help = false }) { Text("Fermer") } },
+        )
+    if (jump) {
+        var target by rememberSaveable { mutableStateOf(dateRaw) }
+        FormDialog(
+            "Aller à la date",
+            { jump = false },
+            {
+                dateRaw = target
+                jump = false
+            },
+            "Aller",
+        ) {
+            DateField("Date", target) { target = it }
+        }
+    }
     if (copyWeek)
         CopyPlanningWeekDialog(vm, date, prepId.takeIf { it.isNotBlank() }) { copyWeek = false }
     editPhase?.let { phase ->
         SubGoalDialog(vm, phase, state.subGoals.any { it.id == phase.id }) { editPhase = null }
     }
     if (export && prep != null) ExportDialog(vm, state, prep.id) { export = false }
+    if (readjust) ReadjustmentDialog(vm, state, prep?.id, date) { readjust = false }
 }
 
 @Composable
 private fun WeekVolume(workouts: List<PlannedWorkout>) {
+    if (workouts.isEmpty()) return
     val planned = workouts.filter { it.hasPlannedContent && it.status != Status.CANCELLED }
     val km =
         planned
@@ -781,32 +771,27 @@ private fun PlanningWorkout(
                 Column(Modifier.padding(10.dp)) {
                     Text(workout.name, style = MaterialTheme.typography.titleSmall)
                     Text(workout.sport.label, style = MaterialTheme.typography.labelSmall)
-                    parsePlan(workout.planJson).running.forEach {
-                        Text(
-                            blockSummary(it),
-                            style = MaterialTheme.typography.bodySmall,
-                            maxLines = 3,
-                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-                        )
-                    }
+                    val summary = workoutPlanSummary(workout.planJson)
+                    if (summary.isNotBlank())
+                        Text(summary, style = MaterialTheme.typography.bodySmall)
                 }
             }
         else WorkoutCard(workout) { open(workout.id) }
-        val ids = state.workoutSubGoals.filter { it.workoutId == workout.id }.map { it.subGoalId }
-        if (ids.isNotEmpty())
-            Text(
-                state.subGoals.filter { it.id in ids }.joinToString(" · ") { it.name },
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.secondary,
-            )
         Row(verticalAlignment = Alignment.CenterVertically) {
-            if (movable) TextButton(onClick = { edit(workout.id) }) { Text("Modifier") }
             Box {
                 TextButton(onClick = { menu = true }) {
                     Text("Actions")
                     Icon(Icons.Default.ExpandMore, null)
                 }
                 DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
+                    if (movable)
+                        DropdownMenuItem(
+                            text = { Text("Modifier") },
+                            onClick = {
+                                menu = false
+                                edit(workout.id)
+                            },
+                        )
                     DropdownMenuItem(
                         text = { Text("Dupliquer") },
                         onClick = {

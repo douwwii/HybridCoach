@@ -8,8 +8,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -137,14 +140,8 @@ fun WorkoutCard(w: PlannedWorkout, click: () -> Unit) {
                         color = MaterialTheme.colorScheme.secondary,
                         style = MaterialTheme.typography.labelSmall,
                     )
-                val steps = remember(w.planJson) { parsePlan(w.planJson).running }
-                if (steps.isNotEmpty())
-                    Text(
-                        steps.joinToString(" · ") { blockSummary(it) },
-                        maxLines = 3,
-                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.bodySmall,
-                    )
+                val summary = remember(w.planJson) { workoutPlanSummary(w.planJson) }
+                if (summary.isNotBlank()) Text(summary, style = MaterialTheme.typography.bodySmall)
                 Text(
                     w.status.label,
                     style = MaterialTheme.typography.bodySmall,
@@ -270,6 +267,7 @@ fun FormDialog(
     dismiss: () -> Unit,
     confirm: () -> Unit,
     confirmText: String = "Enregistrer",
+    confirmEnabled: Boolean = true,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     androidx.compose.ui.window.Dialog(
@@ -295,7 +293,7 @@ fun FormDialog(
                 )
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     TextButton(onClick = dismiss) { Text("Annuler") }
-                    TextButton(onClick = confirm) { Text(confirmText) }
+                    TextButton(onClick = confirm, enabled = confirmEnabled) { Text(confirmText) }
                 }
             }
         }
@@ -314,3 +312,107 @@ fun ErrorText(error: String?) {
 }
 
 fun Double.pretty() = "%.1f".format(Locale.FRENCH, this)
+
+/** Secondary content is composed only when requested; form values remain owned by the screen. */
+@Composable
+fun Disclosure(
+    title: String,
+    summary: String? = null,
+    initiallyExpanded: Boolean = false,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    var expanded by rememberSaveable(title) { mutableStateOf(initiallyExpanded) }
+    Column(Modifier.fillMaxWidth()) {
+        DisclosureHeader(title, expanded, { expanded = !expanded }, summary)
+        if (expanded)
+            Column(
+                Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                content = content,
+            )
+    }
+}
+
+@Composable
+fun DisclosureHeader(
+    title: String,
+    expanded: Boolean,
+    toggle: () -> Unit,
+    summary: String? = null,
+) {
+    Surface(
+        onClick = toggle,
+        modifier =
+            Modifier.fillMaxWidth().semantics {
+                stateDescription = if (expanded) "Déplié" else "Replié"
+            },
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+    ) {
+        Row(
+            Modifier.padding(12.dp).heightIn(min = 32.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(Modifier.weight(1f)) {
+                Text(title, style = MaterialTheme.typography.titleSmall)
+                if (!expanded && !summary.isNullOrBlank())
+                    Text(
+                        summary,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+            }
+            Icon(if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore, null)
+        }
+    }
+}
+
+data class MenuAction(val label: String, val run: () -> Unit)
+
+@Composable
+fun ActionsMenu(actions: List<MenuAction>, label: String = "Plus") {
+    var expanded by remember { mutableStateOf(false) }
+    Box {
+        OutlinedButton(onClick = { expanded = true }) {
+            Icon(Icons.Default.MoreHoriz, null)
+            Text(label, Modifier.padding(start = 4.dp))
+        }
+        DropdownMenu(expanded, onDismissRequest = { expanded = false }) {
+            actions.forEach { action ->
+                DropdownMenuItem(
+                    text = { Text(action.label) },
+                    onClick = {
+                        expanded = false
+                        action.run()
+                    },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun InfoButton(title: String, text: String) {
+    var open by rememberSaveable { mutableStateOf(false) }
+    TextButton(onClick = { open = true }) { Text(title) }
+    if (open)
+        AlertDialog(
+            onDismissRequest = { open = false },
+            title = { Text(title) },
+            text = { Text(text, Modifier.verticalScroll(rememberScrollState())) },
+            confirmButton = { TextButton(onClick = { open = false }) { Text("Fermer") } },
+        )
+}
+
+fun workoutPlanSummary(raw: String): String {
+    val plan = parsePlan(raw)
+    val meters = SportMath.plannedMeters(plan.running)
+    val seconds = SportMath.plannedSeconds(plan.running)
+    return buildList {
+            if (meters > 0) add("${(meters / 1000).pretty()} km")
+            if (seconds > 0) add(SportMath.durationLabel(seconds.toLong()))
+            if (plan.strength.isNotEmpty()) add("${plan.strength.size} exercices")
+            if (isEmpty() && plan.running.isNotEmpty()) add("${plan.running.size} étapes")
+        }
+        .joinToString(" · ")
+}

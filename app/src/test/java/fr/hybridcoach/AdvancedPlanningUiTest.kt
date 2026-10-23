@@ -157,6 +157,7 @@ class AdvancedPlanningUiTest {
         compose.onNodeWithText("Mode Planification").performClick()
         compose.onNodeWithText("Préparation : Toutes les séances").performClick()
         compose.onNodeWithText("Marathon UI").performClick()
+        compose.onNodeWithText("Vue : Semaine").performClick()
         compose.onNodeWithText("Mois").performClick()
         compose
             .onNodeWithTag("planning-screen")
@@ -164,17 +165,20 @@ class AdvancedPlanningUiTest {
                 hasText("Touchez un jour pour le détail · appui long pour ajouter une séance.")
             )
         screenshot("planning-month")
-        compose.onNodeWithText("Jour", useUnmergedTree = true).performClick()
+        compose.onNodeWithText("Vue : Mois").performClick()
+        compose.onNodeWithText("Jour").performClick()
         compose
             .onNodeWithTag("planning-screen")
             .performScrollToNode(hasText("Fractionné partagé UI"))
         compose.onNodeWithText("Fractionné partagé UI").assertExists()
-        compose.onNodeWithText("Préparation complète", useUnmergedTree = true).performClick()
+        compose.onNodeWithText("Vue : Jour").performClick()
+        compose.onNodeWithText("Préparation complète").performClick()
         compose.onNodeWithTag("planning-screen").performScrollToIndex(0)
         compose
             .onNodeWithTag("planning-screen")
             .performScrollToNode(hasText("Périodes & sous-objectifs"))
-        compose.onNodeWithText("Ajouter", substring = false).performClick()
+        compose.onNodeWithText("Périodes & sous-objectifs").performClick()
+        compose.onNodeWithText("Ajouter un sous-objectif").performClick()
         compose.onNodeWithText("Nom du sous-objectif").performTextInput("Seuil UI")
         compose.onNodeWithText("Enregistrer").performClick()
         compose.waitUntil(15000) {
@@ -184,14 +188,8 @@ class AdvancedPlanningUiTest {
             compose.onAllNodesWithText("Nom du sous-objectif").fetchSemanticsNodes().isEmpty()
         }
         screenshot("planning-phases")
-        compose.onNodeWithText("Semaine", useUnmergedTree = true).performClick()
-        compose
-            .onNodeWithTag("planning-screen")
-            .performScrollToNode(
-                hasText(
-                    "Appui long sur une séance, puis glissez vers un autre jour. Les flèches et le menu Déplacer restent disponibles."
-                )
-            )
+        compose.onNodeWithText("Vue : Préparation complète").performClick()
+        compose.onNodeWithText("Semaine").performClick()
         compose
             .onNodeWithTag("planning-screen")
             .performScrollToNode(hasText("Fractionné partagé UI"))
@@ -208,6 +206,13 @@ class AdvancedPlanningUiTest {
             runBlocking { repo.dao.workout("workout-ui")!!.date == today.plusDays(1).toString() }
         }
         compose.onNodeWithContentDescription("Retour").performClick()
+        compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Toute la semaine"))
+        // Activate the disclosure through its accessibility action after the drag.
+        compose.onNodeWithText("Toute la semaine").performSemanticsAction(
+            androidx.compose.ui.semantics.SemanticsActions.OnClick
+        ) {
+            it()
+        }
         compose
             .onNode(hasScrollToIndexAction())
             .performScrollToNode(hasText("Fractionné partagé UI"))

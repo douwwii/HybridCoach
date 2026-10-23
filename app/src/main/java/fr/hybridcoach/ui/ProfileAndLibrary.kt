@@ -33,60 +33,81 @@ fun ProfileScreen(
         raw = codec.encodeToString(AthleteProfile.serializer(), profile)
     }
     var theme by rememberSaveable(currentTheme) { mutableStateOf(currentTheme) }
+    var speed by rememberSaveable { mutableStateOf("") }
+    var distance by rememberSaveable { mutableStateOf("") }
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        PageTitle(
-            "Vos repères",
-            "Les références sont figées lors de la planification d’une séance.",
-        )
+        PageTitle("Vos repères")
         FilledTonalButton(onClick = garmin, modifier = Modifier.fillMaxWidth()) {
             Text("Garmin Connect")
         }
         FilledTonalButton(onClick = backup, modifier = Modifier.fillMaxWidth()) {
             Text("Sauvegarde et transfert")
         }
-        Choice(
+        Disclosure(
             "Apparence",
-            theme,
-            listOf("dark", "light", "system"),
-            text = {
-                when (it) {
-                    "light" -> "Clair"
-                    "system" -> "Système"
-                    else -> "Sombre"
-                }
+            when (theme) {
+                "light" -> "Clair"
+                "system" -> "Système"
+                else -> "Sombre"
             },
-            change = { theme = it },
-        )
-        Field("VMA (km/h)", p.vma, { update(p.copy(vma = it)) }, true)
-        Field("FC maximale (bpm)", p.maxHr, { update(p.copy(maxHr = it)) }, true)
-        Text(
-            "Allures en secondes par kilomètre : 3:30/km = 210 s/km.",
-            style = MaterialTheme.typography.bodySmall,
-        )
-        Field("Allure 5 km (s/km)", p.pace5, { update(p.copy(pace5 = it)) }, true)
-        Field("Allure 10 km (s/km)", p.pace10, { update(p.copy(pace10 = it)) }, true)
-        Field("Allure seuil (s/km)", p.threshold, { update(p.copy(threshold = it)) }, true)
-        Field("Allure semi-marathon (s/km)", p.half, { update(p.copy(half = it)) }, true)
-        Field("Allure marathon (s/km)", p.marathon, { update(p.copy(marathon = it)) }, true)
-        Field("Zones FC · ex. 1:120-140", p.hrZones, { update(p.copy(hrZones = it)) }, lines = 3)
-        Field(
-            "Zones d’allure (s/km) · ex. 1:300-360",
-            p.paceZones,
-            { update(p.copy(paceZones = it)) },
-            lines = 3,
-        )
-        SectionTitle("Convertisseur")
-        var speed by rememberSaveable { mutableStateOf("") }
-        var distance by rememberSaveable { mutableStateOf("") }
-        Field("Vitesse (km/h)", speed, { speed = it }, true)
-        Field("Distance (mètres)", distance, { distance = it }, true)
-        val pace = speed.decimal()?.takeIf { it > 0 }?.let { SportMath.paceFromSpeed(it) }
-        Text(
-            "Allure : ${SportMath.paceLabel(pace)} · Durée : ${pace?.let{p -> distance.decimal()?.takeIf{it>=0}?.let{SportMath.durationLabel(SportMath.targetSeconds(it,p).toLong())}} ?: "—"}"
-        )
+        ) {
+            Choice(
+                "Apparence",
+                theme,
+                listOf("dark", "light", "system"),
+                text = {
+                    when (it) {
+                        "light" -> "Clair"
+                        "system" -> "Système"
+                        else -> "Sombre"
+                    }
+                },
+                change = { theme = it },
+            )
+        }
+        Disclosure(
+            "Capacités physiques",
+            "VMA : ${p.vma.ifBlank { "—" }} · FC max : ${p.maxHr.ifBlank { "—" }}",
+        ) {
+            Field("VMA (km/h)", p.vma, { update(p.copy(vma = it)) }, true)
+            Field("FC maximale (bpm)", p.maxHr, { update(p.copy(maxHr = it)) }, true)
+        }
+        Disclosure("Allures de référence", "5 km, 10 km, seuil, semi et marathon") {
+            Text(
+                "Allures en secondes par kilomètre : 3:30/km = 210 s/km.",
+                style = MaterialTheme.typography.bodySmall,
+            )
+            Field("Allure 5 km (s/km)", p.pace5, { update(p.copy(pace5 = it)) }, true)
+            Field("Allure 10 km (s/km)", p.pace10, { update(p.copy(pace10 = it)) }, true)
+            Field("Allure seuil (s/km)", p.threshold, { update(p.copy(threshold = it)) }, true)
+            Field("Allure semi-marathon (s/km)", p.half, { update(p.copy(half = it)) }, true)
+            Field("Allure marathon (s/km)", p.marathon, { update(p.copy(marathon = it)) }, true)
+        }
+        Disclosure("Zones d’entraînement", "Fréquence cardiaque et allure") {
+            Field(
+                "Zones FC · ex. 1:120-140",
+                p.hrZones,
+                { update(p.copy(hrZones = it)) },
+                lines = 3,
+            )
+            Field(
+                "Zones d’allure (s/km) · ex. 1:300-360",
+                p.paceZones,
+                { update(p.copy(paceZones = it)) },
+                lines = 3,
+            )
+        }
+        Disclosure("Convertisseur", "Vitesse, allure et durée") {
+            Field("Vitesse (km/h)", speed, { speed = it }, true)
+            Field("Distance (mètres)", distance, { distance = it }, true)
+            val pace = speed.decimal()?.takeIf { it > 0 }?.let { SportMath.paceFromSpeed(it) }
+            Text(
+                "Allure : ${SportMath.paceLabel(pace)} · Durée : ${pace?.let{p -> distance.decimal()?.takeIf{it>=0}?.let{SportMath.durationLabel(SportMath.targetSeconds(it,p).toLong())}} ?: "—"}"
+            )
+        }
         Button(
             onClick = {
                 vm.action {

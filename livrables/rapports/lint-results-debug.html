@@ -179,7 +179,7 @@ document.getElementById(id).style.display = 'none';
     <div class="mdl-layout__header-row">
       <span class="mdl-layout-title">Lint Report: 27 warnings</span>
       <div class="mdl-layout-spacer"></div>
-      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Fri Oct 23 13:42:50 CEST 2026 by AGP (8.9.2)</nav>
+      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Fri Oct 23 15:14:58 CEST 2026 by AGP (8.9.2)</nav>
     </div>
   </header>
   <div class="mdl-layout__drawer">
@@ -450,14 +450,14 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../src/main/java/fr/hybridcoach/ui/Components.kt">../../src/main/java/fr/hybridcoach/ui/Components.kt</a>:165</span>: <span class="message">Modifier parameter should be the first optional parameter</span><br /><pre class="errorlines">
-<span class="lineno"> 162 </span>    value: String,
-<span class="lineno"> 163 </span>    change: (String) -> Unit,
-<span class="lineno"> 164 </span>    numeric: Boolean = <span class="keyword">false</span>,
-<span class="caretline"><span class="lineno"> 165 </span>    <span class="warning">modifier</span>: Modifier = Modifier,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 166 </span>    lines: Int = <span class="number">1</span>,
-<span class="lineno"> 167 </span>) {
-<span class="lineno"> 168 </span>    OutlinedTextField(
+<span class="location"><a href="../../src/main/java/fr/hybridcoach/ui/Components.kt">../../src/main/java/fr/hybridcoach/ui/Components.kt</a>:162</span>: <span class="message">Modifier parameter should be the first optional parameter</span><br /><pre class="errorlines">
+<span class="lineno"> 159 </span>    value: String,
+<span class="lineno"> 160 </span>    change: (String) -> Unit,
+<span class="lineno"> 161 </span>    numeric: Boolean = <span class="keyword">false</span>,
+<span class="caretline"><span class="lineno"> 162 </span>    <span class="warning">modifier</span>: Modifier = Modifier,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 163 </span>    lines: Int = <span class="number">1</span>,
+<span class="lineno"> 164 </span>) {
+<span class="lineno"> 165 </span>    OutlinedTextField(
 </pre>
 
 </div>
@@ -596,14 +596,14 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../src/main/java/fr/hybridcoach/ui/OverviewScreens.kt">../../src/main/java/fr/hybridcoach/ui/OverviewScreens.kt</a>:257</span>: <span class="message">Prefer <code>mutableIntStateOf</code> instead of <code>mutableStateOf</code></span><br /><pre class="errorlines">
-<span class="lineno"> 254 </span><span class="keyword">fun</span> HistoryScreen(state: CoachState, open: (String) -> Unit) {
-<span class="lineno"> 255 </span>    <span class="keyword">var</span> sport by rememberSaveable { mutableStateOf(<span class="string">"Tous"</span>) }
-<span class="lineno"> 256 </span>    <span class="keyword">var</span> prep by rememberSaveable { mutableStateOf(<span class="string">""</span>) }
-<span class="caretline"><span class="lineno"> 257 </span>    <span class="keyword">var</span> period by rememberSaveable { <span class="warning">mutableStateOf</span>(<span class="number">90</span>) }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 258 </span>    <span class="keyword">val</span> today = LocalDate.now()
-<span class="lineno"> 259 </span>    <span class="keyword">val</span> list =
-<span class="lineno"> 260 </span>        state.workouts
+<span class="location"><a href="../../src/main/java/fr/hybridcoach/ui/OverviewScreens.kt">../../src/main/java/fr/hybridcoach/ui/OverviewScreens.kt</a>:260</span>: <span class="message">Prefer <code>mutableIntStateOf</code> instead of <code>mutableStateOf</code></span><br /><pre class="errorlines">
+<span class="lineno"> 257 </span><span class="keyword">fun</span> HistoryScreen(state: CoachState, open: (String) -> Unit) {
+<span class="lineno"> 258 </span>    <span class="keyword">var</span> sport by rememberSaveable { mutableStateOf(<span class="string">"Tous"</span>) }
+<span class="lineno"> 259 </span>    <span class="keyword">var</span> prep by rememberSaveable { mutableStateOf(<span class="string">""</span>) }
+<span class="caretline"><span class="lineno"> 260 </span>    <span class="keyword">var</span> period by rememberSaveable { <span class="warning">mutableStateOf</span>(<span class="number">90</span>) }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 261 </span>    <span class="keyword">var</span> filters by rememberSaveable { mutableStateOf(<span class="keyword">false</span>) }
+<span class="lineno"> 262 </span>    <span class="keyword">val</span> today = LocalDate.now()
+<span class="lineno"> 263 </span>    <span class="keyword">val</span> list =
 </pre>
 
 <span class="location"><a href="../../src/main/java/fr/hybridcoach/ui/PreparationScreens.kt">../../src/main/java/fr/hybridcoach/ui/PreparationScreens.kt</a>:198</span>: <span class="message">Prefer <code>mutableIntStateOf</code> instead of <code>mutableStateOf</code></span><br /><pre class="errorlines">
@@ -623,7 +623,7 @@ Dismiss</button>            </div>
 <span class="caretline"><span class="lineno">  19 </span>    <span class="keyword">var</span> period by rememberSaveable { <span class="warning">mutableStateOf</span>(<span class="number">12</span>) }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 <span class="lineno">  20 </span>    <span class="keyword">var</span> prep by rememberSaveable { mutableStateOf(<span class="string">""</span>) }
 <span class="lineno">  21 </span>    <span class="keyword">var</span> exerciseId by rememberSaveable { mutableStateOf(<span class="string">""</span>) }
-<span class="lineno">  22 </span>    <span class="keyword">val</span> start = LocalDate.now().monday().minusWeeks(period - <span class="number">1L</span>)
+<span class="lineno">  22 </span>    <span class="keyword">var</span> effortOpen by rememberSaveable { mutableStateOf(<span class="keyword">false</span>) }
 </pre>
 
 </div>

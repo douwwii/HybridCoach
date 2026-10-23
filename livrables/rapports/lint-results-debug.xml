@@ -269,7 +269,7 @@
         errorLine2="    ~~~~~~~~">
         <location
             file="/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/ui/Components.kt"
-            line="165"
+            line="162"
             column="5"/>
     </issue>
 
@@ -345,7 +345,7 @@
         errorLine2="                                     ~~~~~~~~~~~~~~">
         <location
             file="/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/ui/OverviewScreens.kt"
-            line="257"
+            line="260"
             column="38"/>
     </issue>
 

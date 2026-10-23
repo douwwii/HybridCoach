@@ -193,7 +193,8 @@ class PlannerLocalAndroidUiTest {
         }
         compose
             .onNodeWithTag("preparation-screen")
-            .performScrollToNode(hasText("Partager la préparation"))
+            .performScrollToNode(hasText("Gérer la préparation"))
+        compose.onNodeWithText("Gérer la préparation").performClick()
         compose.onNodeWithText("Partager la préparation").performClick()
         compose.onNodeWithText("Générer et partager").performClick()
         var shared: android.content.Intent? = null

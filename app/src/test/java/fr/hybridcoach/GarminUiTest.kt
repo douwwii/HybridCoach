@@ -145,6 +145,7 @@ class GarminUiTest {
         compose.onNodeWithTag("garmin-screen").performScrollToNode(hasText("Détail"))
         compose.onNodeWithText("Détail").performClick()
         compose.onNodeWithText("Seuil Garmin A").assertExists()
+        compose.onNodeWithText("Données Garmin").performClick()
         compose.onNodeWithText("GARMIN CONNECT", substring = true).assertExists()
         compose.runOnIdle {
             val view = compose.activity.window.decorView

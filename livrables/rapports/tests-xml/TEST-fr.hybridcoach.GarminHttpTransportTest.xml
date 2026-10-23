@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="fr.hybridcoach.GarminHttpTransportTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-23T11:42:43" hostname="fedoraleo" time="0.007">
+<testsuite name="fr.hybridcoach.GarminHttpTransportTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-23T13:14:51" hostname="fedoraleo" time="0.005">
   <properties/>
-  <testcase name="tokenRequestAllowsTextAndJsonAndSendsAnEmptyAuthenticatedPost" classname="fr.hybridcoach.GarminHttpTransportTest" time="0.007"/>
+  <testcase name="tokenRequestAllowsTextAndJsonAndSendsAnEmptyAuthenticatedPost" classname="fr.hybridcoach.GarminHttpTransportTest" time="0.005"/>
   <testcase name="failedResponsesNeverExposeOrReadTheirRawErrorBody" classname="fr.hybridcoach.GarminHttpTransportTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

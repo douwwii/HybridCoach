@@ -102,5 +102,5 @@ Wrote HTML report to file:///home/douwwii/Documents/Obsidian%20Vault/My%20life/P
 
 > Task :app:lintDebug
 
-BUILD SUCCESSFUL in 32s
+BUILD SUCCESSFUL in 20s
 85 actionable tasks: 7 executed, 78 up-to-date

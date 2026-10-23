@@ -54,7 +54,7 @@
    However, you may simply not be aware that a more recent version is
    available, and that is what this lint check helps find.
 
-/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/ui/Components.kt:165: Warning: Modifier parameter should be the first optional parameter [ModifierParameter from androidx.compose.ui]
+/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/ui/Components.kt:162: Warning: Modifier parameter should be the first optional parameter [ModifierParameter from androidx.compose.ui]
     modifier: Modifier = Modifier,
     ~~~~~~~~
 
@@ -102,7 +102,7 @@
    https://developer.android.com/about/versions/12/backup-restore#xml-changes
    https://goo.gle/DataExtractionRules
 
-/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/ui/OverviewScreens.kt:257: Information: Prefer mutableIntStateOf instead of mutableStateOf [AutoboxingStateCreation from androidx.compose.runtime]
+/home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/ui/OverviewScreens.kt:260: Information: Prefer mutableIntStateOf instead of mutableStateOf [AutoboxingStateCreation from androidx.compose.runtime]
     var period by rememberSaveable { mutableStateOf(90) }
                                      ~~~~~~~~~~~~~~
 /home/douwwii/Documents/Obsidian Vault/My life/Pro/Projets/HybridCoach/app/src/main/java/fr/hybridcoach/ui/PreparationScreens.kt:198: Information: Prefer mutableIntStateOf instead of mutableStateOf [AutoboxingStateCreation from androidx.compose.runtime]

@@ -71,37 +71,55 @@ fun SessionScreen(
             PageTitle(w.name, "${w.sport.label} · ${dateLabel(w.date)} · ${w.status.label}")
             if (garmin != null) {
                 val activity = codec.decodeFromString<GarminActivity>(garmin.payload)
-                Text(
-                    "GARMIN CONNECT · ${activity.localDateTime.replace('T', ' ')} · ${activity.sportKey}",
-                    color = MaterialTheme.colorScheme.secondary,
-                )
-                w.plannedDate?.let {
+                Disclosure(
+                    "Données Garmin",
+                    "${activity.distanceMeters?.div(1000)?.pretty() ?: "—"} km · ${SportMath.durationLabel(activity.durationSeconds.toLong())}",
+                ) {
                     Text(
-                        "Initialement prévue : ${dateLabel(it)}${w.plannedTime?.let { t -> " à $t" } ?: ""}"
+                        "GARMIN CONNECT · ${activity.localDateTime.replace('T', ' ')} · ${activity.sportKey}",
+                        color = MaterialTheme.colorScheme.secondary,
                     )
-                }
-                Text(
-                    "${activity.distanceMeters?.div(1000)?.pretty() ?: "—"} km · ${SportMath.durationLabel(activity.durationSeconds.toLong())} · ${SportMath.paceLabel(activity.averagePace)}"
-                )
-                activity.averageHr?.let { Text("FC moyenne Garmin : ${it.toInt()} bpm") }
-                activity.elevationGain?.let { Text("Dénivelé positif Garmin : ${it.pretty()} m") }
-                activity.movingSeconds?.let {
-                    Text("Temps en mouvement : ${SportMath.durationLabel(it.toLong())}")
-                }
-                activity.elapsedSeconds?.let {
-                    Text("Temps écoulé : ${SportMath.durationLabel(it.toLong())}")
-                }
-                TextButton(onClick = { garminAssociation = true }) {
-                    Text("Gérer l’association Garmin")
+                    w.plannedDate?.let {
+                        Text(
+                            "Initialement prévue : ${dateLabel(it)}${w.plannedTime?.let { t -> " à $t" } ?: ""}"
+                        )
+                    }
+                    Text(
+                        "${activity.distanceMeters?.div(1000)?.pretty() ?: "—"} km · ${SportMath.durationLabel(activity.durationSeconds.toLong())} · ${SportMath.paceLabel(activity.averagePace)}"
+                    )
+                    activity.averageHr?.let { Text("FC moyenne Garmin : ${it.toInt()} bpm") }
+                    activity.elevationGain?.let {
+                        Text("Dénivelé positif Garmin : ${it.pretty()} m")
+                    }
+                    activity.movingSeconds?.let {
+                        Text("Temps en mouvement : ${SportMath.durationLabel(it.toLong())}")
+                    }
+                    activity.elapsedSeconds?.let {
+                        Text("Temps écoulé : ${SportMath.durationLabel(it.toLong())}")
+                    }
+                    TextButton(onClick = { garminAssociation = true }) {
+                        Text("Gérer l’association Garmin")
+                    }
                 }
             }
-            if (w.priority.isNotBlank())
-                Text("Priorité : ${w.priority}", style = MaterialTheme.typography.bodySmall)
-            if (w.description.isNotBlank()) Text(w.description)
-            val ids = state.workoutSubGoals.filter { it.workoutId == id }.map { it.subGoalId }
-            state.subGoals
-                .filter { it.id in ids }
-                .forEach { Text("• ${it.name}", color = MaterialTheme.colorScheme.secondary) }
+            if (
+                w.priority.isNotBlank() ||
+                    w.description.isNotBlank() ||
+                    state.workoutSubGoals.any { it.workoutId == id }
+            ) {
+                Disclosure("Informations de la séance") {
+                    if (w.priority.isNotBlank())
+                        Text("Priorité : ${w.priority}", style = MaterialTheme.typography.bodySmall)
+                    if (w.description.isNotBlank()) Text(w.description)
+                    val ids =
+                        state.workoutSubGoals.filter { it.workoutId == id }.map { it.subGoalId }
+                    state.subGoals
+                        .filter { it.id in ids }
+                        .forEach {
+                            Text("• ${it.name}", color = MaterialTheme.colorScheme.secondary)
+                        }
+                }
+            }
         }
         item {
             FlowRow {
@@ -125,20 +143,22 @@ fun SessionScreen(
                     ) {
                         Text(if (correcting) "Fin des corrections" else "Corriger les résultats")
                     }
-                TextButton(onClick = { duplicate = true }) { Text("Dupliquer") }
-                TextButton(
-                    onClick = {
-                        vm.action {
-                            vm.repo.saveTemplate(w)
-                            vm.notice("Modèle ajouté à la bibliothèque")
-                        }
+                ActionsMenu(
+                    buildList {
+                        add(MenuAction("Dupliquer") { duplicate = true })
+                        add(
+                            MenuAction("Enregistrer comme modèle") {
+                                vm.action {
+                                    vm.repo.saveTemplate(w)
+                                    vm.notice("Modèle ajouté à la bibliothèque")
+                                }
+                            }
+                        )
+                        if (!active && !w.status.isResult)
+                            add(MenuAction("Déplacer") { move = true })
+                        add(MenuAction("Supprimer") { delete = true })
                     }
-                ) {
-                    Text("Enregistrer comme modèle")
-                }
-                if (!active && !w.status.isResult)
-                    TextButton(onClick = { move = true }) { Text("Déplacer") }
-                TextButton(onClick = { delete = true }) { Text("Supprimer") }
+                )
             }
         }
         if (active) {

@@ -33,6 +33,14 @@ L’arbre d’étapes, disponible dans tous les sports sauf le repos, supporte c
 
 Les récurrences hebdomadaires sont matérialisées entre deux dates inclusives. Une opération couvre au maximum dix ans, sans horizon global du calendrier. Modifier les occurrences futures n’affecte que les statuts prévue/reportée et applique le décalage de date à partir de l’occurrence sélectionnée. Une copie de semaine conserve le plan et l’association à la préparation, sans performances ni notes de résultat. Les doublons de planification volontaires sont autorisés.
 
+## Réajustement rapide
+
+`planning/Readjustment.kt` calcule une proposition pure à partir d’un instantané cohérent : décalage d’une sélection, réduction du volume d’effort ou changement de date de compétition. Il conserve les identifiants et protège les séances ayant un résultat, une association Garmin ou un statut non modifiable. Les conflits se calculent sur le calendrier après toutes les modifications proposées.
+
+`ReadjustmentRepository` lit l’instantané dans une transaction, puis compare l’ensemble des séances, résultats, préparations, objectifs, phases, liens et associations Garmin avant l’application. La proposition est recalculée et doit être strictement identique à l’aperçu ; un changement de date civile impose également un nouvel aperçu. Les écritures de l’objectif, de la préparation, des phases et des séances partagent une seule transaction. La file d’opérations du ViewModel sérialise cette écriture avec les actions locales et les restaurations. Les tables et formats de sauvegarde existants suffisent ; Room reste en version 4.
+
+`ReadjustmentDialog` permet de sélectionner les séances, prévisualiser, revenir aux paramètres ou annuler. Aucun ajustement automatique ne se produit avant validation. Les avertissements sont informatifs ; les périodes inversées et entrées invalides sont refusées.
+
 ## Calculs
 
 - Allure en secondes par kilomètre = 3600 / vitesse en km/h.
@@ -79,3 +87,9 @@ Le client parcourt toutes les pages et vérifie par le détail chaque activité 
 `BackupService` capture toutes les données applicatives dans une transaction Room. La restauration écrit d’abord une copie privée avec `AtomicFile`, puis remplace les tables et le profil dans une transaction unique. Une erreur d’écriture de la copie ou d’import empêche un remplacement partiel. La copie précédente est exportable pour revenir en arrière. Les fichiers externes passent uniquement par les contrats Android `CreateDocument` et `OpenDocument`.
 
 Le ViewModel coordonne les opérations locales avec un mutex et une file FIFO. Le réseau Garmin reste hors de ce verrou ; une génération du carnet empêche d’appliquer un téléchargement commencé avant une restauration. Les anciennes alarmes de repos sont annulées après restauration et les échéances futures des séances actives sont reprogrammées. Voir [le guide de sauvegarde](SAUVEGARDE.md).
+
+## Présentation progressive — version 1.6
+
+`Disclosure` et `DisclosureHeader` regroupent les informations secondaires ; leur état est mémorisé avec `rememberSaveable`. Les valeurs des formulaires restent détenues par les écrans et dialogues parents, indépendamment de l’affichage du contenu replié. Les tests vérifient le repliage et l’enregistrement d’un profil ainsi que d’une heure et de notes de séance. `ActionsMenu` regroupe les opérations secondaires ; `InfoButton` ouvre une fenêtre d’aide. Les alertes de réajustement et erreurs restent hors des sections repliées.
+
+Les cartes partagées présentent un résumé de distance/durée/exercices ; les plans complets restent disponibles dans le détail. La navigation conserve les mêmes destinations, la source de données Room et les opérations existantes. Aucun schéma ni format de sauvegarde ne change.

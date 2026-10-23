@@ -1,17 +1,17 @@
-# Hybrid Coach 1.4.0 — Sauvegarde JSON et transfert de téléphone
+# Hybrid Coach 1.6.0 — Interface allégée
 
-Dans **Profil sportif → Sauvegarde et transfert**, exporter un JSON complet, transférer le fichier sur un autre téléphone, puis le sélectionner avec **Restaurer un fichier JSON**. Un aperçu daté affiche le contenu avant confirmation. La restauration remplace le carnet et le profil ; elle ne fusionne pas deux carnets.
+Les écrans présentent les séances, les dates et l’action principale. Les opérations secondaires passent dans **Outils**, **Plus** ou **Gérer la préparation**. Les références du profil, options de séance, bilans, filtres, sous-objectifs, notes et données Garmin s’ouvrent à la demande dans des sections dépliantes ou fenêtres.
 
-Le fichier inclut les séances et performances, séries et saisies en cours, modèles, exercices, objectifs, préparations, sous-objectifs, plans imbriqués, notes, profil sportif, thème et historique/associations Garmin. Les identifiants restent stables. Les clés de connexion Garmin et le Keystore sont exclus ; reconnecter Garmin sur le nouveau téléphone. Le JSON contient les données personnelles en clair.
+La planification conserve un sélecteur **Vue** et le bouton **Ajouter une séance** ; le réajustement se trouve dans **Outils**. Son aperçu affiche la synthèse et les alertes ; la sélection individuelle, les changements et les volumes hebdomadaires se déplient séparément. Les cartes de séance présentent un résumé court, avec accès au contenu complet en les ouvrant.
 
-Avant remplacement, une copie privée du carnet précédent est conservée et reste exportable. L’import est transactionnel : un fichier invalide, une impossibilité d’écrire la copie de sécurité ou un échec SQL n’entraîne pas de remplacement partiel. Le format est versionné et contrôlé par SHA-256. La base v4 ajoute le profil sportif ; les migrations depuis v1/v2/v3 sont couvertes et l’ancien DataStore est repris sans effacement.
+Les valeurs saisies sont conservées lorsqu’on replie une section. Les erreurs et conflits restent visibles. La base Room v4, les plans, performances, associations Garmin et sauvegardes JSON restent compatibles ; aucun effacement ni migration de données n’est nécessaire.
 
-Validation : **125 tests Android/JVM réussis**, APK et tests instrumentés compilés, lint avec **0 erreur, 27 avertissements et 3 informations**. Signature debug vérifiée et identique à la précédente livraison. Les tests couvrent le transfert entre bases et le parcours de fichiers local ; la migration physique entre deux téléphones reste à vérifier. Aucun appareil ADB n’était connecté pour installer la nouvelle version dans cette livraison.
+Validation : **145 tests Android/JVM réussis**, APK et tests instrumentés compilés, lint **0 erreur, 27 avertissements et 3 informations**. Trois tests couvrent les formulaires repliés et l’accès aux outils. Les captures de profil, éditeur et planification ont été inspectées sur un écran de 360 × 800 dp. Aucun appareil ADB connecté pour installer ou tester cette version sur téléphone réel.
 
-- APK **1.4.0 / code 6** : `HybridCoach-debug.apk`.
-- Sources actualisées : `HybridCoach-sources.zip`.
-- Guide : `docs/SAUVEGARDE.md`.
+- APK **1.6.0 / code 8** : `HybridCoach-debug.apk`, signature debug conservée.
+- Sources : `HybridCoach-sources.zip`.
+- Guide de navigation : `docs/INTERFACE.md`.
 - Vérifications : `docs/VERIFICATION.md` et `livrables/rapports/`.
-- L’ancien service Garmin 1.2 reste archivé ; il n’est pas nécessaire à l’application actuelle.
+- Réajustement rapide 1.5, sauvegarde/transfert 1.4 et synchronisation Garmin conservés.
 
-Installer cette version par-dessus l’ancienne pour conserver le carnet local, puis exporter la sauvegarde avant tout changement de téléphone ou désinstallation. La clé de signature actuelle est conservée ; une nouvelle clé de publication n’a pas été créée dans cette évolution.
+Projet modifié dans **Obsidian Vault/My life/Pro/Projets/HybridCoach**. Installer l’APK par-dessus la version précédente ou relancer ce projet depuis Android Studio avec **Run**.

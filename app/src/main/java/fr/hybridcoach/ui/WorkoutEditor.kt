@@ -164,8 +164,7 @@ fun WorkoutEditor(
         item {
             PageTitle(
                 if (templateMode) "Composer un modèle"
-                else if (original != null) "Ajuster la séance" else "Une nouvelle séance",
-                "L’essentiel d’abord. Les détails restent facultatifs.",
+                else if (original != null) "Ajuster la séance" else "Une nouvelle séance"
             )
             ErrorText(error)
         }
@@ -179,54 +178,7 @@ fun WorkoutEditor(
                 change = { sportName = it.name },
             )
         }
-        if (!templateMode) {
-            item {
-                DateField("Date", date) { date = it }
-                Field("Heure prévue (HH:mm, facultatif)", plannedTime, { plannedTime = it })
-                Choice(
-                    "Préparation",
-                    prep,
-                    listOf("") + state.preparations.map { it.id },
-                    text = { key -> state.preparations.find { it.id == key }?.name ?: "Aucune" },
-                    change = {
-                        prep = it
-                        selectedGoals = ""
-                    },
-                )
-            }
-            if (prep.isNotBlank())
-                item {
-                    Text(
-                        "Sous-objectifs · sélection multiple",
-                        style = MaterialTheme.typography.labelLarge,
-                    )
-                    state.subGoals
-                        .filter { it.preparationId == prep }
-                        .forEach { goal ->
-                            CheckLine(
-                                "${goal.name} · ${dateLabel(goal.start)} → ${dateLabel(goal.end)}",
-                                goal.id in selectedGoals.split(','),
-                            ) { checked ->
-                                val ids =
-                                    selectedGoals.split(',').filter { it.isNotBlank() }.toSet()
-                                selectedGoals =
-                                    (if (checked) ids + goal.id else ids - goal.id).joinToString(
-                                        ","
-                                    )
-                            }
-                        }
-                }
-            item {
-                Choice(
-                    "Priorité",
-                    priority,
-                    listOf("", "Haute", "Normale", "Basse"),
-                    text = { it.ifBlank { "Non définie" } },
-                    change = { priority = it },
-                )
-            }
-        }
-        item { Field("Description", description, { description = it }, lines = 2) }
+        if (!templateMode) item { DateField("Date", date) { date = it } }
         if (sport == Sport.STRENGTH) {
             item {
                 SectionTitle("Exercices ordonnés") {
@@ -335,20 +287,10 @@ fun WorkoutEditor(
             }
             if (plan.running.isEmpty())
                 item {
-                    EmptyState(
-                        "Du footing au fractionné",
-                        "Ajoutez une étape simple ou un bloc de répétitions imbriquées.",
-                    ) {
-                        TextButton(
-                            onClick = {
-                                stepNew = true
-                                stepParent = null
-                                stepEdit = RunningStep()
-                            }
-                        ) {
-                            Text("Ajouter une étape")
-                        }
-                    }
+                    Text(
+                        "Ajoutez une étape ou un fractionné.",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
             item {
                 RunningTree(
@@ -374,50 +316,129 @@ fun WorkoutEditor(
                     },
                 )
             }
+            if (plan.running.isNotEmpty())
+                item {
+                    val snapshot = plan.running.map { SportMath.snapshot(it, profile) }
+                    Text(
+                        "Volume connu : ${(SportMath.plannedMeters(snapshot)/1000).pretty()} km · ${SportMath.durationLabel(SportMath.plannedSeconds(snapshot).toLong())}",
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
+        }
+        if (!templateMode) {
             item {
-                val snapshot = plan.running.map { SportMath.snapshot(it, profile) }
-                Text(
-                    "Volume connu : ${(SportMath.plannedMeters(snapshot)/1000).pretty()} km · ${SportMath.durationLabel(SportMath.plannedSeconds(snapshot).toLong())}",
-                    color = MaterialTheme.colorScheme.primary,
-                )
+                Disclosure(
+                    "Organisation de la séance",
+                    listOfNotNull(
+                            plannedTime.takeIf { it.isNotBlank() },
+                            state.preparations.find { it.id == prep }?.name,
+                        )
+                        .joinToString(" · ")
+                        .ifBlank { "Heure, préparation et sous-objectifs" },
+                ) {
+                    Field("Heure prévue (HH:mm, facultatif)", plannedTime, { plannedTime = it })
+                    Choice(
+                        "Préparation",
+                        prep,
+                        listOf("") + state.preparations.map { it.id },
+                        text = { key ->
+                            state.preparations.find { it.id == key }?.name ?: "Aucune"
+                        },
+                        change = {
+                            prep = it
+                            selectedGoals = ""
+                        },
+                    )
+                    if (prep.isNotBlank()) {
+                        Text(
+                            "Sous-objectifs · sélection multiple",
+                            style = MaterialTheme.typography.labelLarge,
+                        )
+                        state.subGoals
+                            .filter { it.preparationId == prep }
+                            .forEach { goal ->
+                                CheckLine(
+                                    "${goal.name} · ${dateLabel(goal.start)} → ${dateLabel(goal.end)}",
+                                    goal.id in selectedGoals.split(','),
+                                ) { checked ->
+                                    val ids =
+                                        selectedGoals.split(',').filter { it.isNotBlank() }.toSet()
+                                    selectedGoals =
+                                        (if (checked) ids + goal.id else ids - goal.id)
+                                            .joinToString(",")
+                                }
+                            }
+                    }
+                    Choice(
+                        "Priorité",
+                        priority,
+                        listOf("", "Haute", "Normale", "Basse"),
+                        text = { it.ifBlank { "Non définie" } },
+                        change = { priority = it },
+                    )
+                }
+            }
+        }
+        item {
+            Disclosure(
+                "Description de la séance",
+                description.takeIf { it.isNotBlank() }?.take(70),
+            ) {
+                Field("Description", description, { description = it }, lines = 2)
             }
         }
         if (!templateMode) {
-            item { Field("Notes personnelles", notes, { notes = it }, lines = 2) }
-            if (original == null) {
-                item { CheckLine("Récurrence hebdomadaire", recurrence) { recurrence = it } }
-                if (recurrence)
-                    item {
-                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            DateField("Jusqu’au", end) { end = it }
-                            FlowRow {
-                                DayOfWeek.entries.forEach { day ->
-                                    FilterChip(
-                                        selected = day in days,
-                                        onClick = {
-                                            daysRaw =
-                                                (if (day in days) days - day else days + day)
-                                                    .joinToString(",") { it.name }
-                                        },
-                                        label = {
-                                            Text(day.getDisplayName(TextStyle.SHORT, Locale.FRENCH))
-                                        },
-                                        modifier = Modifier.padding(end = 4.dp),
-                                    )
+            item {
+                Disclosure("Notes personnelles", notes.takeIf { it.isNotBlank() }?.take(70)) {
+                    Field("Votre note", notes, { notes = it }, lines = 2)
+                }
+            }
+            if (original == null || original.seriesId != null)
+                item {
+                    Disclosure(
+                        "Répétition et occurrences",
+                        if (recurrence) "Récurrence activée" else "Séance unique",
+                    ) {
+                        if (original == null) {
+                            CheckLine("Récurrence hebdomadaire", recurrence) { recurrence = it }
+                            if (recurrence) {
+                                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    DateField("Jusqu’au", end) { end = it }
+                                    FlowRow {
+                                        DayOfWeek.entries.forEach { day ->
+                                            FilterChip(
+                                                selected = day in days,
+                                                onClick = {
+                                                    daysRaw =
+                                                        (if (day in days) days - day
+                                                            else days + day)
+                                                            .joinToString(",") { it.name }
+                                                },
+                                                label = {
+                                                    Text(
+                                                        day.getDisplayName(
+                                                            TextStyle.SHORT,
+                                                            Locale.FRENCH,
+                                                        )
+                                                    )
+                                                },
+                                                modifier = Modifier.padding(end = 4.dp),
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }
+                        if (original?.seriesId != null) {
+                            CheckLine("Appliquer aux occurrences futures non commencées", future) {
+                                future = it
+                            }
+                            Text(
+                                "Le décalage de date s’applique aussi aux occurrences futures.",
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                        }
                     }
-            }
-            if (original?.seriesId != null)
-                item {
-                    CheckLine("Appliquer aux occurrences futures non commencées", future) {
-                        future = it
-                    }
-                    Text(
-                        "Le décalage de date s’applique aussi aux occurrences futures.",
-                        style = MaterialTheme.typography.bodySmall,
-                    )
                 }
         }
         item {
@@ -558,17 +579,19 @@ fun StrengthDialog(
         Field("Répétitions / plage *", reps, { reps = it })
         Field("Charge cible (kg)", load, { load = it }, true)
         Field("Repos (secondes)", rest, { rest = it }, true)
-        Choice(
-            "Mode",
-            mode,
-            listOf("Standard", "Unilatéral", "Poids du corps", "Lesté", "Assisté"),
-            change = { mode = it },
-        )
-        Field("Bloc superset / biset / triset", group, { group = it })
-        Field("RIR cible", rir, { rir = it }, true)
-        Field("RPE cible", rpe, { rpe = it }, true)
-        Field("Tempo", tempo, { tempo = it })
-        Field("Notes", notes, { notes = it }, lines = 2)
+        Disclosure("Options de l’exercice", "Mode, superset, effort, tempo et notes") {
+            Choice(
+                "Mode",
+                mode,
+                listOf("Standard", "Unilatéral", "Poids du corps", "Lesté", "Assisté"),
+                change = { mode = it },
+            )
+            Field("Bloc superset / biset / triset", group, { group = it })
+            Field("RIR cible", rir, { rir = it }, true)
+            Field("RPE cible", rpe, { rpe = it }, true)
+            Field("Tempo", tempo, { tempo = it })
+            Field("Notes", notes, { notes = it }, lines = 2)
+        }
         ErrorText(error)
     }
 }

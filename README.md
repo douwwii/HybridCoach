@@ -2,6 +2,14 @@
 
 Application Android native de planification et de suivi de course à pied et de musculation, avec données locales et fonctions utilisables hors ligne. La synchronisation Garmin facultative nécessite Internet. Interface française, thème sombre par défaut, thèmes clair et système disponibles.
 
+## Nouveauté 1.6 — Interface allégée
+
+Les écrans affichent d’abord l’essentiel : séances, dates et action principale. Les outils de planification sont regroupés dans **Outils** ; les réglages du profil, détails de préparation, filtres et champs facultatifs se déplient à la demande. Les données et fonctionnalités restent accessibles. [Repères de navigation](docs/INTERFACE.md).
+
+## Nouveauté 1.5 — Réajustement rapide
+
+Dans **Calendrier → Mode Planification → Outils → Réajuster rapidement**, décaler une sélection de séances, alléger une semaine ou changer la date de compétition. Vérifier les dates, volumes et conflits dans l’aperçu avant validation. Les résultats existants restent protégés. [Mode d’emploi](docs/PLANIFICATION.md#réajustement-rapide--version-15).
+
 ## Nouveauté 1.4 — Sauvegarde et transfert de téléphone
 
 Dans **Profil sportif → Sauvegarde et transfert**, exporter un JSON complet puis le restaurer sur un autre téléphone. Le fichier inclut le carnet, les modèles, le profil et l’historique Garmin, avec contrôle d’intégrité et aperçu avant confirmation. La restauration remplace le carnet cible ; une copie locale du carnet précédent est conservée. Les clés de connexion ne sont pas transférées. [Mode d’emploi](docs/SAUVEGARDE.md).

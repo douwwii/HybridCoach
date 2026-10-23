@@ -1,4 +1,4 @@
-package: name='fr.hybridcoach' versionCode='6' versionName='1.4.0' platformBuildVersionName='15' platformBuildVersionCode='35' compileSdkVersion='35' compileSdkVersionCodename='15'
+package: name='fr.hybridcoach' versionCode='8' versionName='1.6.0' platformBuildVersionName='15' platformBuildVersionCode='35' compileSdkVersion='35' compileSdkVersionCodename='15'
 sdkVersion:'26'
 targetSdkVersion:'35'
 uses-permission: name='android.permission.VIBRATE'

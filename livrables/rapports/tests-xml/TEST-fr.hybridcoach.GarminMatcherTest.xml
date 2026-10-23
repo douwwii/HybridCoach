@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="fr.hybridcoach.GarminMatcherTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-23T11:42:44" hostname="fedoraleo" time="0.009">
+<testsuite name="fr.hybridcoach.GarminMatcherTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-23T13:14:52" hostname="fedoraleo" time="0.004">
   <properties/>
-  <testcase name="excludesWrongSportDistantDaysAndAlreadyLinkedSessions" classname="fr.hybridcoach.GarminMatcherTest" time="0.003"/>
-  <testcase name="toleratesElevenKilometersForTwelvePlanned" classname="fr.hybridcoach.GarminMatcherTest" time="0.002"/>
+  <testcase name="excludesWrongSportDistantDaysAndAlreadyLinkedSessions" classname="fr.hybridcoach.GarminMatcherTest" time="0.001"/>
+  <testcase name="toleratesElevenKilometersForTwelvePlanned" classname="fr.hybridcoach.GarminMatcherTest" time="0.001"/>
   <testcase name="equallyLikelySessionsRequireConfirmation" classname="fr.hybridcoach.GarminMatcherTest" time="0.001"/>
   <testcase name="uncertainOtherSportsAndActiveSessionsNeverAutoFinish" classname="fr.hybridcoach.GarminMatcherTest" time="0.0"/>
   <testcase name="personalKeyRejectsWhitespaceAndControlCharacters" classname="fr.hybridcoach.GarminMatcherTest" time="0.001"/>
   <testcase name="completedManualMeasurementsAreUsedForDeduplication" classname="fr.hybridcoach.GarminMatcherTest" time="0.0"/>
-  <testcase name="optionalTimeBreaksOtherwiseEqualCandidates" classname="fr.hybridcoach.GarminMatcherTest" time="0.001"/>
+  <testcase name="optionalTimeBreaksOtherwiseEqualCandidates" classname="fr.hybridcoach.GarminMatcherTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="fr.hybridcoach.ReadjustmentTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-10-23T13:14:56" hostname="fedoraleo" time="0.006">
+  <properties/>
+  <testcase name="conflictsAreComputedAfterTheWholeBatchHasMoved" classname="fr.hybridcoach.ReadjustmentTest" time="0.002"/>
+  <testcase name="completedActiveCancelledImportedAndDraftResultsAreProtected" classname="fr.hybridcoach.ReadjustmentTest" time="0.001"/>
+  <testcase name="outsidePreparationCompetitionPhaseAndSharedGoalAreExplained" classname="fr.hybridcoach.ReadjustmentTest" time="0.0"/>
+  <testcase name="shiftIncludesMissedSessionsAndDetectsConflictsAcrossPreparationsAndPastDestinations" classname="fr.hybridcoach.ReadjustmentTest" time="0.001"/>
+  <testcase name="freeStepsAndSingleSetsAreNotInventedAndEmptySelectionHasNoChanges" classname="fr.hybridcoach.ReadjustmentTest" time="0.001"/>
+  <testcase name="invertedPhasesInvalidPercentAndInvalidDateChangesAreRejected" classname="fr.hybridcoach.ReadjustmentTest" time="0.0"/>
+  <testcase name="garminLinksProtectManualSessionsAndPhaseOnlyChangesWarnAboutRetainedLinks" classname="fr.hybridcoach.ReadjustmentTest" time="0.0"/>
+  <testcase name="raceShiftsAllFutureDatesAndOverlappingPhasesButKeepsHistory" classname="fr.hybridcoach.ReadjustmentTest" time="0.001"/>
+  <testcase name="lightenRecursesWithoutChangingTargetsRecoveriesIdsOrRepeatCounts" classname="fr.hybridcoach.ReadjustmentTest" time="0.0"/>
+  <testcase name="shiftPreservesIdsNotesSeriesPlansAndSelection" classname="fr.hybridcoach.ReadjustmentTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

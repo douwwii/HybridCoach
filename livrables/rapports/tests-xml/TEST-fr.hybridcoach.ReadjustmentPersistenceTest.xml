@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="fr.hybridcoach.ReadjustmentPersistenceTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-23T13:14:56" hostname="fedoraleo" time="0.179">
+  <properties/>
+  <testcase name="lighteningPersistsStructuredPlanAndKeepsStepIdentity" classname="fr.hybridcoach.ReadjustmentPersistenceTest" time="0.048"/>
+  <testcase name="sqlFailureRollsBackGoalPreparationPhasesAndSessionsTogether" classname="fr.hybridcoach.ReadjustmentPersistenceTest" time="0.032"/>
+  <testcase name="newCalendarConflictAfterPreviewBlocksAllWrites" classname="fr.hybridcoach.ReadjustmentPersistenceTest" time="0.027"/>
+  <testcase name="resultCreatedAfterPreviewPreventsEditingItsPlan" classname="fr.hybridcoach.ReadjustmentPersistenceTest" time="0.033"/>
+  <testcase name="previewDoesNotWriteAndCommitPersistsAcrossReopenWithLinksAndIds" classname="fr.hybridcoach.ReadjustmentPersistenceTest" time="0.039"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

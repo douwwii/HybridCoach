@@ -108,6 +108,7 @@ fun CalendarScreen(
     val week = selected.asDate().monday()
     var copy by remember { mutableStateOf(false) }
     var jump by remember { mutableStateOf(false) }
+    var wholeWeek by rememberSaveable { mutableStateOf(false) }
     LazyColumn(
         Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp, 8.dp, 16.dp, 100.dp),
@@ -119,7 +120,7 @@ fun CalendarScreen(
                 Text("Mode Planification")
             }
         }
-        item { PageTitle("Votre semaine", "Course, force et récupération, au même endroit.") }
+        item { PageTitle("Votre semaine") }
         item {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = { selected = selected.asDate().minusWeeks(1).toString() }) {
@@ -198,28 +199,30 @@ fun CalendarScreen(
                 }
             }
         else items(list, key = { it.id }) { WorkoutCard(it) { open(it.id) } }
-        item { SectionTitle("Toute la semaine") }
-        repeat(7) { index ->
-            val day = week.plusDays(index.toLong())
-            val sessions = state.workouts.filter { it.date == day.toString() }
-            item {
-                Column(
-                    Modifier.fillMaxWidth()
-                        .clickable { selected = day.toString() }
-                        .padding(vertical = 6.dp)
-                ) {
-                    Text(
-                        dateLabel(day.toString()),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                    Text(
-                        if (sessions.isEmpty()) "—" else sessions.joinToString(" · ") { it.name },
-                        modifier = Modifier.padding(top = 5.dp),
-                    )
+        item { DisclosureHeader("Toute la semaine", wholeWeek, { wholeWeek = !wholeWeek }) }
+        if (wholeWeek)
+            repeat(7) { index ->
+                val day = week.plusDays(index.toLong())
+                val sessions = state.workouts.filter { it.date == day.toString() }
+                item {
+                    Column(
+                        Modifier.fillMaxWidth()
+                            .clickable { selected = day.toString() }
+                            .padding(vertical = 6.dp)
+                    ) {
+                        Text(
+                            dateLabel(day.toString()),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                        Text(
+                            if (sessions.isEmpty()) "—"
+                            else sessions.joinToString(" · ") { it.name },
+                            modifier = Modifier.padding(top = 5.dp),
+                        )
+                    }
                 }
             }
-        }
     }
     if (jump)
         FormDialog("Aller à une date", { jump = false }, { jump = false }, "Afficher") {
@@ -255,6 +258,7 @@ fun HistoryScreen(state: CoachState, open: (String) -> Unit) {
     var sport by rememberSaveable { mutableStateOf("Tous") }
     var prep by rememberSaveable { mutableStateOf("") }
     var period by rememberSaveable { mutableStateOf(90) }
+    var filters by rememberSaveable { mutableStateOf(false) }
     val today = LocalDate.now()
     val list =
         state.workouts
@@ -272,30 +276,40 @@ fun HistoryScreen(state: CoachState, open: (String) -> Unit) {
     ) {
         item { PageTitle("Votre carnet", "Le travail accompli, séance après séance.") }
         item {
-            Choice(
-                "Sport",
-                sport,
-                listOf("Tous") + Sport.entries.map { it.label },
-                change = { sport = it },
+            DisclosureHeader(
+                "Filtres",
+                filters,
+                { filters = !filters },
+                "$sport · ${if (period == 0) "Tout l’historique" else "$period jours"}",
             )
         }
-        item {
-            Choice(
-                "Période",
-                period,
-                listOf(7, 30, 90, 365, 0),
-                text = { if (it == 0) "Tout" else "$it jours" },
-                change = { period = it },
-            )
-        }
-        item {
-            Choice(
-                "Préparation",
-                prep,
-                listOf("") + state.preparations.map { it.id },
-                text = { id -> state.preparations.find { it.id == id }?.name ?: "Toutes" },
-                change = { prep = it },
-            )
+        if (filters) {
+            item {
+                Choice(
+                    "Sport",
+                    sport,
+                    listOf("Tous") + Sport.entries.map { it.label },
+                    change = { sport = it },
+                )
+            }
+            item {
+                Choice(
+                    "Période",
+                    period,
+                    listOf(7, 30, 90, 365, 0),
+                    text = { if (it == 0) "Tout" else "$it jours" },
+                    change = { period = it },
+                )
+            }
+            item {
+                Choice(
+                    "Préparation",
+                    prep,
+                    listOf("") + state.preparations.map { it.id },
+                    text = { id -> state.preparations.find { it.id == id }?.name ?: "Toutes" },
+                    change = { prep = it },
+                )
+            }
         }
         if (list.isEmpty())
             item {
@@ -340,21 +354,21 @@ fun TemplatesScreen(
                 Column(Modifier.padding(16.dp)) {
                     Text(t.name, style = MaterialTheme.typography.titleMedium)
                     Text(t.sport.label, color = MaterialTheme.colorScheme.primary)
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         TextButton(onClick = { schedule(t.id) }) { Text("Planifier") }
-                        TextButton(onClick = { edit(t.id) }) { Text("Modifier") }
-                        TextButton(
-                            onClick = {
-                                vm.action {
-                                    vm.repo.dao.putTemplate(
-                                        t.copy(id = newId(), name = "${t.name} (copie)")
-                                    )
-                                }
-                            }
-                        ) {
-                            Text("Dupliquer")
-                        }
-                        TextButton(onClick = { delete = t }) { Text("Supprimer") }
+                        ActionsMenu(
+                            listOf(
+                                MenuAction("Modifier") { edit(t.id) },
+                                MenuAction("Dupliquer") {
+                                    vm.action {
+                                        vm.repo.dao.putTemplate(
+                                            t.copy(id = newId(), name = "${t.name} (copie)")
+                                        )
+                                    }
+                                },
+                                MenuAction("Supprimer") { delete = t },
+                            )
+                        )
                     }
                 }
             }

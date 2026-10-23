@@ -5,18 +5,32 @@ Accès : **Calendrier → Mode Planification**, ou **Prépas → préparation �
 ## Construire un programme
 
 - Choisir une préparation, ou conserver toutes les séances.
-- Basculer entre **Jour**, **Semaine**, **Mois**, **Préparation complète**. Les boutons de vue et les flèches de navigation restent accessibles pendant le défilement.
-- Utiliser les flèches, **Aller à la date** ou **Aujourd’hui**. Changer de vue conserve la date sélectionnée.
+- Dans **Vue**, basculer entre **Jour**, **Semaine**, **Mois**, **Préparation complète**. Le sélecteur **Vue** et les flèches de navigation restent accessibles pendant le défilement.
+- Utiliser les flèches, **Outils → Aller à la date** ou **Outils → Aujourd’hui**. Changer de vue conserve la date sélectionnée.
 - Ajouter une séance depuis une journée, une semaine ou le bouton principal. Choisir un modèle ou composer une nouvelle séance.
 - Le menu **Actions** permet de dupliquer, déplacer, enregistrer un modèle et supprimer une séance non commencée. **Modifier** ouvre le même éditeur que le calendrier habituel.
 - En vue semaine, faire un appui long sur une séance puis la déposer sur un autre jour visible. Le calendrier se parcourt horizontalement. Le menu **Déplacer** permet également de choisir une date éloignée.
-- **Dupliquer la semaine** copie les séances de la semaine sélectionnée dans une ou plusieurs semaines consécutives. Si une préparation est sélectionnée, seules ses séances sont copiées. Les copies possèdent leurs propres identifiants, conservent les sous-objectifs et n’héritent d’aucun résultat.
+- **Outils → Dupliquer la semaine** copie les séances de la semaine sélectionnée dans une ou plusieurs semaines consécutives. Si une préparation est sélectionnée, seules ses séances sont copiées. Les copies possèdent leurs propres identifiants, conservent les sous-objectifs et n’héritent d’aucun résultat.
 
 La source de données est la même table Room `workouts`. Une modification apparaît dans toutes les vues, le calendrier habituel et les détails de préparation. Le contenu des séances commencées reste conservé ; leur duplication permet de créer une nouvelle occurrence modifiable.
 
+## Réajustement rapide — version 1.5
+
+Depuis **Calendrier → Mode Planification → Outils → Réajuster rapidement**, choisir une action. Le filtre de préparation est repris ; sans préparation, le décalage et l’allègement s’appliquent à la sélection du calendrier.
+
+- **Décaler des séances** : choisir une période inclusive, saisir un nombre de jours positif ou négatif, ou utiliser les raccourcis −7, +1, +7, +14 jours. **Toute la suite du programme** étend la période jusqu’à la dernière séance ou la fin de préparation. Cocher uniquement les séances à déplacer.
+- **Alléger une semaine** : choisir un jour de la semaine (lundi–dimanche), puis le pourcentage à retirer, de 1 à 90 %. Les durées et distances des étapes d’effort sont réduites, y compris dans les blocs imbriqués. Les nombres de répétitions, allures, cibles, charges, échauffements, retours au calme et récupérations restent identiques. Le nombre de séries de musculation est arrondi au plus proche, avec un minimum de 1 ; la réduction réelle peut donc différer du pourcentage demandé. Les étapes libres et les séances sans volume réductible restent inchangées.
+- **Changer la date de compétition** (préparation sélectionnée) : choisir la nouvelle date et le premier jour des séances à déplacer. Les séances cochées et la fin de préparation sont décalées du même nombre de jours que la compétition ; le début de préparation reste en place. Si plusieurs préparations partagent cet objectif, l’aperçu indique que leur date de compétition change aussi, sans déplacer leurs séances.
+
+L’option **Ajuster aussi les sous-objectifs** décale les périodes se terminant à partir du premier jour choisi. Une période déjà commencée à cette date conserve son début et ajuste sa fin ; une période entièrement antérieure reste en place. Les chevauchements et les associations sont conservés. Un décalage qui inverserait une période est refusé.
+
+**Choisir les séances** déplie la sélection individuelle. **Voir l’aperçu** ne modifie rien. L’aperçu affiche le nombre de changements et les alertes. Ouvrir **Détail des changements** pour les dates et volumes avant/après et les sous-objectifs ; ouvrir **Volumes hebdomadaires prévus** pour les totaux des semaines affectées. Les volumes affichés sont uniquement ceux calculables à partir des plans ; aucune distance ou durée manquante n’est inventée. Les journées déjà occupées, dates dans le passé, séances hors préparation/après compétition et associations hors période sont signalées. Ces avertissements autorisent les choix volontaires, notamment plusieurs séances le même jour. **Modifier / recalculer** revient à la sélection ; **Annuler** ferme sans écrire.
+
+**Appliquer les changements** enregistre tout dans une transaction Room. Les identifiants, blocs, notes, récurrences et liens sont conservés ; le calendrier classique, les exports et la sauvegarde JSON utilisent immédiatement les mêmes données. Une séance commencée, terminée, partielle, annulée, importée de Garmin, liée à une activité Garmin ou possédant un résultat (même un brouillon) est protégée. Si le calendrier ou les résultats changent après l’aperçu, ou si le jour change, l’application impose un nouveau calcul avant validation. Il n’y a pas d’effacement de données ni de changement du schéma Room v4.
+
 ## Sous-objectifs
 
-Dans une préparation, **Périodes & sous-objectifs → Ajouter** ouvre le formulaire de nom, début, fin et couleur. Toucher une ligne de la frise pour modifier ou supprimer le sous-objectif. Les dates sont inclusives. Les périodes peuvent se chevaucher et dépasser les dates de préparation ; la frise étend alors son axe pour les inclure.
+Dans une préparation, ouvrir **Périodes & sous-objectifs → Ajouter un sous-objectif** ouvre le formulaire de nom, début, fin et couleur. Toucher une ligne de la frise pour modifier ou supprimer le sous-objectif. Les dates sont inclusives. Les périodes peuvent se chevaucher et dépasser les dates de préparation ; la frise étend alors son axe pour les inclure.
 
 Associer plusieurs sous-objectifs dans l’éditeur d’une séance, ou via **Actions → Sous-objectifs**. Seuls ceux de la préparation choisie sont proposés. Une association reste en place lorsque les dates du sous-objectif ou de la séance changent ; elle n’est pas limitée automatiquement à l’intersection des périodes. Retirer/changer la préparation supprime les associations devenues incompatibles. Supprimer un sous-objectif retire ses liens sans supprimer les séances.
 

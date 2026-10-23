@@ -222,7 +222,7 @@ fun PreparationScreen(
             }
         }
         item {
-            PageTitle(p.name, goal.name)
+            PageTitle(p.name)
             Card(Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
@@ -231,17 +231,19 @@ fun PreparationScreen(
                         color = MaterialTheme.colorScheme.primary,
                     )
                     Text("Compétition · ${dateLabel(goal.raceDate)}")
-                    Text(
-                        "${goal.distanceKm?.let{"${it.pretty()} km"}?:"Distance libre"} · ${goal.targetSeconds?.let{SportMath.durationLabel(it.toLong())}?:"Chrono libre"} · ${SportMath.paceLabel(goal.targetSeconds?.let{s->goal.distanceKm?.let{s/it}})}"
-                    )
-                    LinearProgressIndicator(
-                        progress = { progress },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                    Text(
-                        "${(progress*100).toInt()} % du temps écoulé · ${current+1} / $count semaines",
-                        style = MaterialTheme.typography.bodySmall,
-                    )
+                    Disclosure("Objectif et progression", "Semaine ${current + 1} / $count") {
+                        Text(
+                            "${goal.distanceKm?.let{"${it.pretty()} km"}?:"Distance libre"} · ${goal.targetSeconds?.let{SportMath.durationLabel(it.toLong())}?:"Chrono libre"} · ${SportMath.paceLabel(goal.targetSeconds?.let{s->goal.distanceKm?.let{s/it}})}"
+                        )
+                        LinearProgressIndicator(
+                            progress = { progress },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                        Text(
+                            "${(progress*100).toInt()} % du temps écoulé · ${current+1} / $count semaines",
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
                     Text(
                         "$done réalisées / partielles · $remaining restantes",
                         style = MaterialTheme.typography.bodyMedium,
@@ -250,35 +252,36 @@ fun PreparationScreen(
             }
         }
         item {
-            FlowRow {
-                TextButton(onClick = { edit = true }) { Text("Modifier") }
-                TextButton(
-                    onClick = {
+            ActionsMenu(
+                listOf(
+                    MenuAction("Modifier") { edit = true },
+                    MenuAction("Partager la préparation") { share = true },
+                    MenuAction("Associer une séance existante") { associate = true },
+                    MenuAction(if (p.archived) "Désarchiver" else "Archiver") {
                         vm.action { vm.repo.dao.putPreparation(p.copy(archived = !p.archived)) }
-                    }
-                ) {
-                    Text(if (p.archived) "Désarchiver" else "Archiver")
-                }
-                TextButton(onClick = { share = true }) {
-                    Icon(Icons.Default.IosShare, null)
-                    Text("Partager la préparation")
-                }
-            }
+                    },
+                ),
+                "Gérer la préparation",
+            )
         }
         item {
-            SectionTitle("Volumes hebdomadaires")
-            Text(
-                "${volumes.sumOf { it.sessions }} séances réalisées · ${SportMath.durationLabel(volumes.sumOf { it.trainingSeconds }.toLong())} d’entraînement"
-            )
-            VolumeChart(volumes.map { it.plannedKm }, volumes.map { it.actualKm })
-            Text(
-                "Prévu connu (gris) · Réalisé saisi (vert)",
-                style = MaterialTheme.typography.bodySmall,
-            )
-            Text(
-                "${volumes.sumOf{it.actualKm}.pretty()} km réalisés · ${volumes.sumOf{it.strengthSessions}} séances de musculation terminées ou partielles",
-                style = MaterialTheme.typography.bodyMedium,
-            )
+            Disclosure(
+                "Volumes hebdomadaires",
+                "${volumes.sumOf { it.actualKm }.pretty()} km réalisés",
+            ) {
+                Text(
+                    "${volumes.sumOf { it.sessions }} séances réalisées · ${SportMath.durationLabel(volumes.sumOf { it.trainingSeconds }.toLong())} d’entraînement"
+                )
+                VolumeChart(volumes.map { it.plannedKm }, volumes.map { it.actualKm })
+                Text(
+                    "Prévu connu (gris) · Réalisé saisi (vert)",
+                    style = MaterialTheme.typography.bodySmall,
+                )
+                Text(
+                    "${volumes.sumOf{it.actualKm}.pretty()} km réalisés · ${volumes.sumOf{it.strengthSessions}} séances de musculation terminées ou partielles",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
         }
         item {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -290,16 +293,18 @@ fun PreparationScreen(
                     Icon(Icons.Default.ChevronRight, "Semaine suivante")
                 }
             }
-            Choice(
-                "Aller à",
-                week,
-                (0 until count).toList(),
-                text = {
-                    "Semaine ${it+1} · ${dateLabel(start.plusWeeks(it.toLong()).toString())}"
-                },
-                change = { week = it },
-            )
-            CheckLine("Afficher toute la préparation", all) { all = it }
+            Disclosure("Navigation avancée") {
+                Choice(
+                    "Aller à",
+                    week,
+                    (0 until count).toList(),
+                    text = {
+                        "Semaine ${it+1} · ${dateLabel(start.plusWeeks(it.toLong()).toString())}"
+                    },
+                    change = { week = it },
+                )
+                CheckLine("Afficher toute la préparation", all) { all = it }
+            }
         }
         item {
             FlowRow {
@@ -318,7 +323,6 @@ fun PreparationScreen(
                 ) {
                     Text("Planifier une séance")
                 }
-                TextButton(onClick = { associate = true }) { Text("Associer une séance existante") }
             }
         }
         val selectedWeeks = if (all) (0 until count).toList() else listOf(week)
@@ -360,8 +364,7 @@ fun PreparationScreen(
         }
         item {
             if (goal.notes.isNotBlank()) {
-                SectionTitle("Notes")
-                Text(goal.notes)
+                Disclosure("Notes de préparation") { Text(goal.notes) }
             }
             Spacer(Modifier.height(24.dp))
         }

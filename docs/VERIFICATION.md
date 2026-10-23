@@ -1,8 +1,8 @@
 # Vérification de Hybrid Coach
 
-## Résultat du 23/10/2026 — version 1.4.0, sauvegarde et transfert JSON
+## Résultat du 23/10/2026 — version 1.6.0, interface allégée
 
-**125 tests Android/JVM sur 125 réussis**, aucun échec, aucune erreur, aucun test ignoré.
+**145 tests Android/JVM sur 145 réussis**, aucun échec, aucune erreur, aucun test ignoré.
 
 | Couverture | Réussites |
 |---|---:|
@@ -18,7 +18,11 @@
 | Sauvegarde : format, intégrité, Unicode, brouillons, références et versions | 6 |
 | Transfert, transactions, reprise, copie de sécurité, migration v3 et profil | 10 |
 | Parcours Compose : sélecteurs de fichiers, aperçu, confirmation, annulation et restauration | 2 |
-| Total Android/JVM | **125** |
+| Réajustement : dates, sélection, conflits, protections, phases et blocs imbriqués | 10 |
+| Réajustement Room : persistance, aperçus périmés et annulation transactionnelle | 5 |
+| Réajustement Compose : annuler, appliquer, allègement, sélection vide et calendrier classique | 2 |
+| Présentation progressive : champs repliés, sauvegarde et accès aux outils/filtres | 3 |
+| Total Android/JVM | **145** |
 
 Contrôles exécutés depuis `Obsidian Vault/My life/Pro/Projets/HybridCoach` :
 
@@ -28,9 +32,29 @@ JAVA_HOME=/home/douwwii/.jdks/jbr-21.0.11 ./gradlew :app:testDebugUnitTest :app:
 
 Résultat : **BUILD SUCCESSFUL**. Lint : **0 erreur, 27 avertissements et 3 informations**, sans suppression des avertissements. Ils concernent les versions de dépendances, des conventions Compose/KTX, la sauvegarde et du code tiers PDFBox/Bouncy Castle. Les préférences chiffrées utilisent volontairement `commit()` pour vérifier l’écriture effective avant d’annoncer la connexion/déconnexion.
 
-L’APK est en version **1.4.0 / code 6**, Android 8.0 / API 26 minimum, cible 35. La signature debug est vérifiée et identique à celle du précédent APK livré, pour permettre une mise à jour sur place. Les tests instrumentés sont compilés ; ils n’ont pas été exécutés sur un téléphone ou un émulateur complet.
+L’APK est en version **1.6.0 / code 8**, Android 8.0 / API 26 minimum, cible 35. La signature debug est vérifiée et identique à celle du précédent APK livré, pour permettre une mise à jour sur place. Les tests instrumentés sont compilés ; ils n’ont pas été exécutés sur un téléphone ou un émulateur complet.
 
 Contrôle historique de la version 1.3.1 sur l’émulateur alors connecté : `adb install -r` a réussi, `dumpsys package` confirme **1.3.1 / code 5**, puis `MainActivity` a été démarrée et le processus est resté actif. Aucune désinstallation ni suppression des données n’a été demandée. Aucun secret utilisateur n’a été lu. Rapport : `livrables/rapports/emulator-update-1.3.1.txt`. Ce contrôle ne valide pas l’authentification réelle Garmin.
+
+### Interface allégée — version 1.6
+
+Les menus de planification, préparation, modèles et séance regroupent les opérations secondaires. Les réglages du profil, options de l’éditeur, données Garmin d’une séance, bilans détaillés, filtres et aperçus de réajustement se déplient à la demande. Les cartes partagées affichent un volume synthétique ; le plan complet reste dans le détail. Les états vides et explications redondants sont réduits. Les erreurs et conflits restent directement visibles.
+
+Trois nouveaux tests Compose vérifient les valeurs du profil après fermeture/réouverture d’une section puis enregistrement, l’heure et les notes d’une séance enregistrée avec leurs sections repliées, et l’accès aux outils de planification et filtres de progression. Les parcours existants sont adaptés aux menus et sélecteurs visibles : création de blocs, navigation entre vues, frise, glisser-déposer, calendrier classique, partage PDF, import Garmin et réajustement.
+
+Captures inspectées à 360 × 800 dp : `profile-essential.png`, `editor-essential.png`, `planning-essential.png`, dans `docs/screenshots`. Les tests restent locaux avec Robolectric ; les tests instrumentés sont compilés. Aucun changement du schéma Room v4 ni du format de sauvegarde, aucune installation sur téléphone réel dans cette livraison. Guide : [INTERFACE.md](INTERFACE.md).
+
+### Réajustement rapide — version 1.5
+
+Le mode Planification propose un décalage de séances par période et sélection, un allègement de semaine et une nouvelle date de compétition avec décalage de la fin de préparation. Les sous-objectifs peuvent être ajustés dans le même aperçu. Les tests vérifient les identifiants stables, notes, séries, dates planifiées, récupérations, allures et répétitions imbriquées conservées, les phases chevauchantes et les objectifs partagés. Les étapes libres et l’arrondi des séries ne produisent pas de volume fictif.
+
+Les collisions sont calculées après le déplacement de tout le lot, y compris avec d’autres préparations. Les destinations passées, sorties de préparation, séances après compétition et liens hors sous-objectif sont signalés. Les séances commencées, terminées, partielles, annulées, importées ou associées à Garmin et les brouillons de résultats restent protégés.
+
+L’aperçu ne réalise aucune écriture. Les tests Room ferment et rouvrent une vraie base après application et vérifient les associations. Une séance ajoutée ou un résultat saisi après l’aperçu bloque l’ensemble de la validation. Un déclencheur SQLite provoque un échec pendant l’écriture des séances : objectif, préparation, phases et séances conservent tous leurs valeurs précédentes.
+
+Les tests Compose ouvrent la fonctionnalité depuis le calendrier, annulent un premier aperçu, appliquent le second, puis retrouvent la séance dans le calendrier classique. Ils vérifient aussi l’allègement, la sélection vide et le bouton de validation désactivé sans changement. Capture du dialogue inspectée : `docs/screenshots/planning-readjustment.png`.
+
+**Portée :** vérification automatique JVM/Robolectric et compilation de l’APK instrumenté ; aucun appareil ADB connecté pour une validation sur téléphone réel. Aucun changement du schéma Room v4 ni du format de sauvegarde JSON : les changements utilisent les données déjà exportées et restaurées.
 
 ### Sauvegarde complète et restauration — version 1.4
 

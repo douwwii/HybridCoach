@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="fr.hybridcoach.BackupUiTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-23T11:42:42" hostname="fedoraleo" time="1.126">
+<testsuite name="fr.hybridcoach.BackupUiTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-23T13:14:50" hostname="fedoraleo" time="0.654">
   <properties/>
-  <testcase name="systemPickerExportPreviewConfirmationAndRecoveryWorkTogether" classname="fr.hybridcoach.BackupUiTest" time="0.872"/>
-  <testcase name="cancelledPickerAndInvalidFileNeverTriggerRestoration" classname="fr.hybridcoach.BackupUiTest" time="0.253"/>
+  <testcase name="systemPickerExportPreviewConfirmationAndRecoveryWorkTogether" classname="fr.hybridcoach.BackupUiTest" time="0.475"/>
+  <testcase name="cancelledPickerAndInvalidFileNeverTriggerRestoration" classname="fr.hybridcoach.BackupUiTest" time="0.179"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[Invalid ID 0x00000000.
+Invalid ID 0x00000000.
+Invalid ID 0x00000000.
 System.logW: A resource was acquired at attached stack trace but never released. See java.io.Closeable for information on avoiding resource leaks.
 java.lang.Throwable: Explicit termination method 'close' not called
 	at dalvik.system.CloseGuard.$$robo$$dalvik_system_CloseGuard$openWithCallSite(CloseGuard.java:288)
@@ -44,7 +46,5 @@ java.lang.Throwable: Explicit termination method 'close' not called
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
 	at java.base/java.lang.Thread.run(Thread.java:1583)
 
-Invalid ID 0x00000000.
-Invalid ID 0x00000000.
 ]]></system-err>
 </testsuite>
