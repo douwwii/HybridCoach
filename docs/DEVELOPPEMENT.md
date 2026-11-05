@@ -111,17 +111,15 @@ Aucun serveur n’est nécessaire. Les fichiers du SDK, de Gradle, les caches, `
 ## Prochains ajouts
 
 Overall:
--possibilité de création de lien calendar avec mise à jour en direct 
+-possibilité de création de lien calendar avec mise à jour en direct
 
 Course à pied:
 -ajout d'un agent IA intégré qui avec un contexte est capable de t'accompagner dans la plannification d'une séance. (possibilité de lui faire ajouter directement des séances dans ton calendrier)
 -possibilité de push directement des séances dans garmin connect (plus tard autres marques)
--récupération des séances réalisées dans strava et déduction de quel séance a été réalisée pour contabilisation dans kilométrage et statut "réalisée" d'une séance 
+-récupération des séances réalisées dans strava et déduction de quel séance a été réalisée pour contabilisation dans kilométrage et statut "réalisée" d'une séance
 
 Musculation:
 -suivi progression progressive overload
 
 Projet intra-application
 -Projet NN : déduction de la fc à un instant t à partir de toutes les données que l'on a en amont : prendre en compte l'évolution de la forme, le dénivelé ?, se base principalement sur l'allure.
-
-
