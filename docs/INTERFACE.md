@@ -9,7 +9,7 @@ Les écrans mettent les séances et l’action principale au premier plan. Les s
 | Séance | Titre, statut, démarrage et contenu | **Plus** : dupliquer, modèle, déplacer et supprimer ; **Informations de la séance** et **Données Garmin** pour le complément |
 | Éditeur | Nom, sport, date et contenu sportif | **Organisation de la séance**, description, notes et répétition ; **Options de l’exercice** pour mode, superset, RIR/RPE, tempo et notes |
 | Préparation | Compétition, avancement synthétique et séances de la semaine | **Gérer la préparation**, **Objectif et progression**, **Volumes hebdomadaires**, **Navigation avancée** et notes |
-| Profil | Connexion Garmin, sauvegarde et catégories de réglages | Déplier apparence, capacités, allures, zones ou convertisseur ; **Enregistrer le profil** valide l’ensemble |
+| Profil | Connexion Garmin, sauvegarde, mises à jour et catégories de réglages | Déplier apparence, capacités, allures, zones ou convertisseur ; **Enregistrer le profil** valide l’ensemble |
 | Historique | Séances réalisées | **Filtres** pour sport, période et préparation |
 | Progrès | Totaux et graphique principal | **Filtres**, RPE, performances, vue hybride, exercice et muscles se déplient séparément |
 | Modèles | Nom, sport et planification | **Plus** : modifier, dupliquer ou supprimer |
@@ -24,3 +24,5 @@ Captures contrôlées sur un écran de 360 × 800 dp :
 - [Éditeur](screenshots/editor-essential.png)
 
 Dans Android Studio, ouvrir le projet situé dans **Obsidian Vault/My life/Pro/Projets/HybridCoach** puis utiliser **Run**. L’APK fourni peut s’installer par-dessus la version précédente avec la même signature.
+
+Depuis la version 1.7, **Profil sportif → À propos et mises à jour** ouvre le contrôle GitHub, les nouveautés et le téléchargement. [Guide](MISES_A_JOUR.md).

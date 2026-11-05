@@ -1,3 +1,0 @@
-c2592161b2e73ac821afbe8af85bd66a9a7419252c7b93249d928699f8691abf  HybridCoach-debug.apk
-a4df9bd440f6af8ad5701745d1921b72d8ea7ff140fc05fe88dd468387bbda7f  HybridCoach-sources.zip
-e814f5760e4b3431e32bbc99fe17eab8fb3175ca35ebad28c6b8a13a3ffe9281  HybridCoach-garmin-bridge.zip

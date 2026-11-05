@@ -1,0 +1,30 @@
+name: Signaler un problème
+description: Décrire un problème reproductible dans Hybrid Coach.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: 'Ne joignez jamais de clé Garmin, mot de passe ou sauvegarde contenant votre carnet personnel.'
+  - type: input
+    id: version
+    attributes:
+      label: Version de Hybrid Coach
+      description: Visible dans Profil sportif → À propos et mises à jour.
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Téléphone et version Android
+  - type: textarea
+    id: steps
+    attributes:
+      label: Étapes pour reproduire
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Résultat attendu et résultat observé
+    validations:
+      required: true

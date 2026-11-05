@@ -93,3 +93,11 @@ Le ViewModel coordonne les opérations locales avec un mutex et une file FIFO. L
 `Disclosure` et `DisclosureHeader` regroupent les informations secondaires ; leur état est mémorisé avec `rememberSaveable`. Les valeurs des formulaires restent détenues par les écrans et dialogues parents, indépendamment de l’affichage du contenu replié. Les tests vérifient le repliage et l’enregistrement d’un profil ainsi que d’une heure et de notes de séance. `ActionsMenu` regroupe les opérations secondaires ; `InfoButton` ouvre une fenêtre d’aide. Les alertes de réajustement et erreurs restent hors des sections repliées.
 
 Les cartes partagées présentent un résumé de distance/durée/exercices ; les plans complets restent disponibles dans le détail. La navigation conserve les mêmes destinations, la source de données Room et les opérations existantes. Aucun schéma ni format de sauvegarde ne change.
+
+## Publications et mises à jour — version 1.7
+
+`updates/` sépare les métadonnées versionnées, le transport GitHub borné, la vérification de l’APK et l’état du parcours utilisateur. Le `UpdatesViewModel` est distinct de la file d’écritures du carnet : le réseau ne bloque ni Room ni les sauvegardes. Le client n’utilise aucune authentification GitHub et n’envoie pas de données du carnet.
+
+Le téléchargement s’écrit dans un fichier `.part` du cache privé puis est renommé après contrôle. Une interruption ou erreur supprime le fichier partiel ; un fichier déjà vérifié peut être réutilisé. Avant chaque ouverture de l’installateur, taille, SHA-256, métadonnées et certificat sont contrôlés à nouveau. Les URL et redirections sont limitées à GitHub et ses CDN HTTPS. L’installateur Android reste responsable de la validation cryptographique finale et du consentement.
+
+`scripts/prepare_release.py` génère les assets depuis un APK release signé et un dépôt propre. Le manifeste inclut le code de version Android et le commit source, les notes viennent de CHANGELOG.md. `publish_release.py` vérifie les assets et crée d’abord un brouillon, sans écraser une publication publique. Les workflows utilisent des actions fixées par SHA ; la signature provient exclusivement de variables privées ou secrets de dépôt configurés explicitement.

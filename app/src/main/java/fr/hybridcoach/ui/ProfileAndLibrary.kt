@@ -21,6 +21,7 @@ fun ProfileScreen(
     back: () -> Unit,
     garmin: () -> Unit = {},
     backup: () -> Unit = {},
+    updates: () -> Unit = {},
 ) {
     val current by vm.profile.collectAsStateWithLifecycle()
     val currentTheme by vm.theme.collectAsStateWithLifecycle()
@@ -45,6 +46,9 @@ fun ProfileScreen(
         }
         FilledTonalButton(onClick = backup, modifier = Modifier.fillMaxWidth()) {
             Text("Sauvegarde et transfert")
+        }
+        OutlinedButton(onClick = updates, modifier = Modifier.fillMaxWidth()) {
+            Text("À propos et mises à jour")
         }
         Disclosure(
             "Apparence",

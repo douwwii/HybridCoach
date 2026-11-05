@@ -1,0 +1,75 @@
+name: Préparer une publication
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    env:
+      HYBRIDCOACH_TEST_ARTIFACT_DIR: ${{ runner.temp }}/hybridcoach-test-images
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Android SDK
+        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0"'
+      - name: Vérifier la configuration de signature
+        env:
+          RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+          HYBRIDCOACH_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          HYBRIDCOACH_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          HYBRIDCOACH_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import os,base64,pathlib
+          names=['RELEASE_KEYSTORE_BASE64','HYBRIDCOACH_STORE_PASSWORD','HYBRIDCOACH_KEY_ALIAS','HYBRIDCOACH_KEY_PASSWORD']
+          if any(not os.environ.get(n) for n in names):
+              raise SystemExit('Configurez les quatre secrets de signature décrits dans docs/PUBLICATION_GITHUB.md. Aucun APK ne sera signé avec une clé de remplacement.')
+          path=pathlib.Path(os.environ['RUNNER_TEMP'])/'hybridcoach-release.keystore'
+          path.write_bytes(base64.b64decode(os.environ['RELEASE_KEYSTORE_BASE64'],validate=True))
+          path.chmod(0o600)
+          with open(os.environ['GITHUB_ENV'],'a') as out:out.write('HYBRIDCOACH_KEYSTORE='+str(path)+'\n')
+          PY
+      - name: Vérifier et compiler la version signée
+        env:
+          HYBRIDCOACH_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          HYBRIDCOACH_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          HYBRIDCOACH_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: |
+          python3 -m unittest discover -s scripts/tests -v
+          ./gradlew :app:testDebugUnitTest :app:lintDebug :app:assembleRelease --console=plain
+      - name: Générer les fichiers de publication
+        run: |
+          python3 scripts/prepare_release.py
+          python3 - <<'PY'
+          import os,json,pathlib
+          manifest=json.loads((pathlib.Path('dist')/os.environ['GITHUB_REF_NAME']/'update.json').read_text())
+          assert 'v'+manifest['versionName']==os.environ['GITHUB_REF_NAME'],'Le tag doit correspondre à la version Gradle.'
+          PY
+      - name: Créer le brouillon GitHub complet
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 scripts/publish_release.py "dist/$GITHUB_REF_NAME"
+      - name: Supprimer la clé du runner
+        if: always()
+        run: rm -f "$RUNNER_TEMP/hybridcoach-release.keystore"
+      - name: Conserver les rapports
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: rapports-publication
+          path: app/build/reports/
+          retention-days: 14

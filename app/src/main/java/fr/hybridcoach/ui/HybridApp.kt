@@ -52,6 +52,7 @@ fun HybridApp(vm: CoachViewModel) {
                                     route.startsWith("preparation/") -> "Préparation"
                                     route == "garmin" -> "Garmin Connect"
                                     route == "backup" -> "Sauvegarde et transfert"
+                                    route == "updates" -> "Mises à jour"
                                     route == "profile" -> "Profil sportif"
                                     route == "exercises" -> "Exercices"
                                     else -> "Modèles de séances"
@@ -198,9 +199,15 @@ fun HybridApp(vm: CoachViewModel) {
                                 { nav.popBackStack() },
                                 { nav.navigate("garmin") },
                                 { nav.navigate("backup") },
+                                { nav.navigate("updates") },
                             )
                         }
                         composable("backup") { BackupScreen(vm, state) }
+                        composable("updates") {
+                            val updates: fr.hybridcoach.updates.UpdatesViewModel =
+                                androidx.lifecycle.viewmodel.compose.viewModel()
+                            UpdatesScreen(updates) { nav.navigate("backup") }
+                        }
                         composable("garmin") {
                             GarminScreen(vm, state) { nav.navigate("session/$it") }
                         }

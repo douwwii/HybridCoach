@@ -13,9 +13,26 @@ android {
         applicationId = "fr.hybridcoach"
         minSdk = 26
         targetSdk = 35
-        versionCode = 8
-        versionName = "1.6.0"
+        versionCode = 9
+        versionName = "1.7.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        create("distribution") {
+            val path = providers.environmentVariable("HYBRIDCOACH_KEYSTORE").orNull
+            if (path != null) {
+                storeFile = file(path)
+                storePassword = providers.environmentVariable("HYBRIDCOACH_STORE_PASSWORD").orNull
+                keyAlias = providers.environmentVariable("HYBRIDCOACH_KEY_ALIAS").orNull
+                keyPassword = providers.environmentVariable("HYBRIDCOACH_KEY_PASSWORD").orNull
+            }
+        }
+    }
+    buildTypes {
+        getByName("release") {
+            isDebuggable = false
+            signingConfig = signingConfigs.getByName("distribution")
+        }
     }
     buildFeatures {
         compose = true
@@ -66,6 +83,6 @@ dependencies {
 }
 
 tasks.withType<Test>().configureEach {
-    systemProperty("hybridcoach.artifactDir", rootProject.file("docs/screenshots").absolutePath)
+    systemProperty("hybridcoach.artifactDir", providers.environmentVariable("HYBRIDCOACH_TEST_ARTIFACT_DIR").orElse(rootProject.file("docs/screenshots").absolutePath).get())
     systemProperty("robolectric.dependency.repo.url", "https://repo.maven.apache.org/maven2")
 }

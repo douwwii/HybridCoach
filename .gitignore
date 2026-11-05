@@ -16,3 +16,19 @@ services/garmin_bridge/.pytest_cache/
 **/__pycache__/
 *.pyc
 *.db
+
+# Signing material always stays outside Git and source archives
+*.keystore
+*.jks
+*.p12
+*.pem
+signing.properties
+.env
+.env.*
+!.env.example
+
+# Release assets belong in GitHub Releases, not in the source tree
+dist/
+livrables/*.zip
+livrables/SHA256SUMS*
+livrables/rapports/

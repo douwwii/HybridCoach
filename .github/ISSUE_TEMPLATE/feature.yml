@@ -1,0 +1,13 @@
+name: Proposer une amélioration
+description: Expliquer un besoin ou proposer une évolution.
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: Quel besoin souhaitez-vous résoudre ?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Fonctionnement souhaité

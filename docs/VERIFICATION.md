@@ -1,8 +1,8 @@
 # Vérification de Hybrid Coach
 
-## Résultat du 23/10/2026 — version 1.6.0, interface allégée
+## Résultat du 05/11/2026 — version 1.7.0, mises à jour GitHub
 
-**145 tests Android/JVM sur 145 réussis**, aucun échec, aucune erreur, aucun test ignoré.
+**167 tests Android/JVM sur 167 réussis**, aucun échec, aucune erreur, aucun test ignoré.
 
 | Couverture | Réussites |
 |---|---:|
@@ -22,7 +22,11 @@
 | Réajustement Room : persistance, aperçus périmés et annulation transactionnelle | 5 |
 | Réajustement Compose : annuler, appliquer, allègement, sélection vide et calendrier classique | 2 |
 | Présentation progressive : champs repliés, sauvegarde et accès aux outils/filtres | 3 |
-| Total Android/JVM | **145** |
+| Mises à jour GitHub : contrat de publication et métadonnées | 7 |
+| Téléchargement HTTPS : redirections, limites, en-têtes et erreurs | 5 |
+| APK, cache, interruption, signature, identité Android et données conservées | 7 |
+| Parcours Compose : versions, téléchargement, autorisation et installateur Android | 3 |
+| Total Android/JVM | **167** |
 
 Contrôles exécutés depuis `Obsidian Vault/My life/Pro/Projets/HybridCoach` :
 
@@ -30,11 +34,23 @@ Contrôles exécutés depuis `Obsidian Vault/My life/Pro/Projets/HybridCoach` :
 JAVA_HOME=/home/douwwii/.jdks/jbr-21.0.11 ./gradlew :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest :app:lintDebug
 ```
 
-Résultat : **BUILD SUCCESSFUL**. Lint : **0 erreur, 27 avertissements et 3 informations**, sans suppression des avertissements. Ils concernent les versions de dépendances, des conventions Compose/KTX, la sauvegarde et du code tiers PDFBox/Bouncy Castle. Les préférences chiffrées utilisent volontairement `commit()` pour vérifier l’écriture effective avant d’annoncer la connexion/déconnexion.
+Résultat : **BUILD SUCCESSFUL**. Lint : **0 erreur, 29 avertissements et 3 informations**, sans suppression des avertissements. Ils concernent les versions de dépendances, des conventions Compose/KTX, la sauvegarde et du code tiers PDFBox/Bouncy Castle. Les préférences chiffrées utilisent volontairement `commit()` pour vérifier l’écriture effective avant d’annoncer la connexion/déconnexion.
 
-L’APK est en version **1.6.0 / code 8**, Android 8.0 / API 26 minimum, cible 35. La signature debug est vérifiée et identique à celle du précédent APK livré, pour permettre une mise à jour sur place. Les tests instrumentés sont compilés ; ils n’ont pas été exécutés sur un téléphone ou un émulateur complet.
+L’APK est en version **1.7.0 / code 9**, Android 8.0 / API 26 minimum, cible 35. La distribution utilise un APK release non débogable, avec le certificat historique conservé pour permettre une mise à jour sur place. La clé n’est pas incluse dans les sources. Les tests instrumentés sont compilés ; ils n’ont pas été exécutés sur un téléphone ou un émulateur complet.
 
-Contrôle historique de la version 1.3.1 sur l’émulateur alors connecté : `adb install -r` a réussi, `dumpsys package` confirme **1.3.1 / code 5**, puis `MainActivity` a été démarrée et le processus est resté actif. Aucune désinstallation ni suppression des données n’a été demandée. Aucun secret utilisateur n’a été lu. Rapport : `livrables/rapports/emulator-update-1.3.1.txt`. Ce contrôle ne valide pas l’authentification réelle Garmin.
+Contrôle historique de la version 1.3.1 sur l’émulateur alors connecté : `adb install -r` a réussi, `dumpsys package` confirme **1.3.1 / code 5**, puis `MainActivity` a été démarrée et le processus est resté actif. Aucune désinstallation ni suppression des données n’a été demandée. Aucun secret utilisateur n’a été lu. Ce contrôle ne valide pas l’authentification réelle Garmin.
+
+### Mises à jour GitHub — version 1.7
+
+Le client interroge uniquement les publications stables publiques du dépôt configuré. Les tests couvrent le fichier `update.json`, le nom/lien/taille de l’APK, le tag, l’identifiant Android, le format, les empreintes et le commit. Une publication absente se distingue d’un serveur indisponible ou d’une limitation de requêtes. Les brouillons, préversions et liens vers d’autres dépôts sont refusés.
+
+Le transport contrôle les en-têtes réels, les redirections HTTPS vers les CDN GitHub, les délais, les boucles et les tailles maximales avec ou sans Content-Length. Les tests d’APK couvrent le cache réutilisé, les fichiers incomplets ou modifiés, les interruptions, le certificat différent, une mauvaise version et un Android incompatible. Un test lit les métadonnées et les octets de certificat via l’API Android sur API 27 ; les autres parcours utilisent API 35. Les fichiers personnels et exports placés hors du cache de mise à jour restent intacts.
+
+Le test Compose simule une publication, télécharge un fichier synthétique, ouvre l’autorisation d’installer puis l’installateur avec une URI FileProvider et une autorisation temporaire. Aucun succès d’installation n’est annoncé sur simple retour de l’installateur. L’absence de publication, le mode hors ligne, la nouvelle tentative et un APK modifié avant installation sont vérifiés. Le profil ouvre l’écran sans requête réseau automatique. Capture inspectée : `docs/screenshots/github-updates.png` (publication synthétique).
+
+**6 tests Python supplémentaires** vérifient les outils de publication : sommes SHA-256, fichiers incomplets ou inattendus, traversée de chemin, dépôt/certificat incorrects, rejet d’APK debug et extraction des nouveautés. Les workflows sont analysés en YAML ; leur exécution distante dépend de l’activation et des secrets de signature du dépôt.
+
+Les mises à jour ne changent pas la base Room v4 ni les formats de sauvegarde. La vérification préalable compare le certificat ; l’installateur Android réalise la validation cryptographique finale et demande la confirmation de l’utilisateur. Le build release signé et son lint passent également ; `apksigner` confirme le certificat attendu et `aapt` confirme le code 9, la version 1.7.0 et l’absence du drapeau débogable. Les tests réseau utilisent des réponses simulées ; la publication publique et un cycle de mise à jour sur téléphone réel sont des contrôles distincts à réaliser après mise en ligne.
 
 ### Interface allégée — version 1.6
 
