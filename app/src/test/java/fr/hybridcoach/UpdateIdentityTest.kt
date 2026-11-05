@@ -29,7 +29,7 @@ class UpdateIdentityTest {
             PackageInfo().apply {
                 packageName = "fr.hybridcoach"
                 versionCode = 10
-                versionName = "1.7.1"
+                versionName = "1.8.0"
                 applicationInfo =
                     ApplicationInfo().apply {
                         minSdkVersion = 26

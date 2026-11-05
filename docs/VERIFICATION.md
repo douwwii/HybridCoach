@@ -1,6 +1,6 @@
 # Vérification de Hybrid Coach
 
-## Résultat du 05/11/2026 — version 1.7.0, mises à jour GitHub
+## Résultat du 05/11/2026 — version 1.7.1, mises à jour GitHub
 
 **167 tests Android/JVM sur 167 réussis**, aucun échec, aucune erreur, aucun test ignoré.
 
@@ -36,7 +36,7 @@ JAVA_HOME=/home/douwwii/.jdks/jbr-21.0.11 ./gradlew :app:testDebugUnitTest :app:
 
 Résultat : **BUILD SUCCESSFUL**. Lint : **0 erreur, 29 avertissements et 3 informations**, sans suppression des avertissements. Ils concernent les versions de dépendances, des conventions Compose/KTX, la sauvegarde et du code tiers PDFBox/Bouncy Castle. Les préférences chiffrées utilisent volontairement `commit()` pour vérifier l’écriture effective avant d’annoncer la connexion/déconnexion.
 
-L’APK est en version **1.7.0 / code 9**, Android 8.0 / API 26 minimum, cible 35. La distribution utilise un APK release non débogable, avec le certificat historique conservé pour permettre une mise à jour sur place. La clé n’est pas incluse dans les sources. Les tests instrumentés sont compilés ; ils n’ont pas été exécutés sur un téléphone ou un émulateur complet.
+L’APK est en version **1.7.1 / code 10**, Android 8.0 / API 26 minimum, cible 35. La distribution utilise un APK release non débogable, avec le certificat historique conservé pour permettre une mise à jour sur place. La clé n’est pas incluse dans les sources. Les tests instrumentés sont compilés ; ils n’ont pas été exécutés sur un téléphone ou un émulateur complet.
 
 Contrôle historique de la version 1.3.1 sur l’émulateur alors connecté : `adb install -r` a réussi, `dumpsys package` confirme **1.3.1 / code 5**, puis `MainActivity` a été démarrée et le processus est resté actif. Aucune désinstallation ni suppression des données n’a été demandée. Aucun secret utilisateur n’a été lu. Ce contrôle ne valide pas l’authentification réelle Garmin.
 
@@ -48,9 +48,9 @@ Le transport contrôle les en-têtes réels, les redirections HTTPS vers les CDN
 
 Le test Compose simule une publication, télécharge un fichier synthétique, ouvre l’autorisation d’installer puis l’installateur avec une URI FileProvider et une autorisation temporaire. Aucun succès d’installation n’est annoncé sur simple retour de l’installateur. L’absence de publication, le mode hors ligne, la nouvelle tentative et un APK modifié avant installation sont vérifiés. Le profil ouvre l’écran sans requête réseau automatique. Capture inspectée : `docs/screenshots/github-updates.png` (publication synthétique).
 
-**6 tests Python supplémentaires** vérifient les outils de publication : sommes SHA-256, fichiers incomplets ou inattendus, traversée de chemin, dépôt/certificat incorrects, rejet d’APK debug et extraction des nouveautés. Les workflows sont analysés en YAML ; leur exécution distante dépend de l’activation et des secrets de signature du dépôt.
+**7 tests Python supplémentaires** vérifient les outils de publication : sommes SHA-256, fichiers incomplets ou inattendus, traversée de chemin, dépôt/certificat incorrects, rejet d’APK debug et extraction des nouveautés. Les workflows sont analysés en YAML ; leur exécution distante dépend de l’activation et des secrets de signature du dépôt.
 
-Les mises à jour ne changent pas la base Room v4 ni les formats de sauvegarde. La vérification préalable compare le certificat ; l’installateur Android réalise la validation cryptographique finale et demande la confirmation de l’utilisateur. Le build release signé et son lint passent également ; `apksigner` confirme le certificat attendu et `aapt` confirme le code 9, la version 1.7.0 et l’absence du drapeau débogable. Les tests réseau utilisent des réponses simulées ; la publication publique et un cycle de mise à jour sur téléphone réel sont des contrôles distincts à réaliser après mise en ligne.
+Les mises à jour ne changent pas la base Room v4 ni les formats de sauvegarde. La vérification préalable compare le certificat ; l’installateur Android réalise la validation cryptographique finale et demande la confirmation de l’utilisateur. Le build release signé et son lint passent également ; `apksigner` confirme le certificat attendu et `aapt` confirme le code 9, la version 1.7.1 et l’absence du drapeau débogable. Les tests réseau utilisent des réponses simulées ; la publication publique et un cycle de mise à jour sur téléphone réel sont des contrôles distincts à réaliser après mise en ligne.
 
 ### Interface allégée — version 1.6
 

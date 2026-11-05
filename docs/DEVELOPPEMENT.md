@@ -6,7 +6,7 @@ Les chemins de fichiers ci-dessous sont relatifs à la racine du projet. Pour di
 
 1. Installer Android Studio et le SDK Android 35 via **SDK Manager** (Android SDK Platform 35 et Build Tools 35.0.0).
 2. Ouvrir **ce dossier**, celui contenant `settings.gradle.kts`, avec **File → Open**.
-3. Dans **Settings → Build, Execution, Deployment → Build Tools → Gradle**, sélectionner un JDK **17** ou **21**. Ne pas utiliser Java 25 avec cette version de Gradle.
+3. Dans **Settings → Build, Execution, Deployment → Build Tools → Gradle**, sélectionner un JDK **21** (JBR ou Temurin). Ne pas utiliser Java 25 avec cette version de Gradle.
 4. Laisser Android Studio créer `local.properties` avec le chemin de votre SDK. Le chemin Linux de cet environnement ne doit pas être réutilisé sur Windows.
 5. Attendre la synchronisation Gradle, puis lancer la configuration **app**.
 

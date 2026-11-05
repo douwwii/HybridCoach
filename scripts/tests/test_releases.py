@@ -66,6 +66,27 @@ class ReleaseToolsTest(unittest.TestCase):
                 with self.assertRaises(ValueError):prepare.inspect_apk(Path('test.apk'),CONFIG)
             with patch.object(prepare,'command',side_effect=[signature,metadata+'application-debuggable\n']):
                 with self.assertRaises(ValueError):prepare.inspect_apk(Path('test.apk'),CONFIG)
+    def test_full_release_directory_contains_utf8_notes_and_exact_sources(self):
+        import subprocess,argparse,contextlib,io
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d)
+            (root/'.gitignore').write_text('dist/\n*.apk\n',encoding='utf-8')
+            (root/'release-config.json').write_text(json.dumps(CONFIG),encoding='utf-8')
+            (root/'CHANGELOG.md').write_text('# Versions\n\n## 1.7.0\n\n- Séances été 🏃\n',encoding='utf-8')
+            (root/'README.md').write_text('sources',encoding='utf-8')
+            subprocess.run(['git','init','-q',str(root)],check=True)
+            subprocess.run(['git','-C',str(root),'add','.'],check=True)
+            subprocess.run(['git','-C',str(root),'-c','user.name=Release test','-c','user.email=test@example.invalid','commit','-qm','fixture'],check=True)
+            apk=root/'test.apk';apk.write_bytes(b'apk')
+            output=root/'dist'/'v1.7.0'
+            with patch.object(prepare,'ROOT',root),patch.object(prepare.argparse.ArgumentParser,'parse_args',return_value=argparse.Namespace(apk=apk,output=output)),patch.object(prepare,'inspect_apk',return_value=('1.7.0',9,26,35,'signature')),contextlib.redirect_stdout(io.StringIO()):
+                prepare.main()
+            self.assertTrue((output/'INSTALLATION.md').read_text(encoding='utf-8').startswith('# Installer Hybrid Coach\n'))
+            self.assertIn('Séances été 🏃',json.loads((output/'update.json').read_text(encoding='utf-8'))['notes'])
+            manifest,assets=publish.verified_assets(output,CONFIG)
+            self.assertEqual(7,len(assets))
+            self.assertEqual(40,len(manifest['sourceCommit']))
+
     def test_changelog_extracts_only_the_requested_version(self):
         notes=prepare.notes_for('1.7.0')
         self.assertIn('GitHub',notes);self.assertNotIn('Interface allégée',notes)

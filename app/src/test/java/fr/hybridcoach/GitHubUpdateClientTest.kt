@@ -16,7 +16,7 @@ class GitHubUpdateClientTest {
         assertEquals(
             listOf(
                 LATEST_RELEASE_API,
-                "https://github.com/$UPDATE_REPOSITORY/releases/download/v1.7.1/update.json",
+                "https://github.com/$UPDATE_REPOSITORY/releases/download/v1.8.0/update.json",
             ),
             calls,
         )
@@ -42,7 +42,7 @@ class GitHubUpdateClientTest {
                 release.toMutableMap().apply {
                     put(
                         "html_url",
-                        JsonPrimitive("https://github.com/other/repo/releases/tag/v1.7.1"),
+                        JsonPrimitive("https://github.com/other/repo/releases/tag/v1.8.0"),
                     )
                 },
             )
@@ -87,7 +87,7 @@ class GitHubUpdateClientTest {
                 assertThrows(IllegalArgumentException::class.java) {
                     UpdateValidation.manifest(
                         codec.encodeToString(valid.copy(apk = valid.apk.copy(url = url))),
-                        "v1.7.1",
+                        "v1.8.0",
                     )
                 }
             }
@@ -107,7 +107,7 @@ class GitHubUpdateClientTest {
             )
             .forEach {
                 assertThrows(IllegalArgumentException::class.java) {
-                    UpdateValidation.manifest(codec.encodeToString(it), "v1.7.1")
+                    UpdateValidation.manifest(codec.encodeToString(it), "v1.8.0")
                 }
             }
     }

@@ -92,7 +92,7 @@ class UpdatesUiTest {
         fake(gateway)
         compose.onNodeWithText("Vérifier les mises à jour").performClick()
         compose.onNodeWithText("Une nouvelle version est disponible.").assertExists()
-        compose.onNodeWithText("Version 1.7.1").assertExists()
+        compose.onNodeWithText("Version 1.8.0").assertExists()
         screenshot("github-updates")
         compose.onNodeWithText("Télécharger la mise à jour").performScrollTo().performClick()
         compose.onNodeWithText("Installer la mise à jour").performScrollTo().performClick()

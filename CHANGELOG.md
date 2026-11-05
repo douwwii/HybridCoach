@@ -1,5 +1,13 @@
 # Historique des versions
 
+## 1.7.1
+
+- Première publication stable distribuée sur GitHub.
+- Recherche des nouveautés, téléchargement de l’APK et installation depuis Hybrid Coach.
+- Contrôle de l’empreinte et du certificat pour conserver la compatibilité des mises à jour.
+- Carnet local et sauvegardes JSON conservés.
+- Préparation reproductible des publications et compilation compatible avec Android Studio et GitHub.
+
 ## 1.7.0
 
 - Vérification des nouvelles versions depuis Profil sportif → À propos et mises à jour.

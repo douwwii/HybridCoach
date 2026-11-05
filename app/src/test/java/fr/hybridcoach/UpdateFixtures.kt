@@ -14,14 +14,14 @@ object UpdateFixtures {
         UpdateManifest(
             applicationId = BuildConfig.APPLICATION_ID,
             versionCode = BuildConfig.VERSION_CODE + 1L,
-            versionName = "1.7.1",
+            versionName = "1.8.0",
             minSdk = 26,
             targetSdk = 35,
             signingCertificateSha256 = certificate,
             apk =
                 UpdateApk(
-                    "HybridCoach-1.7.1.apk",
-                    "https://github.com/$UPDATE_REPOSITORY/releases/download/v1.7.1/HybridCoach-1.7.1.apk",
+                    "HybridCoach-1.8.0.apk",
+                    "https://github.com/$UPDATE_REPOSITORY/releases/download/v1.8.0/HybridCoach-1.8.0.apk",
                     bytes.size.toLong(),
                     MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") {
                         "%02x".format(it)

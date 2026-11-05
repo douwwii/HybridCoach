@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def verified_assets(directory, config):
     directory = Path(directory)
-    manifest = json.loads((directory/'update.json').read_text())
+    manifest = json.loads((directory/'update.json').read_text(encoding="utf-8"))
     version = manifest['versionName']
     if not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+',version): raise ValueError('Version invalide.')
     apk = manifest['apk']
@@ -23,7 +23,7 @@ def verified_assets(directory, config):
     if apk['url'] != expected_url or apk['name'] != f'HybridCoach-{version}.apk': raise ValueError('URL de publication incohérente.')
     if not re.fullmatch(r'[0-9a-f]{40}',manifest['sourceCommit']): raise ValueError('Commit source invalide.')
     checks = {}
-    for line in (directory/'SHA256SUMS').read_text().splitlines():
+    for line in (directory/'SHA256SUMS').read_text(encoding="utf-8").splitlines():
         match = re.fullmatch(r'([0-9a-f]{64})  ([A-Za-z0-9._-]+)',line)
         if not match or match[2] in checks: raise ValueError('Liste SHA256SUMS invalide.')
         checks[match[2]] = match[1]
@@ -63,7 +63,7 @@ def main():
     parser.add_argument('directory',type=Path)
     parser.add_argument('--publish',action='store_true',help='Publier après le téléversement complet ; sinon conserver un brouillon.')
     args=parser.parse_args()
-    config=json.loads((ROOT/'release-config.json').read_text())
+    config=json.loads((ROOT/'release-config.json').read_text(encoding="utf-8"))
     manifest,assets=verified_assets(args.directory,config)
     token=os.environ.get('GH_TOKEN') or os.environ.get('GITHUB_TOKEN')
     if not token: raise ValueError('Authentification absente. Utilisez un jeton GitHub dans GH_TOKEN/GITHUB_TOKEN ou le workflow GitHub Actions. Ne le placez jamais dans les sources.')
@@ -75,7 +75,7 @@ def main():
     if release is None:
         release=github.request('POST',base+'/releases',{
             'tag_name':tag,'target_commitish':manifest['sourceCommit'],'name':'Hybrid Coach '+manifest['versionName'],
-            'body':(args.directory/'release-notes.md').read_text(),'draft':True,'prerelease':False,
+            'body':(args.directory/'release-notes.md').read_text(encoding="utf-8"),'draft':True,'prerelease':False,
         })
     existing={asset['name']:asset for asset in release['assets']}
     for path in assets:
